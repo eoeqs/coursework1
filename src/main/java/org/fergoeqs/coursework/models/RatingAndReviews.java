@@ -21,9 +21,9 @@ public class RatingAndReviews {
 
     @ManyToOne
     @JoinColumn(name = "vet_id", nullable = false)
-    private Vet vet;
+    private AppUser vet;
 
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
-    private Owner owner;
+    private AppUser owner;
 }

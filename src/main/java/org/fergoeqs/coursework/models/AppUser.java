@@ -3,6 +3,7 @@ package org.fergoeqs.coursework.models;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.fergoeqs.coursework.models.enums.RoleType;
 
 @Entity
 @Table(name = "App_User")
@@ -12,6 +13,9 @@ public class AppUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(unique = true, nullable = false)
+    private String username;
 
     @Column(unique = true, nullable = false)
     private String email;
@@ -31,5 +35,16 @@ public class AppUser {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private RoleType role;
+
+    //?????? ?????
+    @ManyToOne
+    @JoinColumn(name = "clinic_id")
+    private Clinic clinic;
+
+    private String schedule;
+
+    private String qualification;
+
+    private String workingHours;
 
 }

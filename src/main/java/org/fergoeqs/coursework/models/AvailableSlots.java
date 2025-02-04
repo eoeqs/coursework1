@@ -24,5 +24,5 @@ public class AvailableSlots {
 
     @ManyToOne
     @JoinColumn(name = "vet_id", nullable = false)
-    private Vet vet;
+    private AppUser vet;
 }
