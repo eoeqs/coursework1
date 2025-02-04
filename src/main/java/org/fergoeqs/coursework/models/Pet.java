@@ -3,6 +3,8 @@ package org.fergoeqs.coursework.models;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.fergoeqs.coursework.models.enums.PetType;
+import org.fergoeqs.coursework.models.enums.SexEnum;
 
 import java.math.BigDecimal;
 
@@ -31,7 +33,7 @@ public class Pet {
 
     @ManyToOne
     @JoinColumn(name = "owner_id")
-    private Owner owner;
+    private AppUser owner; //???????? ?? ??????? ??? ?????? id?
 
     @ManyToOne
     @JoinColumn(name = "sector_id")

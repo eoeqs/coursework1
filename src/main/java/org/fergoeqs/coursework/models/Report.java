@@ -22,11 +22,11 @@ public class Report {
 
     @ManyToOne
     @JoinColumn(name = "owner_id")
-    private Owner owner;
+    private AppUser owner;
 
     @ManyToOne
     @JoinColumn(name = "vet_id")
-    private Vet vet;
+    private AppUser vet;
 
     @ManyToOne
     @JoinColumn(name = "diagnosis_id")
