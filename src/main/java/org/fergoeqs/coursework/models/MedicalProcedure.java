@@ -21,5 +21,5 @@ public class MedicalProcedure {
 
     @ManyToOne
     @JoinColumn(name = "vet_id")
-    private Vet vet;
+    private AppUser vet;
 }
