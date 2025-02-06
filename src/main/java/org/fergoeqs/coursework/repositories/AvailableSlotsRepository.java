@@ -8,5 +8,6 @@ import java.util.Optional;
 
 public interface AvailableSlotsRepository extends JpaRepository<AvailableSlots, Long> {
     List<AvailableSlots> findByIsAvailableTrue();
+
     Optional<AvailableSlots> findById(Long id);
 }

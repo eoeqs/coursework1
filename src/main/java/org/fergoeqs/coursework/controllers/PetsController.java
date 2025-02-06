@@ -3,7 +3,6 @@ package org.fergoeqs.coursework.controllers;
 import org.apache.coyote.BadRequestException;
 import org.fergoeqs.coursework.dto.AppointmentDTO;
 import org.fergoeqs.coursework.dto.PetDTO;
-import org.fergoeqs.coursework.exception.UnauthorizedAccessException;
 import org.fergoeqs.coursework.services.AppointmentsService;
 import org.fergoeqs.coursework.services.PetsService;
 import org.fergoeqs.coursework.services.UserService;
@@ -36,18 +35,18 @@ public class PetsController {
             return ResponseEntity.ok(appointmentDTO); //TODO: выводить окно с датой записи
         } catch (Exception e) {
             logger.error("Appointment failed: {}", e.getMessage());
-            throw new UnauthorizedAccessException("Appointment failed");
+            throw new BadRequestException("Appointment failed");
         }
     }
 
     @PostMapping("/new-pet")
-    public ResponseEntity<?> createPet(@RequestBody PetDTO petDTO) {
+    public ResponseEntity<?> createPet(@RequestBody PetDTO petDTO) throws BadRequestException {
         try {
             petsService.addPet(petDTO, userService.getAuthenticatedUser().getId());
             return ResponseEntity.ok(petDTO);
         } catch (Exception e) {
             logger.error("Pet creation failed: {}", e.getMessage());
-            throw new UnauthorizedAccessException("Pet creation failed");
+            throw new BadRequestException("Pet creation failed");
         }
     }
 
