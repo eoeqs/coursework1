@@ -1,8 +1,13 @@
 package org.fergoeqs.coursework.services;
 
+import org.apache.coyote.BadRequestException;
+import org.fergoeqs.coursework.exception.UnauthorizedAccessException;
 import org.fergoeqs.coursework.models.AppUser;
 import org.fergoeqs.coursework.models.enums.RoleType;
 import org.fergoeqs.coursework.repositories.UserRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -51,6 +56,16 @@ public class UserService {
             }
         }
         return Optional.empty();
+    }
+
+    public AppUser getAuthenticatedUser() throws BadRequestException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails userDetails) {
+            String username = userDetails.getUsername();
+            return findByUsername(username)
+                    .orElseThrow(() -> new BadRequestException("User not found"));
+        }
+        throw new UnauthorizedAccessException("User not authenticated");
     }
 
 

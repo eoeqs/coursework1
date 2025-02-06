@@ -40,16 +40,6 @@ public class UserController {
         this.authenticationService = authenticationService;
     }
 
-    private AppUser getAuthenticatedUser() throws BadRequestException {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof UserDetails userDetails) {
-            String username = userDetails.getUsername();
-            return userService.findByUsername(username)
-                    .orElseThrow(() -> new BadRequestException("User not found"));
-        }
-        throw new UnauthorizedAccessException("User not authenticated");
-    }
-
     @PostMapping("/register")
     public ResponseEntity<?> createUser(@RequestBody RegisterUserDto user) {
 
@@ -100,7 +90,7 @@ public class UserController {
 
     @GetMapping("/get-users")
     public ResponseEntity<?> getAllUsers() throws BadRequestException {
-        AppUser user = getAuthenticatedUser();
+        AppUser user = userService.getAuthenticatedUser();
         logger.info("Getting users for user: {}", user.getUsername());
 
         return ResponseEntity.ok(userService.findAllUsers());
@@ -108,7 +98,7 @@ public class UserController {
 
     @GetMapping("/current-user-info")
     public ResponseEntity<UserInfoDto> getCurrentUserInfo() throws BadRequestException {
-        AppUser user = getAuthenticatedUser();
+        AppUser user = userService.getAuthenticatedUser();
         logger.info("Fetching ID and role for authenticated user: {}", user.getUsername());
 
         String role = user.getPrimaryRole().stream()
