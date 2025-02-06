@@ -25,10 +25,10 @@ public class AvailableSlotsService {
 
     public AvailableSlots addAvailableSlot(AvailableSlotsDTO availableSlotDTO) {
         AvailableSlots availableSlot = new AvailableSlots();
-        availableSlot.setDate(availableSlotDTO.getDate());
-        availableSlot.setStartTime(availableSlotDTO.getStartTime());
-        availableSlot.setEndTime(availableSlotDTO.getEndTime());
-        availableSlot.setVet(availableSlotDTO.getVet());
+        availableSlot.setDate(availableSlotDTO.date());
+        availableSlot.setStartTime(availableSlotDTO.startTime());
+        availableSlot.setEndTime(availableSlotDTO.endTime());
+        availableSlot.setVet(availableSlotDTO.vet());
         availableSlot.setIsAvailable(true);
         return availableSlotsRepository.save(availableSlot);
     }

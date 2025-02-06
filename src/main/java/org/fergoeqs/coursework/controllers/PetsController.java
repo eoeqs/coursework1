@@ -4,7 +4,6 @@ import org.apache.coyote.BadRequestException;
 import org.fergoeqs.coursework.dto.AppointmentDTO;
 import org.fergoeqs.coursework.dto.PetDTO;
 import org.fergoeqs.coursework.exception.UnauthorizedAccessException;
-import org.fergoeqs.coursework.models.Pet;
 import org.fergoeqs.coursework.services.AppointmentsService;
 import org.fergoeqs.coursework.services.PetsService;
 import org.fergoeqs.coursework.services.UserService;
@@ -31,15 +30,24 @@ public class PetsController {
     }
 
     @PostMapping("/new-appointment")
-    public ResponseEntity<?> createAppointment(@RequestBody PetDTO petDTO,
-                                               @RequestBody AppointmentDTO appointmentDTO) throws BadRequestException {
+    public ResponseEntity<?> createAppointment(@RequestBody AppointmentDTO appointmentDTO) throws BadRequestException {
         try {
-            Pet pet = petsService.addPet(petDTO, userService.getAuthenticatedUser().getId());
-            appointmentsService.create(appointmentDTO, pet);
+            appointmentsService.create(appointmentDTO);
             return ResponseEntity.ok(appointmentDTO); //TODO: выводить окно с датой записи
         } catch (Exception e) {
             logger.error("Appointment failed: {}", e.getMessage());
             throw new UnauthorizedAccessException("Appointment failed");
+        }
+    }
+
+    @PostMapping("/new-pet")
+    public ResponseEntity<?> createPet(@RequestBody PetDTO petDTO) {
+        try {
+            petsService.addPet(petDTO, userService.getAuthenticatedUser().getId());
+            return ResponseEntity.ok(petDTO);
+        } catch (Exception e) {
+            logger.error("Pet creation failed: {}", e.getMessage());
+            throw new UnauthorizedAccessException("Pet creation failed");
         }
     }
 

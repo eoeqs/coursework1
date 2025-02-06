@@ -19,12 +19,12 @@ public class PetsService {
 
     public Pet addPet(PetDTO petDTO, Long ownerId) {
         Pet pet = new Pet();
-        pet.setName(petDTO.getName());
-        pet.setBreed(petDTO.getBreed());
-        pet.setType(petDTO.getType());
-        pet.setWeight(petDTO.getWeight());
-        pet.setSex(petDTO.getSex());
-        pet.setAge(petDTO.getAge());
+        pet.setName(petDTO.name());
+        pet.setBreed(petDTO.breed());
+        pet.setType(petDTO.type());
+        pet.setWeight(petDTO.weight());
+        pet.setSex(petDTO.sex());
+        pet.setAge(petDTO.age());
         pet.setOwner(userRepository.findById(ownerId).orElseThrow());
         return petsRepository.save(pet);
     }
@@ -35,12 +35,12 @@ public class PetsService {
         if (!pet.getOwner().getId().equals(authorId) && !isAdmin(author) && !isVet(author) ) {
             throw new IllegalArgumentException("User is not allowed to update this pet (only for owner, vet or admin)");
         }
-        pet.setName(petDTO.getName());
-        pet.setBreed(petDTO.getBreed());
-        pet.setType(petDTO.getType());
-        pet.setWeight(petDTO.getWeight());
-        pet.setSex(petDTO.getSex());
-        pet.setAge(petDTO.getAge());
+        pet.setName(petDTO.name());
+        pet.setBreed(petDTO.breed());
+        pet.setType(petDTO.type());
+        pet.setWeight(petDTO.weight());
+        pet.setSex(petDTO.sex());
+        pet.setAge(petDTO.age());
         petsRepository.save(pet);
     }
 

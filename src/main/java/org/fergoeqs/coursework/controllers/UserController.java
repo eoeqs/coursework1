@@ -10,19 +10,13 @@ import org.fergoeqs.coursework.exception.InternalServerErrorException;
 import org.fergoeqs.coursework.exception.UnauthorizedAccessException;
 import org.fergoeqs.coursework.jwt.JwtService;
 import org.fergoeqs.coursework.models.AppUser;
-import org.fergoeqs.coursework.models.enums.RoleType;
 import org.fergoeqs.coursework.services.AuthenticationService;
 import org.fergoeqs.coursework.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
