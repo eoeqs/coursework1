@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from "../AuthProvider";
 import { loginUser } from "../AuthService";
@@ -9,7 +9,6 @@ const Login = () => {
     const [error, setError] = useState('');
     const navigate = useNavigate();
     const { token, setToken } = useAuth();
-
 
     useEffect(() => {
         if (token) {
@@ -56,7 +55,7 @@ const Login = () => {
                 </div>
                 <button type="submit">Login</button>
             </form>
-
+            <p>Don't have an account? <button onClick={() => navigate('/register')} style={{ color: 'blue', border: 'none', background: 'none', cursor: 'pointer' }}>Register</button></p>
         </div>
     );
 };

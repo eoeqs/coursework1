@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.fergoeqs.coursework.models.enums.RoleType;
+import org.hibernate.annotations.Cascade;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -46,7 +47,9 @@ public class AppUser implements UserDetails {
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private Set<RoleType> roles = new HashSet<>();
+
 
     public AppUser(String username, String password) {
         this.username = username;
