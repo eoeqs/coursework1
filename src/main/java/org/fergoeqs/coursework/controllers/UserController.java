@@ -49,6 +49,7 @@ public class UserController {
         }
         throw new UnauthorizedAccessException("User not authenticated");
     }
+
     @PostMapping("/register")
     public ResponseEntity<?> createUser(@RequestBody RegisterUserDto user) {
 

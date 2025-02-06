@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
         logout,
     };
 
-
+//TODO: сохранять токен в localstorage
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
