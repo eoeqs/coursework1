@@ -10,19 +10,13 @@ import org.fergoeqs.coursework.exception.InternalServerErrorException;
 import org.fergoeqs.coursework.exception.UnauthorizedAccessException;
 import org.fergoeqs.coursework.jwt.JwtService;
 import org.fergoeqs.coursework.models.AppUser;
-import org.fergoeqs.coursework.models.enums.RoleType;
 import org.fergoeqs.coursework.services.AuthenticationService;
 import org.fergoeqs.coursework.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -38,16 +32,6 @@ public class UserController {
         this.userService = userService;
         this.jwtService = jwtService;
         this.authenticationService = authenticationService;
-    }
-
-    private AppUser getAuthenticatedUser() throws BadRequestException {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof UserDetails userDetails) {
-            String username = userDetails.getUsername();
-            return userService.findByUsername(username)
-                    .orElseThrow(() -> new BadRequestException("User not found"));
-        }
-        throw new UnauthorizedAccessException("User not authenticated");
     }
 
     @PostMapping("/register")
@@ -100,7 +84,7 @@ public class UserController {
 
     @GetMapping("/get-users")
     public ResponseEntity<?> getAllUsers() throws BadRequestException {
-        AppUser user = getAuthenticatedUser();
+        AppUser user = userService.getAuthenticatedUser();
         logger.info("Getting users for user: {}", user.getUsername());
 
         return ResponseEntity.ok(userService.findAllUsers());
@@ -108,7 +92,7 @@ public class UserController {
 
     @GetMapping("/current-user-info")
     public ResponseEntity<UserInfoDto> getCurrentUserInfo() throws BadRequestException {
-        AppUser user = getAuthenticatedUser();
+        AppUser user = userService.getAuthenticatedUser();
         logger.info("Fetching ID and role for authenticated user: {}", user.getUsername());
 
         String role = user.getPrimaryRole().stream()
