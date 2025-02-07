@@ -27,59 +27,59 @@ public class PetsController {
         this.userService = userService;
     }
 
-    @GetMapping("/get-all-pets")
-    public ResponseEntity<?> getAllPets() throws BadRequestException {
+    @GetMapping("/all-pets")
+    public ResponseEntity<?> getAllPets(){
         try {
             List<Pet> pets = petsService.findAllPets();
             return ResponseEntity.ok(petMapper.petsToPetDTOs(pets));
 
         } catch (Exception e) {
             logger.error("Pets fetching failed: {}", e.getMessage());
-            throw new BadRequestException("Pets fetching failed");
+            throw e;
         }
     }
 
-    @GetMapping("/get-pet/{petId}")
-    public ResponseEntity<?> getPet(@PathVariable Long petId) throws BadRequestException {
+    @GetMapping("/pet/{petId}")
+    public ResponseEntity<?> getPet(@PathVariable Long petId) {
         try {
             return ResponseEntity.ok(petMapper.petToPetDTO(petsService.findPetById(petId)));
         } catch (Exception e) {
             logger.error("Pet fetching failed: {}", e.getMessage());
-            throw new BadRequestException("Pet fetching failed");
+            throw e;
         }
     }
 
     @PostMapping("/new-pet")
     public ResponseEntity<?> createPet(@RequestBody PetDTO petDTO) throws BadRequestException {
         try {
-            petsService.addPet(petDTO, userService.getAuthenticatedUser().getId());
+            petsService.addPet(petDTO, userService.getAuthenticatedUser());
             return ResponseEntity.ok(petDTO);
         } catch (Exception e) {
             logger.error("Pet creation failed: {}", e.getMessage());
-            throw new BadRequestException("Pet creation failed"); //TODO: переписать эксепшены
+            throw e; //TODO: переписать catch, когда будут валидаторы.
         }
     }
 
-    @PostMapping("/update-pet")
+    @PostMapping("/update-pet/{petId}")
     public ResponseEntity<?> updatePet(@RequestBody PetDTO petDTO,
                                        @PathVariable Long petId) throws BadRequestException {
         try {
-            petsService.updatePet(petId, userService.getAuthenticatedUser().getId(), petDTO);
+            petsService.updatePet(petId, userService.getAuthenticatedUser(), petDTO);
             return ResponseEntity.ok(petDTO);
         } catch (Exception e) {
             logger.error("Pet updating failed: {}", e.getMessage());
-            throw new BadRequestException("Pet updating failed"); //TODO: переписать эксепшены
+            throw e; //TODO: переписать эксепшены
         }
     }
 
     @DeleteMapping("/delete-pet/{petId}")
     public ResponseEntity<?> deletePet(@PathVariable Long petId) throws BadRequestException {
         try {
-            petsService.deletePet(petId, userService.getAuthenticatedUser().getId());
+            petsService.deletePet(petId, userService.getAuthenticatedUser());
             return ResponseEntity.ok("Pet" + petId + " deleted");
         } catch (Exception e) {
             logger.error("Pet deleting failed: {}", e.getMessage());
-            throw new BadRequestException("Pet deleting failed");
+            throw e;
         }
     }
 

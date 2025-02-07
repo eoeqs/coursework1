@@ -5,7 +5,7 @@ import org.fergoeqs.coursework.models.enums.SexEnum;
 
 import java.math.BigDecimal;
 
-public record PetDTO (
+public record PetDTO (Long id,
     String name,
     String breed,
     PetType type,

@@ -22,5 +22,5 @@ public class Appointment {
 
     @ManyToOne
     @JoinColumn(name = "slot_id")
-    private AvailableSlots slot;
+    private Slot slot;
 }

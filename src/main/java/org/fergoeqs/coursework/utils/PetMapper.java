@@ -14,11 +14,15 @@ public interface PetMapper {
 
     List<PetDTO> petsToPetDTOs(List<Pet> pets);
 
-    @Mapping(target = "id", ignore = true)
     @Mapping(target = "actualVet", ignore = true)
     @Mapping(target = "owner", ignore = true)
     @Mapping(target = "sector", ignore = true)
     Pet petDTOToPet(PetDTO petDTO);
+
+    @Mapping(target = "actualVet", ignore = true)
+    @Mapping(target = "owner", ignore = true)
+    @Mapping(target = "sector", ignore = true)
+    List<Pet> petDTOsToPets(List<PetDTO> petDTOs);
 }
 
 
