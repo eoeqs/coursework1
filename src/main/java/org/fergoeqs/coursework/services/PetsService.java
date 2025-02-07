@@ -7,8 +7,11 @@ import org.fergoeqs.coursework.repositories.PetsRepository;
 import org.fergoeqs.coursework.repositories.UserRepository;
 import org.fergoeqs.coursework.utils.PetMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 
+@Transactional(readOnly = true)
 @Service
 public class PetsService {
     private final PetsRepository petsRepository;
@@ -21,28 +24,33 @@ public class PetsService {
         this.petMapper = petMapper;
     }
 
+    public List<Pet> findAllPets() {
+        return petsRepository.findAll();
+    }
+
+    public Pet findPetById(Long petId) {
+        return petsRepository.findById(petId).orElseThrow();
+    }
+
+    @Transactional
     public void addPet(PetDTO petDTO, Long ownerId) {
         Pet pet = petMapper.petDTOToPet(petDTO);
         pet.setOwner(userRepository.findById(ownerId).orElseThrow());
         petsRepository.save(pet);
     }
 
+    @Transactional
     public void updatePet(Long petId, Long authorId, PetDTO petDTO) {
         Pet pet = petsRepository.findById(petId).orElseThrow();
         AppUser author = userRepository.findById(authorId).orElseThrow();
         if (!pet.getOwner().getId().equals(authorId) && !isAdmin(author) && !isVet(author) ) {
             throw new IllegalArgumentException("User is not allowed to update this pet (only for owner, vet or admin)");
         }
-//        pet.setName(petDTO.name());
-//        pet.setBreed(petDTO.breed());
-//        pet.setType(petDTO.type());
-//        pet.setWeight(petDTO.weight());
-//        pet.setSex(petDTO.sex());
-//        pet.setAge(petDTO.age());
         pet = petMapper.petDTOToPet(petDTO); //TODO: проверить
         petsRepository.save(pet);
     }
 
+    @Transactional
     public void deletePet(Long petId, Long deleterId) {
         Pet pet = petsRepository.findById(petId).orElseThrow();
         AppUser deleter = userRepository.findById(deleterId).orElseThrow();
@@ -52,6 +60,7 @@ public class PetsService {
         petsRepository.delete(pet);
     }
 
+    @Transactional
     public void bindPet(Long petId, Long vetId) {
         Pet pet = petsRepository.findById(petId).orElseThrow();
         AppUser vet = userRepository.findById(vetId).orElseThrow();
