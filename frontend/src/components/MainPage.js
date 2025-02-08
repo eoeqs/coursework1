@@ -21,25 +21,39 @@ export default function HomePage() {
                     <button onClick={handleAppointmentClick}>
                         Book an Appointment
                     </button>
+                </div>
+
+                <div>
+                    <h2>Meet Our Veterinarians</h2>
                     <div>
-                        <h2>Contact Information</h2>
-                        <p>Address: 10 Veterinary Street, Moscow</p>
-                        <p>Phone: +7 (123) 456-78-90</p>
-                        <p>Email: contact@vetcare.ru</p>
-                    </div>
-                    <div>
-                        <h2>Frequently Asked Questions (FAQ)</h2>
-                        <ul>
-                            <li>How do I book an appointment?</li>
-                            <li>How can I access my pet’s medical history?</li>
-                            <li>What services does the clinic offer?</li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h2>News and Promotions</h2>
-                        <p>Get a 10% discount on your first appointment until the end of the month!</p>
+                        <div>
+                            <h3>Dr. Dre</h3>
+                            <p>Expert in yoyoyo</p>
+                            <p>⭐⭐⭐⭐⭐</p>
+                            <p>"Dr. Dre is amazing! Took great care of my dog."</p>
+                        </div>
+                        <div>
+                            <h3>Dr. Ferg</h3>
+                            <p>Expert in exotic animals and surgery.</p>
+                            <p>⭐⭐⭐⭐⭐</p>
+                            <p>"Very professional and kind. Highly recommend!"</p>
+                        </div>
+                        <div>
+                            <h3>Dr. Eoqe</h3>
+                            <p>Expert in sabakababaka.</p>
+                            <p>⭐⭐⭐⭐⭐</p>
+                            <p>"Helped my cat recover quickly. Thank you!"</p>
+                        </div>
                     </div>
                 </div>
+
+                <div>
+                    <h2>Contact Information</h2>
+                    <p>Address: 10 Veterinary Street, Moscow</p>
+                    <p>Phone: +7 (123) 456-78-90</p>
+                    <p>Email: contact@vetcare.ru</p>
+                </div>
+
             </div>
         </div>
     );
