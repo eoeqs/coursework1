@@ -13,29 +13,37 @@ const useAxiosWithAuth = () => {
 
         instance.interceptors.request.use(
             (config) => {
-                console.log(token)
-                if (token) {
-                    try {
-                        const decoded = jwtDecode(token);
-                        const currentTime = Date.now() / 1000;
-                        console.log("Current Token:", token);
+                const authToken = token || localStorage.getItem("token");
+                console.log("Current token:", authToken);
 
-                        if (decoded.exp < currentTime) {
-                            logout();
-                            window.location.href = '/login';
-                            return Promise.reject(new Error("Token expired"));
-                        } else {
-                            config.headers['Authorization'] = `Bearer ${token}`;
-                            console.log("Authorization Header:", config.headers['Authorization']);
+                if (!authToken) {
+                    console.warn("No token found, redirecting to login...");
+                    logout();
+                    window.location.href = '/login';
+                    return Promise.reject(new Error("Token отсутствует"));
+                }
 
-                        }
-                    } catch (error) {
-                        console.error("Error decoding token:", error);
+                try {
+                    const decoded = jwtDecode(authToken);
+                    const currentTime = Date.now() / 1000;
+
+                    if (decoded.exp < currentTime) {
+                        console.warn("Token expired, logging out...");
                         logout();
                         window.location.href = '/login';
-                        return Promise.reject(error);
+                        return Promise.reject(new Error("Token expired"));
                     }
+
+                    config.headers['Authorization'] = `Bearer ${authToken}`;
+                    console.log("Authorization Header:", config.headers['Authorization']);
+
+                } catch (error) {
+                    console.error("Error decoding token:", error);
+                    logout();
+                    window.location.href = '/login';
+                    return Promise.reject(error);
                 }
+
                 return config;
             },
             (error) => Promise.reject(error)
