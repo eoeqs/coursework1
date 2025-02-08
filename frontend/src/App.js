@@ -4,33 +4,23 @@ import Login from './components/Login';
 import Register from './components/Register';
 import MainPage from "./components/MainPage";
 import AppointmentPage from "./components/AppointmentPage";
+import PetSelector from "./components/PetSelector";
 
 
 const App = () => {
-  const [user, setUser] = useState({roles: []});
 
-  useEffect(() => {
-    const loggedInUser = JSON.parse(localStorage.getItem('user'));
-    if (loggedInUser) {
-      setUser(loggedInUser);
-    }
-  }, []);
 
-  const handleLogout = () => {
-    setUser(null);
-    localStorage.removeItem('user');
-  };
-
-  return (
-      <Router>
-        <Routes>
-          <Route path="/main-page" element={<MainPage/>}/>
-          <Route path="/login" element={<Login/>}/>
-          <Route path="/register" element={<Register/>}/>
-          <Route path="/appointment" element={<AppointmentPage/>}/>
-        </Routes>
-      </Router>
-  );
+    return (
+        <Router>
+            <Routes>
+                <Route path="/" element={<MainPage/>}/>
+                <Route path="/login" element={<Login/>}/>
+                <Route path="/register" element={<Register/>}/>
+                <Route path="/appointment" element={<AppointmentPage/>}/>
+                <Route path="/pet-info" element={<PetSelector/>}/>
+            </Routes>
+        </Router>
+    );
 };
 
 export default App;

@@ -1,36 +1,35 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { useAuth } from "../AuthProvider";
 import NewPetForm from "./NewPetForm";
+import useAxiosWithAuth from "../AxiosAuth";
 
 const AppointmentPage = () => {
-    const { token: authToken } = useAuth();
-    const [token, setToken] = useState(localStorage.getItem("token") || authToken);
-    const [showNewPetForm, setShowNewPetForm] = useState(false);
-
+    const { token } = useAuth();
+    const axiosInstance = useAxiosWithAuth();
     const navigate = useNavigate();
+
+    const [showNewPetForm, setShowNewPetForm] = useState(false);
     const [pets, setPets] = useState([]);
     const [selectedPetId, setSelectedPetId] = useState("");
-    const [selectedSlot, setSelectedSlot] = useState("");
-    const [priority, setPriority] = useState(false);
 
-    useEffect(() => {
-        if (authToken) {
-            setToken(authToken);
-            localStorage.setItem("token", authToken);
-        }
-    }, [authToken]);
+    const [slots, setSlots] = useState([]);
+    const [selectedSlotId, setSelectedSlotId] = useState("");
+
+    const [priority, setPriority] = useState(false);
 
     useEffect(() => {
         if (!token) return;
 
-        axios.get("http://localhost:8080/api/pets", {
-            headers: { Authorization: `Bearer ${token}` }
-        })
+        axiosInstance.get("/pets/all-pets")
             .then(response => setPets(response.data))
+
             .catch(error => console.error("Error fetching pets:", error));
-    }, [token]);
+
+        axiosInstance.get("/slots/available-slots")
+            .then(response => setSlots(response.data))
+            .catch(error => console.error("Error fetching slots:", error));
+    }, [token, axiosInstance]);
 
     const handlePetCreated = (newPet) => {
         setPets([...pets, newPet]);
@@ -46,15 +45,11 @@ const AppointmentPage = () => {
         }
 
         try {
-            await axios.post(
-                "http://localhost:8080/api/appointments/new-appointment",
-                {
-                    priority,
-                    slotId: parseInt(selectedSlot),
-                    petId: parseInt(selectedPetId)
-                },
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
+            await axiosInstance.post("/appointments/new-appointment", {
+                priority,
+                slotId: parseInt(selectedSlotId),
+                petId: parseInt(selectedPetId)
+            });
 
             alert("Appointment successfully booked!");
             navigate("/main-page");
@@ -89,17 +84,19 @@ const AppointmentPage = () => {
 
                 <form onSubmit={handleSubmit}>
                     <label>Select a Time Slot:</label>
-                    <select value={selectedSlot} onChange={(e) => setSelectedSlot(e.target.value)}>
+                    <select value={selectedSlotId} onChange={(e) => setSelectedSlotId(e.target.value)}>
                         <option value="">Select Slot</option>
-                        <option value="1">10:00 - 12:00</option>
-                        <option value="2">12:00 - 14:00</option>
-                        <option value="3">14:00 - 16:00</option>
+                        {slots.map(slot => (
+                            <option key={slot.id} value={slot.id}>
+                                {slot.startTime} - {slot.endTime}
+                            </option>
+                        ))}
                     </select>
 
                     <label>Priority:</label>
                     <input type="checkbox" checked={priority} onChange={() => setPriority(!priority)} />
 
-                    <button type="submit" disabled={!selectedPetId}>
+                    <button type="submit" disabled={!selectedPetId || !selectedSlotId}>
                         Book Appointment
                     </button>
                 </form>

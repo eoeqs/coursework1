@@ -1,11 +1,19 @@
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../AuthProvider";
 import Header from "./Header";
 
 export default function HomePage() {
     const navigate = useNavigate();
+    const { token: authToken } = useAuth();
+    const storedToken = localStorage.getItem("token");
+    const token = authToken || storedToken;
 
     const handleAppointmentClick = () => {
-        navigate("/login", { state: { redirectTo: "/appointment" } });
+        if (token) {
+            navigate("/appointment");
+        } else {
+            navigate("/login", { state: { redirectTo: "/appointment" } });
+        }
     };
 
     return (
@@ -53,7 +61,6 @@ export default function HomePage() {
                     <p>Phone: +7 (123) 456-78-90</p>
                     <p>Email: contact@vetcare.ru</p>
                 </div>
-
             </div>
         </div>
     );
