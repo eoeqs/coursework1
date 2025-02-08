@@ -32,8 +32,12 @@ public class Pet {
     private Integer age;
 
     @ManyToOne
+    @JoinColumn(name = "actual_vet_id")
+    private AppUser actualVet;
+
+    @ManyToOne
     @JoinColumn(name = "owner_id")
-    private AppUser owner; //???????? ?? ??????? ??? ?????? id?
+    private AppUser owner;
 
     @ManyToOne
     @JoinColumn(name = "sector_id")
