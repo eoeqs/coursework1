@@ -22,5 +22,3 @@ public interface PetMapper {
     @Mapping(target = "sector", ignore = true)
     Pet petDTOToPet(PetDTO petDTO);
 }
-
-
