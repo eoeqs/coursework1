@@ -3,6 +3,7 @@ import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import Login from './components/Login';
 import Register from './components/Register';
 import MainPage from "./components/MainPage";
+import AppointmentPage from "./components/AppointmentPage";
 
 
 const App = () => {
@@ -26,7 +27,7 @@ const App = () => {
           <Route path="/main-page" element={<MainPage/>}/>
           <Route path="/login" element={<Login/>}/>
           <Route path="/register" element={<Register/>}/>
-
+          <Route path="/appointment" element={<AppointmentPage/>}/>
         </Routes>
       </Router>
   );
