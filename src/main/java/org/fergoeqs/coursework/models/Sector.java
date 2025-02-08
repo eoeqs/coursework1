@@ -20,4 +20,5 @@ public class Sector {
 
     private Integer capacity;
     private Integer occupancy;
+    private Boolean isAvailable;
 }

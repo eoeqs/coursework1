@@ -15,10 +15,12 @@ import java.util.List;
 public class PetsService {
     private final PetsRepository petsRepository;
     private final PetMapper petMapper;
+    private final SectorsService sectorsService;
 
-    public PetsService(PetsRepository petsRepository, PetMapper petMapper) {
+    public PetsService(PetsRepository petsRepository, PetMapper petMapper, SectorsService sectorsService) {
         this.petsRepository = petsRepository;
         this.petMapper = petMapper;
+        this.sectorsService = sectorsService;
     }
 
     public List<Pet> findAllPets() {
@@ -53,6 +55,21 @@ public class PetsService {
         }
         petsRepository.delete(pet);
     }
+
+    @Transactional
+    public void placeInSector(Long petId, Long sectorId) { //TODO: триггер на занятие слота в секторе
+        Pet pet = petsRepository.findById(petId).orElseThrow();
+        pet.setSector(sectorsService.findSectorById(sectorId));
+        petsRepository.save(pet);
+    }
+
+    @Transactional
+    public void removeFromSector(Long petId) { //TODO: триггер на освобождение слота в секторе
+        Pet pet = petsRepository.findById(petId).orElseThrow();
+        pet.setSector(null);
+        petsRepository.save(pet);
+    }
+
 
     @Transactional
     public void bindPet(Long petId, AppUser vet) {

@@ -9,9 +9,11 @@ import org.fergoeqs.coursework.repositories.SlotsRepository;
 import org.fergoeqs.coursework.repositories.PetsRepository;
 import org.fergoeqs.coursework.utils.AppointmentMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Transactional(readOnly = true)
 @Service
 public class AppointmentsService {
     private final AppointmentsRepository appointmentsRepository;
@@ -39,6 +41,7 @@ public class AppointmentsService {
         return appointmentsRepository.findBySlot_VetId(vetId);
     }
 
+    @Transactional
     public void create(AppointmentDTO appointmentDTO) {
         Appointment appointment = new Appointment();
         Slot slot = availableSlotsRepository.findById(appointmentDTO.slotId()).orElse(null); //TODO: проверку добавить на Null
@@ -49,6 +52,7 @@ public class AppointmentsService {
         appointmentsRepository.save(appointmentMapper.appointmentDTOToAppointment(appointmentDTO)); //TODO: переписать триггер на занятие слота
     }
 
+    @Transactional
     public void delete(Long id) {
         appointmentsRepository.deleteById(id); //TODO: переписать триггер на освобождение слота
     }
