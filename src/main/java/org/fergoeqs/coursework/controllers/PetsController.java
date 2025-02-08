@@ -3,12 +3,17 @@ package org.fergoeqs.coursework.controllers;
 import org.apache.coyote.BadRequestException;
 import org.fergoeqs.coursework.dto.AppointmentDTO;
 import org.fergoeqs.coursework.dto.PetDTO;
+import org.fergoeqs.coursework.exception.UnauthorizedAccessException;
+import org.fergoeqs.coursework.models.AppUser;
 import org.fergoeqs.coursework.services.AppointmentsService;
 import org.fergoeqs.coursework.services.PetsService;
 import org.fergoeqs.coursework.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,8 +33,12 @@ public class PetsController {
         this.appointmentsService = appointmentsService;
     }
 
+
+
     @PostMapping("/new-appointment")
     public ResponseEntity<?> createAppointment(@RequestBody AppointmentDTO appointmentDTO) throws BadRequestException {
+        AppUser user = userService.getAuthenticatedUser();
+        logger.info("Creating appointment for user: {}", user.getUsername());
         try {
             appointmentsService.create(appointmentDTO);
             return ResponseEntity.ok(appointmentDTO); //TODO: выводить окно с датой записи
