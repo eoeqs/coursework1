@@ -1,12 +1,11 @@
 package org.fergoeqs.coursework.dto;
 
-import org.fergoeqs.coursework.models.AppUser;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public record AvailableSlotsDTO (
+public record SlotDTO(
+    Long id,
     LocalDate date,
     LocalTime startTime,
     LocalTime endTime,
-    AppUser vet){}
+    Long vetId){}

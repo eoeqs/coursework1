@@ -4,57 +4,76 @@ import org.fergoeqs.coursework.dto.PetDTO;
 import org.fergoeqs.coursework.models.AppUser;
 import org.fergoeqs.coursework.models.Pet;
 import org.fergoeqs.coursework.repositories.PetsRepository;
-import org.fergoeqs.coursework.repositories.UserRepository;
 import org.fergoeqs.coursework.utils.PetMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 
+@Transactional(readOnly = true)
 @Service
 public class PetsService {
     private final PetsRepository petsRepository;
-    private final UserRepository userRepository;
     private final PetMapper petMapper;
+    private final SectorsService sectorsService;
 
-    public PetsService(PetsRepository petsRepository, UserRepository userRepository, PetMapper petMapper) {
+    public PetsService(PetsRepository petsRepository, PetMapper petMapper, SectorsService sectorsService) {
         this.petsRepository = petsRepository;
-        this.userRepository = userRepository;
         this.petMapper = petMapper;
+        this.sectorsService = sectorsService;
     }
 
-    public void addPet(PetDTO petDTO, Long ownerId) {
+    public List<Pet> findAllPets() {
+        return petsRepository.findAll();
+    }
+
+    public Pet findPetById(Long petId) {
+        return petsRepository.findById(petId).orElseThrow();
+    }
+
+    @Transactional
+    public void addPet(PetDTO petDTO, AppUser owner) {
         Pet pet = petMapper.petDTOToPet(petDTO);
-        pet.setOwner(userRepository.findById(ownerId).orElseThrow());
+        pet.setOwner(owner);
         petsRepository.save(pet);
     }
 
-    public void updatePet(Long petId, Long authorId, PetDTO petDTO) {
+    @Transactional
+    public void updatePet(Long petId, AppUser author, PetDTO petDTO) {
         Pet pet = petsRepository.findById(petId).orElseThrow();
-        AppUser author = userRepository.findById(authorId).orElseThrow();
-        if (!pet.getOwner().getId().equals(authorId) && !isAdmin(author) && !isVet(author) ) {
+        if (!pet.getOwner().equals(author) && !isAdmin(author) && !isVet(author) ) {
             throw new IllegalArgumentException("User is not allowed to update this pet (only for owner, vet or admin)");
         }
-//        pet.setName(petDTO.name());
-//        pet.setBreed(petDTO.breed());
-//        pet.setType(petDTO.type());
-//        pet.setWeight(petDTO.weight());
-//        pet.setSex(petDTO.sex());
-//        pet.setAge(petDTO.age());
-        pet = petMapper.petDTOToPet(petDTO); //TODO: проверить
-        petsRepository.save(pet);
+        petsRepository.save(petMapper.petDTOToPet(petDTO)); //TODO: проверить, работает ли маппер при обновлении
     }
 
-    public void deletePet(Long petId, Long deleterId) {
+    @Transactional
+    public void deletePet(Long petId, AppUser deleter) {
         Pet pet = petsRepository.findById(petId).orElseThrow();
-        AppUser deleter = userRepository.findById(deleterId).orElseThrow();
         if (!(isAdmin(deleter) && !isVet(deleter))) {
             throw new IllegalArgumentException("User is not allowed to delete pets");
         }
         petsRepository.delete(pet);
     }
 
-    public void bindPet(Long petId, Long vetId) {
+    @Transactional
+    public void placeInSector(Long petId, Long sectorId) { //TODO: триггер на занятие слота в секторе
         Pet pet = petsRepository.findById(petId).orElseThrow();
-        AppUser vet = userRepository.findById(vetId).orElseThrow();
+        pet.setSector(sectorsService.findSectorById(sectorId));
+        petsRepository.save(pet);
+    }
+
+    @Transactional
+    public void removeFromSector(Long petId) { //TODO: триггер на освобождение слота в секторе
+        Pet pet = petsRepository.findById(petId).orElseThrow();
+        pet.setSector(null);
+        petsRepository.save(pet);
+    }
+
+
+    @Transactional
+    public void bindPet(Long petId, AppUser vet) {
+        Pet pet = petsRepository.findById(petId).orElseThrow();
         if (!isVet(vet)) {
             throw new IllegalArgumentException("User is not allowed to bind pets");
         }

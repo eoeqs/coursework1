@@ -73,5 +73,15 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    public boolean isVet(AppUser user) {
+        return user.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("VET"));
+    }
+
+    public boolean isAdmin(AppUser user) {
+        return user.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ADMIN"));
+    }
+
 //TODO: назначение ролей + на регистрацию клиента отдельную ручку контроллера чтоб роль сразу ставилась OWNER, аналогично для питомца
 }
