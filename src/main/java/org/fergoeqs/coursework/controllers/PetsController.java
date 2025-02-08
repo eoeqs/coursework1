@@ -72,6 +72,28 @@ public class PetsController {
         }
     }
 
+    @PostMapping("/bind/{petId}")
+    public ResponseEntity<?> bindPet(@PathVariable Long petId) throws BadRequestException {
+        try {
+            petsService.bindPet(petId, userService.getAuthenticatedUser()); //TODO: только врач может или админ тоже?
+            return ResponseEntity.ok("Pet " + petId + " bound");
+        } catch (Exception e) {
+            logger.error("Pet binding failed: {}", e.getMessage());
+            throw e;
+        }
+    }
+
+    @PostMapping("/sector-place/{petId}") //TODO: requestParam удобно?????
+    public ResponseEntity<?> setSectorPlace(@PathVariable Long petId, @RequestParam Long sectorId) {
+        try {
+            petsService.placeInSector(petId, sectorId);
+            return ResponseEntity.ok("Pet" + petId + " set to sector " + sectorId);
+        } catch (Exception e) {
+            logger.error("Pet sector setting failed: {}", e.getMessage());
+            throw e;
+        } //TODO: нужен ли эндпоинт на вызволение из сектора?
+    }
+
     @DeleteMapping("/delete-pet/{petId}")
     public ResponseEntity<?> deletePet(@PathVariable Long petId) throws BadRequestException {
         try {
@@ -82,6 +104,7 @@ public class PetsController {
             throw e;
         }
     }
+
 
 
 }
