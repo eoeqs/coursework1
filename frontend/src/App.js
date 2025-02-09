@@ -5,6 +5,7 @@ import Register from './components/Register';
 import MainPage from "./components/MainPage";
 import AppointmentPage from "./components/AppointmentPage";
 import PetSelector from "./components/PetSelector";
+import CancelAppointment from "./components/CancelAppointment";
 
 
 const App = () => {
@@ -18,6 +19,7 @@ const App = () => {
                 <Route path="/register" element={<Register/>}/>
                 <Route path="/appointment" element={<AppointmentPage/>}/>
                 <Route path="/pet-info" element={<PetSelector/>}/>
+                <Route path="/cancel-appointment" element={<CancelAppointment/>}/>
             </Routes>
         </Router>
     );
