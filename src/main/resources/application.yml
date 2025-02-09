@@ -16,5 +16,10 @@ spring:
         format_sql: true
   jwt:
     secret-key: "09d62fc50a9d8c09c3c3a82a3d5762cdfd85de199cb864b5378a77ff2c230159"
-    expiration: 3600000
-#11
+    expiration: 360000000000
+
+
+#logging:
+#  level:
+#    org:
+#      springframework: trace
