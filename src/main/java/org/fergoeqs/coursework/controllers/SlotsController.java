@@ -30,7 +30,7 @@ public class SlotsController {
             return ResponseEntity.ok(slotMapper.slotsToSlotDTOs(slots));
         } catch (Exception e) {
             logger.error("Failed to get available slots: {}", e.getMessage());
-            return ResponseEntity.badRequest().body("Failed to get available slots");
+            throw e;
         }
     }
 
@@ -41,7 +41,7 @@ public class SlotsController {
             return ResponseEntity.ok(slotMapper.slotsToSlotDTOs(slots));
         } catch (Exception e) {
             logger.error("Failed to get slots: {}", e.getMessage());
-            return ResponseEntity.badRequest().body("Failed to get slots");
+            throw e;
         }
     }
 

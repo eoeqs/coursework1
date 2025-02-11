@@ -1,6 +1,6 @@
 package org.fergoeqs.coursework.dto;
 
-public record RegisterUserDto(
+public record RegisterUserDTO(
         String username,
         String email,
         String password,

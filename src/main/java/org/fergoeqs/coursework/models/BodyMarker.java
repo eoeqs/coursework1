@@ -3,6 +3,7 @@ package org.fergoeqs.coursework.models;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.fergoeqs.coursework.models.enums.BodyPart;
 
 @Entity
 @Table(name = "body_marker")
@@ -17,8 +18,9 @@ public class BodyMarker {
     private Integer positionX;
     private Integer positionY;
 
-    @ManyToOne
-    @JoinColumn(name = "body_part_id")
+//    @ManyToOne
+//    @JoinColumn(name = "body_part_id")
+    @Enumerated(EnumType.STRING)
     private BodyPart bodyPart;
 
     @ManyToOne
