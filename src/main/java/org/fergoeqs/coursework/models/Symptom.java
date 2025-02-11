@@ -16,8 +16,5 @@ public class Symptom {
 
     private String name;
     private String description;
-
-    @ManyToMany(mappedBy = "symptoms")
-    private List<RecommendedDiagnosis> diagnoses;
 }
 
