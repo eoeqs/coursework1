@@ -3,9 +3,9 @@ package org.fergoeqs.coursework.controllers;
 import jakarta.validation.ValidationException;
 import org.apache.coyote.BadRequestException;
 import org.fergoeqs.coursework.dto.AuthenticationSucceedDto;
-import org.fergoeqs.coursework.dto.LoginUserDto;
-import org.fergoeqs.coursework.dto.RegisterUserDto;
-import org.fergoeqs.coursework.dto.UserInfoDto;
+import org.fergoeqs.coursework.dto.LoginUserDTO;
+import org.fergoeqs.coursework.dto.RegisterUserDTO;
+import org.fergoeqs.coursework.dto.UserInfoDTO;
 import org.fergoeqs.coursework.exception.InternalServerErrorException;
 import org.fergoeqs.coursework.exception.UnauthorizedAccessException;
 import org.fergoeqs.coursework.jwt.JwtService;
@@ -35,7 +35,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> createUser(@RequestBody RegisterUserDto user) {
+    public ResponseEntity<?> createUser(@RequestBody RegisterUserDTO user) {
 
         if (user.password() == null || user.password().isBlank()) {
             throw new ValidationException("Password cannot be blank");
@@ -60,7 +60,7 @@ public class UserController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationSucceedDto> authenticate(@RequestBody LoginUserDto loginUserDto) {
+    public ResponseEntity<AuthenticationSucceedDto> authenticate(@RequestBody LoginUserDTO loginUserDto) {
         try {
             AppUser authenticatedUser = authenticationService.authenticate(loginUserDto);
             String jwtToken = jwtService.generateToken(authenticatedUser);
@@ -91,7 +91,7 @@ public class UserController {
     }
 
     @GetMapping("/current-user-info")
-    public ResponseEntity<UserInfoDto> getCurrentUserInfo() throws BadRequestException {
+    public ResponseEntity<UserInfoDTO> getCurrentUserInfo() throws BadRequestException {
         AppUser user = userService.getAuthenticatedUser();
         logger.info("Fetching ID and role for authenticated user: {}", user.getUsername());
 
@@ -100,7 +100,7 @@ public class UserController {
                 .map(Enum::name)
                 .orElse("USER");
 
-        UserInfoDto userInfo = new UserInfoDto(user.getId(), role);
+        UserInfoDTO userInfo = new UserInfoDTO(user.getId(), role);
         return ResponseEntity.ok(userInfo);
     }
 

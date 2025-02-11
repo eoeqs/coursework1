@@ -1,8 +1,7 @@
 package org.fergoeqs.coursework.services;
 
-import org.fergoeqs.coursework.controllers.UserController;
-import org.fergoeqs.coursework.dto.LoginUserDto;
-import org.fergoeqs.coursework.dto.RegisterUserDto;
+import org.fergoeqs.coursework.dto.LoginUserDTO;
+import org.fergoeqs.coursework.dto.RegisterUserDTO;
 import org.fergoeqs.coursework.models.AppUser;
 import org.fergoeqs.coursework.models.enums.RoleType;
 import org.fergoeqs.coursework.repositories.UserRepository;
@@ -35,7 +34,7 @@ public class AuthenticationService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public AppUser signup(RegisterUserDto input) {
+    public AppUser signup(RegisterUserDTO input) {
         AppUser user = new AppUser();
         user.setUsername(input.username());
         user.setPassword(passwordEncoder.encode(input.password()));
@@ -54,7 +53,7 @@ public class AuthenticationService {
     }
 
 
-    public AppUser authenticate(LoginUserDto input) {
+    public AppUser authenticate(LoginUserDTO input) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         input.username(),

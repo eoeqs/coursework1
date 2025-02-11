@@ -3,6 +3,9 @@ package org.fergoeqs.coursework.models;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.fergoeqs.coursework.models.enums.BodyPart;
+
+import java.util.List;
 
 @Entity
 @Table(name = "recommended_diagnosis")
@@ -18,7 +21,16 @@ public class RecommendedDiagnosis {
     private String description;
     private Boolean contagious;
 
-    @ManyToOne
-    @JoinColumn(name = "body_part_id")
+//    @ManyToOne
+//    @JoinColumn(name = "body_part_id")
+    @Enumerated(EnumType.STRING)
     private BodyPart bodyPart;
+
+    @ManyToMany
+    @JoinTable(
+            name = "diagnosis_symptom",
+            joinColumns = @JoinColumn(name = "recommended_diagnosis_id"),
+            inverseJoinColumns = @JoinColumn(name = "symptom_id")
+    )
+    private List<Symptom> symptoms;
 }

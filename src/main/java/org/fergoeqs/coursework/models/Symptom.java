@@ -4,15 +4,17 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-@Entity
-@Table(name = "body_part")
-@Getter
-@Setter
+import java.util.List;
 
-public class BodyPart {
+@Setter
+@Getter
+@Entity
+public class Symptom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String bodyPartName;
+    private String name;
+    private String description;
 }
+
