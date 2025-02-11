@@ -50,14 +50,14 @@ const DogBodyMap = ({ onMark }) => {
             />
             <path
                 d="m 360,243 7,8 4.5,10.5 V 273 l 3,10 7.5,9 5.5,6 6,9.5 6.5,8 7.5,5 17,12 6.5,4 -1.5,11.5 -0.5,18.5 2.5,20.5 -2.5,10 -2,3.5 -15.5,-1.5 -2,-4 0.5,-4.5 9,-9.5 3,-7 -0.5,-6 -0.5,-4.5 -2,-9.5 -2,-6 -4,-4 -3,-3 -3.5,-2 -6.5,-2.5 -7.5,-4 -6.5,-3 -8,-4.5 -4,-2.5 -4,-2 -4.5,-2 -6,-3 -5.5,-2.5 -6,-4 -10.5,-8 -9,-7.5 -10,-11.5 z"
-                fill={selectedPart === "HIND_LEGS" ? "red" : "black"}
-                onClick={(e) => handleClick(e, "HIND_LEGS")}
+                fill={selectedPart === "LEGS" ? "red" : "black"}
+                onClick={(e) => handleClick(e, "LEGS")}
                 style={{ cursor: "pointer" }}
             />
             <path
                 d="m 185,279 6,35 2.5,20 -3,7.5 -1,6 v 5.5 10 l 0.5,6.5 1.5,6.5 -1.5,11.5 -3,6.5 -4,2 -2,5.5 -14.5,1.5 -6,-2.5 -1,-6 5.5,-7 8.5,-2 1,-2.5 1.5,-10 -0.5,-17.5 -1,-18.5 -2.5,-14 -6,-25 -7,-23 -6.5,-13.5 z"
-                fill={selectedPart === "FRONT_LEGS" ? "red" : "black"}
-                onClick={(e) => handleClick(e, "FRONT_LEGS")}
+                fill={selectedPart === "LEGS" ? "red" : "black"}
+                onClick={(e) => handleClick(e, "LEGS")}
                 style={{ cursor: "pointer" }}
             />
 

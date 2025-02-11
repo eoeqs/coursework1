@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../AuthProvider";
 import NewPetForm from "./NewPetForm";
 import useAxiosWithAuth from "../AxiosAuth";
+import DogBodyMap from "./DogBodyMap";
+import CatBodyMap from "./CatBodyMap";
 
 const AppointmentPage = () => {
     const { token } = useAuth();
@@ -12,10 +14,10 @@ const AppointmentPage = () => {
     const [showNewPetForm, setShowNewPetForm] = useState(false);
     const [pets, setPets] = useState([]);
     const [selectedPetId, setSelectedPetId] = useState("");
+    const [selectedAnimal, setSelectedAnimal] = useState("");
 
     const [slots, setSlots] = useState([]);
     const [selectedSlotId, setSelectedSlotId] = useState("");
-
     const [priority, setPriority] = useState(false);
 
     useEffect(() => {
@@ -66,8 +68,20 @@ const AppointmentPage = () => {
     return (
         <div>
             <div>
-                <p>Interactive Map Placeholder</p>
+                <label>Select Animal:</label>
+                <select value={selectedAnimal} onChange={(e) => setSelectedAnimal(e.target.value)}>
+                    <option value="">Select Animal Type</option>
+                    <option value="dog">Dog</option>
+                    <option value="cat">Cat</option>
+                </select>
             </div>
+
+            <div>
+                <p>Interactive Map:</p>
+                {selectedAnimal === "dog" && <DogBodyMap onMark={(part) => console.log(part)}/>}
+                {selectedAnimal === "cat" && <CatBodyMap onMark={(part) => console.log(part)}/>}
+            </div>
+
 
             <div>
                 <h2>Book an Appointment</h2>
