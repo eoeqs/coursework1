@@ -5,6 +5,7 @@ import org.fergoeqs.coursework.dto.PetDTO;
 import org.fergoeqs.coursework.models.Pet;
 import org.fergoeqs.coursework.services.PetsService;
 import org.fergoeqs.coursework.services.UserService;
+import org.fergoeqs.coursework.utils.AppUserMapper;
 import org.fergoeqs.coursework.utils.PetMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,12 +20,15 @@ public class PetsController {
     private final PetMapper petMapper;
     private final PetsService petsService;
     private final UserService userService;
+    private final AppUserMapper appUserMapper;
     private static final Logger logger = LoggerFactory.getLogger(PetsController.class);
 
-    public PetsController (PetMapper petMapper, PetsService petsService, UserService userService) {
+    public PetsController (PetMapper petMapper, PetsService petsService, UserService userService,
+                           AppUserMapper appUserMapper) {
         this.petMapper = petMapper;
         this.petsService = petsService;
         this.userService = userService;
+        this.appUserMapper = appUserMapper;
     }
 
     @GetMapping("/all-pets")
@@ -45,6 +49,27 @@ public class PetsController {
             return ResponseEntity.ok(petMapper.petToPetDTO(petsService.findPetById(petId)));
         } catch (Exception e) {
             logger.error("Pet fetching failed: {}", e.getMessage());
+            throw e;
+        }
+    }
+
+    @GetMapping("/user-pets")
+    public ResponseEntity<?> getUserPets() throws BadRequestException {
+        try {
+            return ResponseEntity.ok(petMapper.petsToPetDTOs(
+                    petsService.findPetsByOwner(userService.getAuthenticatedUser().getId())));
+        } catch (Exception e) {
+            logger.error("User pets fetching failed: {}", e.getMessage());
+            throw e;
+        }
+    }
+
+    @GetMapping("/owner/{petId}")
+    public ResponseEntity<?> getOwner(@PathVariable Long petId) {
+        try {
+            return ResponseEntity.ok(appUserMapper.toDTO(petsService.findPetById(petId).getOwner()));
+        } catch (Exception e) {
+            logger.error("Owner fetching failed: {}", e.getMessage());
             throw e;
         }
     }

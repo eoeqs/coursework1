@@ -3,7 +3,7 @@ package org.fergoeqs.coursework.dto;
 import org.fergoeqs.coursework.models.enums.RoleType;
 import java.util.Set;
 
-public record UserDTO (
+public record AppUserDTO(
     Long id,
     String username,
     String email,
