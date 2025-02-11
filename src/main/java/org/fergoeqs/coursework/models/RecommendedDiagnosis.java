@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Table(name = "recommended_diagnosis")
 @Getter
@@ -21,4 +23,12 @@ public class RecommendedDiagnosis {
     @ManyToOne
     @JoinColumn(name = "body_part_id")
     private BodyPart bodyPart;
+
+    @ManyToMany
+    @JoinTable(
+            name = "diagnosis_symptom",
+            joinColumns = @JoinColumn(name = "recommended_diagnosis_id"),
+            inverseJoinColumns = @JoinColumn(name = "symptom_id")
+    )
+    private List<Symptom> symptoms;
 }

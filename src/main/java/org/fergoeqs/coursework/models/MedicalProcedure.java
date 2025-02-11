@@ -3,6 +3,7 @@ package org.fergoeqs.coursework.models;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.fergoeqs.coursework.models.enums.ProcedureType;
 
 import java.time.LocalDateTime;
 
@@ -11,13 +12,16 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 
-public class MedicalProcedure {
+public class MedicalProcedure { //для таймлайна процедур
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String type;
+    private ProcedureType type;
+    private String name;
     private LocalDateTime date;
+    private String description;
+    private String notes; // доп. примечания
 
     @ManyToOne
     @JoinColumn(name = "vet_id")
