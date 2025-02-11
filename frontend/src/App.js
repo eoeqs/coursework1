@@ -5,6 +5,9 @@ import Register from './components/Register';
 import MainPage from "./components/MainPage";
 import AppointmentPage from "./components/AppointmentPage";
 import PetSelector from "./components/PetSelector";
+import CancelAppointment from "./components/CancelAppointment";
+import DogBodyMap from "./components/DogBodyMap";
+import CatBodyMap from "./components/CatBodyMap";
 
 
 const App = () => {
@@ -18,6 +21,11 @@ const App = () => {
                 <Route path="/register" element={<Register/>}/>
                 <Route path="/appointment" element={<AppointmentPage/>}/>
                 <Route path="/pet-info" element={<PetSelector/>}/>
+                <Route path="/cancel-appointment" element={<CancelAppointment/>}/>
+                <Route path="/dog-body-map" element={<DogBodyMap/>}/>
+                <Route path="/cat-body-map" element={<CatBodyMap/>}/>
+
+
             </Routes>
         </Router>
     );

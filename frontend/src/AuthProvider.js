@@ -14,9 +14,7 @@ export const AuthProvider = ({ children }) => {
         const storedToken = localStorage.getItem("token");
         if (storedToken) {
             const decoded = jwtDecode(storedToken);
-            console.log(decoded)
             const currentTime = Date.now() / 1000;
-            console.log(currentTime)
             if (decoded.exp < currentTime) {
                 localStorage.removeItem("token");
                 setToken(null);
