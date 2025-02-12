@@ -14,7 +14,6 @@ const useAxiosWithAuth = () => {
         instance.interceptors.request.use(
             (config) => {
                 const authToken = token || localStorage.getItem("token");
-                console.log("Current token:", authToken);
 
                 if (!authToken) {
                     console.warn("No token found, redirecting to login...");
@@ -35,7 +34,6 @@ const useAxiosWithAuth = () => {
                     }
 
                     config.headers['Authorization'] = `Bearer ${authToken}`;
-                    console.log("Authorization Header:", config.headers['Authorization']);
 
                 } catch (error) {
                     console.error("Error decoding token:", error);

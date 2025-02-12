@@ -83,8 +83,8 @@ const AppointmentPage = () => {
             await axiosInstance.post("/appointments/new-appointment", {
                 priority,
                 slotId: parseInt(selectedSlotId),
-                petId: parseInt(selectedPetId)
-            //     TODO: сюда поле с жалобами
+                petId: parseInt(selectedPetId),
+                description: complaintDescription
             });
 
             alert("Appointment successfully booked!");
@@ -176,7 +176,7 @@ const AppointmentPage = () => {
                                 key={slot.id}
                                 onClick={() => setSelectedSlotId(slot.id)}
                                 style={{
-                                    backgroundColor: selectedSlotId === slot.id ? '#D3E4CD' : 'white',  // Highlight selected slot
+                                    backgroundColor: selectedSlotId === slot.id ? '#D3E4CD' : 'white',
                                     cursor: 'pointer'
                                 }}
                             >
