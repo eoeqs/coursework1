@@ -47,6 +47,7 @@ public class HealthUpdatesService {
         HealthUpdate healthUpdate = new HealthUpdate();
         healthUpdate.setPet(pet);
         healthUpdate.setSymptoms(symptoms);
+        healthUpdate.setDynamics(false);
 //        healthUpdate.setDate(LocalDateTime.now().truncatedTo(ChronoUnit.HOURS));
         healthUpdate.setDate(LocalDateTime.now());
         return healthUpdatesRepository.save(healthUpdate);

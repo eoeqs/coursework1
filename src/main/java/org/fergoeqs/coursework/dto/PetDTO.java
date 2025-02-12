@@ -1,5 +1,6 @@
 package org.fergoeqs.coursework.dto;
 
+
 import org.fergoeqs.coursework.models.enums.PetType;
 import org.fergoeqs.coursework.models.enums.SexEnum;
 
@@ -11,4 +12,5 @@ public record PetDTO (Long id,
     PetType type,
     BigDecimal weight,
     SexEnum sex,
-    Integer age) {}
+    Integer age, Long actualVet, Long owner, Long sector)
+{}
