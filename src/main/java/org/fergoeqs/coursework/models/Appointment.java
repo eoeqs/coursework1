@@ -16,6 +16,8 @@ public class Appointment {
 
     private Boolean priority;
 
+    String description;
+
     @ManyToOne
     @JoinColumn(name = "pet_id", nullable = false)
     private Pet pet;

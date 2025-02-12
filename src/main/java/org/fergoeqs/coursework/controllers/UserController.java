@@ -26,16 +26,16 @@ public class UserController {
     private final UserService userService;
     private final JwtService jwtService;
     private final AuthenticationService authenticationService;
-    private final AppUserMapper userMapper;
+    private final AppUserMapper appUserMapper;
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
 
     public UserController(UserService userService, JwtService jwtService, AuthenticationService authenticationService,
-                          AppUserMapper userMapper) {
+                          AppUserMapper appUserMapper) {
         this.userService = userService;
         this.jwtService = jwtService;
         this.authenticationService = authenticationService;
-        this.userMapper = userMapper;
+        this.appUserMapper = appUserMapper;
     }
 
     @PostMapping("/register")
@@ -112,7 +112,7 @@ public class UserController {
     public ResponseEntity<?> getUserDtoById(@PathVariable Long id) throws BadRequestException {
         try {
             AppUser user = userService.findById(id).orElseThrow(() -> new BadRequestException("User not found"));
-            return ResponseEntity.ok(userMapper.toDTO(user));
+            return ResponseEntity.ok(appUserMapper.toDTO(user));
         } catch (Exception e) {
             logger.error("Error during user fetching: {}", e.getMessage());
             throw e;
