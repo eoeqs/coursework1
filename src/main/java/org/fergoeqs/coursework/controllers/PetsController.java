@@ -64,6 +64,17 @@ public class PetsController {
         }
     }
 
+    @GetMapping("/doctor-pets/{vetId}")
+    public ResponseEntity<?> getDoctorPets(@PathVariable Long vetId) {
+        try {
+            return ResponseEntity.ok(petMapper.petsToPetDTOs(
+                    petsService.findPetsByVet(vetId)));
+        } catch (Exception e) {
+            logger.error("Doctor pets fetching failed: {}", e.getMessage());
+            throw e;
+        }
+    }
+
     @GetMapping("/owner/{petId}")
     public ResponseEntity<?> getOwner(@PathVariable Long petId) {
         try {

@@ -35,6 +35,10 @@ public class PetsService {
         return petsRepository.findAllByOwnerId(ownerId);
     }
 
+    public List<Pet> findPetsByVet(Long vetId) {
+        return petsRepository.findAllByActualVetId(vetId);
+    }
+
     @Transactional
     public void addPet(PetDTO petDTO, AppUser owner) {
         Pet pet = petMapper.petDTOToPet(petDTO);
