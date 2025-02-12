@@ -12,6 +12,7 @@ import org.fergoeqs.coursework.jwt.JwtService;
 import org.fergoeqs.coursework.models.AppUser;
 import org.fergoeqs.coursework.services.AuthenticationService;
 import org.fergoeqs.coursework.services.UserService;
+import org.fergoeqs.coursework.utils.AppUserMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -25,13 +26,16 @@ public class UserController {
     private final UserService userService;
     private final JwtService jwtService;
     private final AuthenticationService authenticationService;
+    private final AppUserMapper userMapper;
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
 
-    public UserController(UserService userService, JwtService jwtService, AuthenticationService authenticationService) {
+    public UserController(UserService userService, JwtService jwtService, AuthenticationService authenticationService,
+                          AppUserMapper userMapper) {
         this.userService = userService;
         this.jwtService = jwtService;
         this.authenticationService = authenticationService;
+        this.userMapper = userMapper;
     }
 
     @PostMapping("/register")
@@ -102,6 +106,17 @@ public class UserController {
 
         UserInfoDTO userInfo = new UserInfoDTO(user.getId(), role);
         return ResponseEntity.ok(userInfo);
+    }
+
+    @GetMapping("/user-info/{id}")
+    public ResponseEntity<?> getUserDtoById(@PathVariable Long id) throws BadRequestException {
+        try {
+            AppUser user = userService.findById(id).orElseThrow(() -> new BadRequestException("User not found"));
+            return ResponseEntity.ok(userMapper.toDTO(user));
+        } catch (Exception e) {
+            logger.error("Error during user fetching: {}", e.getMessage());
+            throw e;
+        }
     }
 
 
