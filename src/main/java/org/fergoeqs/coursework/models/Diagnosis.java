@@ -20,6 +20,7 @@ public class Diagnosis {
     private String description;
     private LocalDateTime date;
     private Boolean contagious;
+    private String examinationPlan; //план обследования
 
     @ManyToOne
     @JoinColumn(name = "anamnesis_id")

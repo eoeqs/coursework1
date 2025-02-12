@@ -20,6 +20,8 @@ public class HealthUpdate {
     private String symptoms;
     private String notes;
 
+    private boolean dynamics;
+
     @ManyToOne
     @JoinColumn(name = "pet_id")
     private Pet pet;

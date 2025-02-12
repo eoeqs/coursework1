@@ -6,6 +6,7 @@ public record HealthUpdateDTO(
        LocalDateTime date,
        String symptoms,
        String notes,
+       boolean dynamics,
        Long pet
 ) {
 }
