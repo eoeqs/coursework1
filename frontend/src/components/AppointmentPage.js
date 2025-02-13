@@ -7,21 +7,40 @@ import DogBodyMap from "./DogBodyMap";
 import CatBodyMap from "./CatBodyMap";
 
 const AppointmentPage = () => {
-    const {token} = useAuth();
+    const { token } = useAuth();
     const axiosInstance = useAxiosWithAuth();
     const navigate = useNavigate();
 
+    const [userId, setUserId] = useState(null);
     const [showNewPetForm, setShowNewPetForm] = useState(false);
     const [pets, setPets] = useState([]);
     const [selectedPetId, setSelectedPetId] = useState("");
     const [selectedAnimal, setSelectedAnimal] = useState("");
-    const [ownerName, setOwnerName] = useState("Джон Дое");
+    const [ownerName, setOwnerName] = useState("");
     const [petInfo, setPetInfo] = useState(null);
     const [complaintDescription, setComplaintDescription] = useState("");
 
     const [slots, setSlots] = useState([]);
     const [selectedSlotId, setSelectedSlotId] = useState("");
     const [priority, setPriority] = useState(false);
+
+    useEffect(() => {
+        if (!token) return;
+
+        axiosInstance.get("/users/current-user-info")
+            .then(response => {
+                const fetchedUserId = response.data.id;
+                setUserId(fetchedUserId);
+
+                return axiosInstance.get(`/users/user-info/${fetchedUserId}`);
+            })
+            .then(response => {
+                setOwnerName(response.data.name);
+            })
+            .catch(error => {
+                console.error("Error fetching user info:", error);
+            });
+    }, [token, axiosInstance]);
 
     useEffect(() => {
         if (!token) return;
@@ -64,12 +83,12 @@ const AppointmentPage = () => {
             await axiosInstance.post("/appointments/new-appointment", {
                 priority,
                 slotId: parseInt(selectedSlotId),
-                petId: parseInt(selectedPetId)
-            //     TODO: сюда поле с жалобами
+                petId: parseInt(selectedPetId),
+                description: complaintDescription
             });
 
             alert("Appointment successfully booked!");
-            navigate("/main-page");
+            navigate("/");
         } catch (error) {
             console.error("Error booking appointment:", error);
             alert("Failed to book appointment.");
@@ -83,8 +102,7 @@ const AppointmentPage = () => {
     return (
         <div>
             <div>
-                <h3>Owner: {ownerName}</h3>
-            </div>
+                <h3>Owner: {ownerName || "Loading..."}</h3></div>
             <div>
                 <label>Select Animal:</label>
                 <select value={selectedAnimal} onChange={(e) => setSelectedAnimal(e.target.value)}>
@@ -158,7 +176,7 @@ const AppointmentPage = () => {
                                 key={slot.id}
                                 onClick={() => setSelectedSlotId(slot.id)}
                                 style={{
-                                    backgroundColor: selectedSlotId === slot.id ? '#D3E4CD' : 'white',  // Highlight selected slot
+                                    backgroundColor: selectedSlotId === slot.id ? '#D3E4CD' : 'white',
                                     cursor: 'pointer'
                                 }}
                             >

@@ -8,6 +8,7 @@ import PetSelector from "./components/PetSelector";
 import CancelAppointment from "./components/CancelAppointment";
 import DogBodyMap from "./components/DogBodyMap";
 import CatBodyMap from "./components/CatBodyMap";
+import VetDashboard from "./components/VetDashboard";
 
 
 const App = () => {
@@ -24,6 +25,7 @@ const App = () => {
                 <Route path="/cancel-appointment" element={<CancelAppointment/>}/>
                 <Route path="/dog-body-map" element={<DogBodyMap/>}/>
                 <Route path="/cat-body-map" element={<CatBodyMap/>}/>
+                <Route path="/vet-dashboard" element={<VetDashboard/>}/>
 
 
             </Routes>
