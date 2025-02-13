@@ -101,7 +101,7 @@ public class PetsController {
                                        @PathVariable Long petId) throws BadRequestException {
         try {
             petsService.updatePet(petId, userService.getAuthenticatedUser(), petDTO);
-            return ResponseEntity.ok(petDTO);
+            return ResponseEntity.ok(petMapper.petToPetDTO(petsService.updatePet(petId, userService.getAuthenticatedUser(), petDTO)));
         } catch (Exception e) {
             logger.error("Pet updating failed: {}", e.getMessage());
             throw e; //TODO: переписать эксепшены
