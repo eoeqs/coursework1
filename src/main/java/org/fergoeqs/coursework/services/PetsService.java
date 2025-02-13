@@ -47,12 +47,13 @@ public class PetsService {
     }
 
     @Transactional
-    public void updatePet(Long petId, AppUser author, PetDTO petDTO) {
+    public Pet updatePet(Long petId, AppUser author, PetDTO petDTO) {
         Pet pet = petsRepository.findById(petId).orElseThrow();
-        if (!pet.getOwner().equals(author) && !isAdmin(author) && !isVet(author) ) {
+        if ((pet.getOwner()!= null && pet.getOwner().equals(author)) && !isAdmin(author) && !isVet(author) ) {
             throw new IllegalArgumentException("User is not allowed to update this pet (only for owner, vet or admin)");
         }
-        petsRepository.save(petMapper.petDTOToPet(petDTO)); //TODO: проверить, работает ли маппер при обновлении
+        petMapper.updatePetFromDTO(petDTO, pet);
+        return petsRepository.save(pet);
     }
 
     @Transactional

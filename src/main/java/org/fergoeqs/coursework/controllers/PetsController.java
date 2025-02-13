@@ -96,19 +96,19 @@ public class PetsController {
         }
     }
 
-    @PostMapping("/update-pet/{petId}")
+    @PutMapping("/update-pet/{petId}")
     public ResponseEntity<?> updatePet(@RequestBody PetDTO petDTO,
                                        @PathVariable Long petId) throws BadRequestException {
         try {
             petsService.updatePet(petId, userService.getAuthenticatedUser(), petDTO);
-            return ResponseEntity.ok(petDTO);
+            return ResponseEntity.ok(petMapper.petToPetDTO(petsService.updatePet(petId, userService.getAuthenticatedUser(), petDTO)));
         } catch (Exception e) {
             logger.error("Pet updating failed: {}", e.getMessage());
             throw e; //TODO: переписать эксепшены
         }
     }
 
-    @PostMapping("/bind/{petId}")
+    @PutMapping("/bind/{petId}")
     public ResponseEntity<?> bindPet(@PathVariable Long petId) throws BadRequestException {
         try {
             petsService.bindPet(petId, userService.getAuthenticatedUser()); //TODO: только врач может или админ тоже?
@@ -119,7 +119,7 @@ public class PetsController {
         }
     }
 
-    @PostMapping("/sector-place/{petId}") //TODO: requestParam удобно?????
+    @PutMapping("/sector-place/{petId}") //TODO: requestParam удобно?????
     public ResponseEntity<?> setSectorPlace(@PathVariable Long petId, @RequestParam Long sectorId) {
         try {
             petsService.placeInSector(petId, sectorId);

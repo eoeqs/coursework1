@@ -67,7 +67,7 @@ public class SlotsController {
         }
     }
 
-    @PostMapping("book-slot/{id}")
+    @PutMapping("book-slot/{id}")
     public ResponseEntity<?> bookSlot(@PathVariable Long id) {
         try {
             slotsService.updateSlotStatus(id, false);
@@ -78,7 +78,7 @@ public class SlotsController {
         }
     }
 
-    @PostMapping("release-slot/{id}")
+    @PutMapping("release-slot/{id}")
     public ResponseEntity<?> releaseSlot(@PathVariable Long id) {
         try {
             slotsService.updateSlotStatus(id, true);
