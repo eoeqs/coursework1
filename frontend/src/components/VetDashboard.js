@@ -10,51 +10,55 @@ const VetDashboard = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedAppointment, setSelectedAppointment] = useState(null);
-    const [createAnamnesis, setCreateAnamnesis] = useState(false); // Состояние для чекбокса
+    const [createAnamnesis, setCreateAnamnesis] = useState(false);
+    const [doctorPets, setDoctorPets] = useState([]);
+    const [userRole, setUserRole] = useState(null);
 
     useEffect(() => {
         if (!token) return;
 
-        setLoading(true);
-        setError(null);
+        const fetchData = async () => {
+            setLoading(true);
+            setError(null);
 
-        axiosInstance.get("/users/current-user-info")
-            .then(response => {
-                const fetchedVetId = response.data.id;
+            try {
+                const currentUserResponse = await axiosInstance.get("/users/current-user-info");
+                const fetchedVetId = currentUserResponse.data.id;
+                const fetchedUserRole = currentUserResponse.data.role;
+                setUserRole(fetchedUserRole);
 
-                return axiosInstance.get(`/users/user-info/${fetchedVetId}`);
-            })
-            .then(response => {
-                setVetInfo(response.data);
+                const vetInfoResponse = await axiosInstance.get(`/users/user-info/${fetchedVetId}`);
+                setVetInfo(vetInfoResponse.data);
 
-                return axiosInstance.get(`/appointments/vet-appointments/${response.data.id}`);
-            })
-            .then(response => {
-                const appointmentPromises = response.data.map(appointment => {
-                    return Promise.all([
+                if (fetchedUserRole === "VET") {
+                    const doctorPetsResponse = await axiosInstance.get(`/pets/doctor-pets/${vetInfoResponse.data.id}`);
+                    setDoctorPets(doctorPetsResponse.data);
+                }
+
+                const appointmentsResponse = await axiosInstance.get(`/appointments/vet-appointments/${vetInfoResponse.data.id}`);
+                const appointmentPromises = appointmentsResponse.data.map(async (appointment) => {
+                    const [slotResponse, petResponse] = await Promise.all([
                         axiosInstance.get(`/slots/${appointment.slotId}`),
                         axiosInstance.get(`/pets/pet/${appointment.petId}`)
-                    ]).then(([slotResponse, petResponse]) => {
-                        return {
-                            ...appointment,
-                            slot: slotResponse.data,
-                            pet: petResponse.data
-                        };
-                    });
+                    ]);
+                    return {
+                        ...appointment,
+                        slot: slotResponse.data,
+                        pet: petResponse.data
+                    };
                 });
 
-                return Promise.all(appointmentPromises);
-            })
-            .then(appointmentsWithDetails => {
+                const appointmentsWithDetails = await Promise.all(appointmentPromises);
                 setAppointments(appointmentsWithDetails);
-            })
-            .catch(error => {
+            } catch (error) {
                 console.error("Error fetching vet data or appointments:", error);
                 setError("Failed to fetch data. Please try again later.");
-            })
-            .finally(() => {
+            } finally {
                 setLoading(false);
-            });
+            }
+        };
+
+        fetchData();
     }, [token, axiosInstance]);
 
     const handleView = async (appointmentId) => {
@@ -143,17 +147,53 @@ const VetDashboard = () => {
 
     return (
         <div>
-            <div>
-                <div>
-                    Vet profile pic placeholder
+            <div style={{ display: "flex" }}>
+                <div style={{ flex: 1 }}>
+                    <div>
+                        Vet profile pic placeholder
+                    </div>
+                    <div>
+                        <h2>{vetInfo.name} {vetInfo.surname}</h2>
+                        <p><strong>Qualification:</strong> {vetInfo.qualification || "Not specified"}</p>
+                        <p><strong>Email:</strong> {vetInfo.email || "Not specified"}</p>
+                        <p><strong>Phone:</strong> {vetInfo.phoneNumber || "Not specified"}</p>
+                        <p><strong>Working hours:</strong> {vetInfo.workingHours || "Not specified"}</p>
+                    </div>
                 </div>
-                <div>
-                    <h2>{vetInfo.name} {vetInfo.surname}</h2>
-                    <p><strong>Qualification:</strong> {vetInfo.qualification || "Not specified"}</p>
-                    <p><strong>Email:</strong> {vetInfo.email || "Not specified"}</p>
-                    <p><strong>Phone:</strong> {vetInfo.phoneNumber || "Not specified"}</p>
-                    <p><strong>Working hours:</strong> {vetInfo.workingHours || "Not specified"}</p>
-                </div>
+
+                {userRole === "VET" && (
+                    <div style={{ flex: 1, marginLeft: "20px" }}>
+                        <h2>My Pets</h2>
+                        {doctorPets.length > 0 ? (
+                            <table border="1" cellPadding="10" cellSpacing="0">
+                                <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Age</th>
+                                    <th>Sex</th>
+                                    <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {doctorPets.map((pet) => (
+                                    <tr key={pet.id}>
+                                        <td>{pet.name}</td>
+                                        <td>{pet.age}</td>
+                                        <td>{pet.sex}</td>
+                                        <td>
+                                            <button onClick={() => console.log("View Pet Profile:", pet.id)}>
+                                                View Pet Profile
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                                </tbody>
+                            </table>
+                        ) : (
+                            <p>No pets assigned to this vet.</p>
+                        )}
+                    </div>
+                )}
             </div>
 
             <div>
