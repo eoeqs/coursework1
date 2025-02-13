@@ -35,7 +35,7 @@ public class DiagnosisService {
     }
 
     public Diagnosis getFirstByAnamnesisId(Long anamnesisId) {
-        return diagnosisRepository.findFirstDiagnosisByAnamnesisId(anamnesisId).orElse(null);
+        return diagnosisRepository.findFirstByAnamnesisIdOrderByDateAsc(anamnesisId).orElse(null);
     }
 
     public Diagnosis saveDiagnosis(DiagnosisDTO diagnosisDTO){
