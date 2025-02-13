@@ -20,6 +20,16 @@ public class DiagnosisController {
         this.diagnosisMapper = diagnosisMapper;
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getDiagnosis(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(diagnosisMapper.toDTO(diagnosisService.getDiagnosisById(id)));
+        } catch (Exception e) {
+            logger.error("Error occurred while fetching diagnosis with id: {}", id, e);
+            throw e;
+        }
+    }
+
     @GetMapping("/preliminary-diagnosis/{anamnesisId}")
     public ResponseEntity<?> getFirstDiagnosis(@PathVariable Long anamnesisId) {
         try {

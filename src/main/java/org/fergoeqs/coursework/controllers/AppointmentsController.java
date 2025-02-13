@@ -25,6 +25,16 @@ public class AppointmentsController {
         this.appointmentMapper = appointmentMapper;
     }
 
+    @GetMapping("/appointment/{id}")
+    public ResponseEntity<?> getAppointment(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(appointmentMapper.appointmentToAppointmentDTO(appointmentsService.findById(id)));
+        } catch (Exception e) {
+            logger.error("Error getting appointment: {}", e.getMessage());
+            throw e;
+        }
+    }
+
     @GetMapping("/all")
     public ResponseEntity<?> getAllAppointments() {
         try {

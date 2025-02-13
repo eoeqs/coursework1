@@ -35,11 +35,16 @@ public interface DiagnosisRepository extends JpaRepository<Diagnosis, Long> {
             "ORDER BY d.date ASC")
     List<Diagnosis> findByAnamnesisId(@Param("anamnesisId") Long anamnesisId);
 
-    @Query("SELECT d FROM Diagnosis d " +
-            "JOIN d.anamnesis a " +
-            "WHERE a.id = :anamnesisId " +
-            "ORDER BY d.date ASC")
-    Optional<Diagnosis> findFirstDiagnosisByAnamnesisId(@Param("anamnesisId") Long anamnesisId);
+//    @Query("SELECT d FROM Diagnosis d " +
+//            "JOIN d.anamnesis a " +
+//            "WHERE a.id = :anamnesisId " +
+//            "ORDER BY d.date ASC")
+//    Optional<Diagnosis> findFirstDiagnosisByAnamnesisId(@Param("anamnesisId") Long anamnesisId);
+
+//    @Query(value = "SELECT * FROM get_first_diagnosis_by_anamnesis(:anamnesisId)", nativeQuery = true)
+//    Optional<Diagnosis> findFirstDiagnosisByAnamnesisId(@Param("anamnesisId") Long anamnesisId);
+
+    Optional<Diagnosis> findFirstByAnamnesisIdOrderByDateAsc(Long anamnesisId);
 
     @Query("SELECT d FROM Diagnosis d " +
             "JOIN d.anamnesis a " +
