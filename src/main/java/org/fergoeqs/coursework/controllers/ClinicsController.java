@@ -2,7 +2,7 @@ package org.fergoeqs.coursework.controllers;
 
 import org.fergoeqs.coursework.dto.ClinicDTO;
 import org.fergoeqs.coursework.services.ClinicsService;
-import org.fergoeqs.coursework.utils.ClinicMapper;
+import org.fergoeqs.coursework.utils.Mappers.ClinicMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;

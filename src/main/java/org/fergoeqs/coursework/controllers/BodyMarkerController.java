@@ -2,7 +2,7 @@ package org.fergoeqs.coursework.controllers;
 
 import org.fergoeqs.coursework.dto.BodyMarkerDTO;
 import org.fergoeqs.coursework.services.BodyMarkersService;
-import org.fergoeqs.coursework.utils.BodyMarkerMapper;
+import org.fergoeqs.coursework.utils.Mappers.BodyMarkerMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;

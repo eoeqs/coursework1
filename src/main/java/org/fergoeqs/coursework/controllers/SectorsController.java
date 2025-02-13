@@ -3,7 +3,7 @@ package org.fergoeqs.coursework.controllers;
 import org.fergoeqs.coursework.dto.SectorDTO;
 import org.fergoeqs.coursework.models.enums.CategoryType;
 import org.fergoeqs.coursework.services.SectorsService;
-import org.fergoeqs.coursework.utils.SectorMapper;
+import org.fergoeqs.coursework.utils.Mappers.SectorMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;

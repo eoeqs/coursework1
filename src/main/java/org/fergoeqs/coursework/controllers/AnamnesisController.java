@@ -2,7 +2,7 @@ package org.fergoeqs.coursework.controllers;
 
 import org.fergoeqs.coursework.dto.AnamnesisDTO;
 import org.fergoeqs.coursework.services.AnamnesisService;
-import org.fergoeqs.coursework.utils.AnamnesisMapper;
+import org.fergoeqs.coursework.utils.Mappers.AnamnesisMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;

@@ -3,7 +3,7 @@ package org.fergoeqs.coursework.controllers;
 import org.fergoeqs.coursework.dto.RecommendedDiagnosisDTO;
 import org.fergoeqs.coursework.models.enums.BodyPart;
 import org.fergoeqs.coursework.services.RecommendedDiagnosisService;
-import org.fergoeqs.coursework.utils.RecommendedDiagnosisMapper;
+import org.fergoeqs.coursework.utils.Mappers.RecommendedDiagnosisMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;

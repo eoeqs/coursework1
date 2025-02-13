@@ -4,7 +4,7 @@ import org.fergoeqs.coursework.dto.HealthUpdateDTO;
 import org.fergoeqs.coursework.models.HealthUpdate;
 import org.fergoeqs.coursework.models.Pet;
 import org.fergoeqs.coursework.repositories.HealthUpdatesRepository;
-import org.fergoeqs.coursework.utils.HealthUpdateMapper;
+import org.fergoeqs.coursework.utils.Mappers.HealthUpdateMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;

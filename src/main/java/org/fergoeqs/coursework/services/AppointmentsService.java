@@ -2,13 +2,12 @@ package org.fergoeqs.coursework.services;
 
 import org.fergoeqs.coursework.dto.AppointmentDTO;
 import org.fergoeqs.coursework.models.Appointment;
-import org.fergoeqs.coursework.models.HealthUpdate;
 import org.fergoeqs.coursework.models.Slot;
 import org.fergoeqs.coursework.models.Pet;
 import org.fergoeqs.coursework.repositories.AppointmentsRepository;
 import org.fergoeqs.coursework.repositories.SlotsRepository;
 import org.fergoeqs.coursework.repositories.PetsRepository;
-import org.fergoeqs.coursework.utils.AppointmentMapper;
+import org.fergoeqs.coursework.utils.Mappers.AppointmentMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

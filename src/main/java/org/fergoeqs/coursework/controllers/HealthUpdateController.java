@@ -2,7 +2,7 @@ package org.fergoeqs.coursework.controllers;
 
 import org.fergoeqs.coursework.dto.HealthUpdateDTO;
 import org.fergoeqs.coursework.services.HealthUpdatesService;
-import org.fergoeqs.coursework.utils.HealthUpdateMapper;
+import org.fergoeqs.coursework.utils.Mappers.HealthUpdateMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;

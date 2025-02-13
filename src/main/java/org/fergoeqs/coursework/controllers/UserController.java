@@ -12,7 +12,7 @@ import org.fergoeqs.coursework.jwt.JwtService;
 import org.fergoeqs.coursework.models.AppUser;
 import org.fergoeqs.coursework.services.AuthenticationService;
 import org.fergoeqs.coursework.services.UserService;
-import org.fergoeqs.coursework.utils.AppUserMapper;
+import org.fergoeqs.coursework.utils.Mappers.AppUserMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;

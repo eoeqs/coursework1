@@ -3,7 +3,7 @@ package org.fergoeqs.coursework.services;
 import org.fergoeqs.coursework.dto.ClinicDTO;
 import org.fergoeqs.coursework.models.Clinic;
 import org.fergoeqs.coursework.repositories.ClinicsRepository;
-import org.fergoeqs.coursework.utils.ClinicMapper;
+import org.fergoeqs.coursework.utils.Mappers.ClinicMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

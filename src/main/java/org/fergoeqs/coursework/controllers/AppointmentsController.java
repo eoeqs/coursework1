@@ -4,7 +4,7 @@ import org.apache.coyote.BadRequestException;
 import org.fergoeqs.coursework.dto.AppointmentDTO;
 import org.fergoeqs.coursework.models.Appointment;
 import org.fergoeqs.coursework.services.AppointmentsService;
-import org.fergoeqs.coursework.utils.AppointmentMapper;
+import org.fergoeqs.coursework.utils.Mappers.AppointmentMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;

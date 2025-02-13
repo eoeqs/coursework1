@@ -4,7 +4,7 @@ import org.fergoeqs.coursework.dto.SectorDTO;
 import org.fergoeqs.coursework.models.Sector;
 import org.fergoeqs.coursework.models.enums.CategoryType;
 import org.fergoeqs.coursework.repositories.SectorsRepository;
-import org.fergoeqs.coursework.utils.SectorMapper;
+import org.fergoeqs.coursework.utils.Mappers.SectorMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

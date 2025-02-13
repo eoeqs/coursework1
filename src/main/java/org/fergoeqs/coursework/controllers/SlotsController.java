@@ -3,7 +3,7 @@ package org.fergoeqs.coursework.controllers;
 import org.fergoeqs.coursework.dto.SlotDTO;
 import org.fergoeqs.coursework.models.Slot;
 import org.fergoeqs.coursework.services.SlotsService;
-import org.fergoeqs.coursework.utils.SlotMapper;
+import org.fergoeqs.coursework.utils.Mappers.SlotMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
