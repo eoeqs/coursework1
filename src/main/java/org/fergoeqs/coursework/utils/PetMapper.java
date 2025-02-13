@@ -20,14 +20,14 @@ public interface PetMapper {
     List<PetDTO> petsToPetDTOs(List<Pet> pets);
 
 
-    @Mapping(source = "owner", target = "owner.id")
-    @Mapping(source = "sector", target = "sector.id")
-    @Mapping(source = "actualVet", target = "actualVet.id")
+    @Mapping(target = "actualVet", ignore = true)
+    @Mapping(target = "owner", ignore = true)
+    @Mapping(target = "sector", ignore = true)
     Pet petDTOToPet(PetDTO petDTO);
 
-    @Mapping(source = "owner", target = "owner.id")
-    @Mapping(source = "sector", target = "sector.id")
-    @Mapping(source = "actualVet", target = "actualVet.id")
+    @Mapping(target = "actualVet", ignore = true)
+    @Mapping(target = "owner", ignore = true)
+    @Mapping(target = "sector", ignore = true)
     List<Pet> petDTOsToPets(List<PetDTO> petDTOs);
 }
 
