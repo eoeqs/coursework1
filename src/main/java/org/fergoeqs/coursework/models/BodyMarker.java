@@ -18,12 +18,14 @@ public class BodyMarker {
     private Integer positionX;
     private Integer positionY;
 
-//    @ManyToOne
-//    @JoinColumn(name = "body_part_id")
     @Enumerated(EnumType.STRING)
     private BodyPart bodyPart;
 
     @ManyToOne
     @JoinColumn(name = "pet_id")
     private Pet pet;
+
+    @OneToOne
+    @JoinColumn(name = "appointment_id")
+    private Appointment appointment;
 }
