@@ -20,6 +20,16 @@ public class AnamnesisController {
         this.anamnesisMapper = anamnesisMapper;
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getAnamnesis(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(anamnesisMapper.toDTO(anamnesisService.findAnamnesisById(id)));
+        } catch (Exception e) {
+            logger.error("Error getting anamnesis", e);
+            throw e;
+        }
+    }
+
     @GetMapping("/all-by-patient/{petId}")
     public ResponseEntity<?> getAllByPatient(@PathVariable Long petId) {
         try {

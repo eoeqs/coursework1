@@ -23,6 +23,17 @@ public class SlotsController {
         this.slotMapper = slotMapper;
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getSlot(@PathVariable Long id) {
+        try {
+            Slot slot = slotsService.getSlotById(id);
+            return ResponseEntity.ok(slotMapper.slotToSlotDTO(slot));
+        } catch (Exception e) {
+            logger.error("Failed to get slot: {}", e.getMessage());
+            throw e;
+        }
+    }
+
     @GetMapping("/available-slots")
     public ResponseEntity<?> getAvailableSlots() {
         try {
