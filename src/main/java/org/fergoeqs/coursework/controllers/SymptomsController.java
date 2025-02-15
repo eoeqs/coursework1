@@ -2,7 +2,7 @@ package org.fergoeqs.coursework.controllers;
 
 import org.fergoeqs.coursework.dto.SymptomDTO;
 import org.fergoeqs.coursework.services.SymptomsService;
-import org.fergoeqs.coursework.utils.SymptomMapper;
+import org.fergoeqs.coursework.utils.Mappers.SymptomMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;

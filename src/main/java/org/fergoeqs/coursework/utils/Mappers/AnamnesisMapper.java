@@ -1,4 +1,4 @@
-package org.fergoeqs.coursework.utils;
+package org.fergoeqs.coursework.utils.Mappers;
 
 import org.fergoeqs.coursework.dto.AnamnesisDTO;
 import org.fergoeqs.coursework.models.Anamnesis;

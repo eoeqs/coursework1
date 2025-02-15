@@ -6,7 +6,7 @@ import org.fergoeqs.coursework.models.Symptom;
 import org.fergoeqs.coursework.models.enums.BodyPart;
 import org.fergoeqs.coursework.repositories.RecommendedDiagnosisRepository;
 import org.fergoeqs.coursework.repositories.SymptomsRepository;
-import org.fergoeqs.coursework.utils.RecommendedDiagnosisMapper;
+import org.fergoeqs.coursework.utils.Mappers.RecommendedDiagnosisMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

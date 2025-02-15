@@ -2,7 +2,7 @@ package org.fergoeqs.coursework.controllers;
 
 import org.fergoeqs.coursework.dto.DiagnosisDTO;
 import org.fergoeqs.coursework.services.DiagnosisService;
-import org.fergoeqs.coursework.utils.DiagnosisMapper;
+import org.fergoeqs.coursework.utils.Mappers.DiagnosisMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -59,4 +59,16 @@ public class DiagnosisController {
             throw e;
         }
     }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updateDiagnosis(@PathVariable Long id, @RequestBody DiagnosisDTO diagnosisDTO) {
+        try {
+            return ResponseEntity.ok(diagnosisMapper.toDTO(diagnosisService.updateDiagnosis(id, diagnosisDTO)));
+        } catch (Exception e) {
+            logger.error("Error occurred while updating diagnosis with id: {}", id, e);
+            throw e;
+        }
+    }
+
+
 }

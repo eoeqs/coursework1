@@ -3,7 +3,7 @@ package org.fergoeqs.coursework.services;
 import org.fergoeqs.coursework.dto.BodyMarkerDTO;
 import org.fergoeqs.coursework.models.BodyMarker;
 import org.fergoeqs.coursework.repositories.BodyMarkersRepository;
-import org.fergoeqs.coursework.utils.BodyMarkerMapper;
+import org.fergoeqs.coursework.utils.Mappers.BodyMarkerMapper;
 import org.springframework.stereotype.Service;
 
 @Service

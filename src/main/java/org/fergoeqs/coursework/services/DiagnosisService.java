@@ -3,7 +3,7 @@ package org.fergoeqs.coursework.services;
 import org.fergoeqs.coursework.dto.DiagnosisDTO;
 import org.fergoeqs.coursework.models.Diagnosis;
 import org.fergoeqs.coursework.repositories.DiagnosisRepository;
-import org.fergoeqs.coursework.utils.DiagnosisMapper;
+import org.fergoeqs.coursework.utils.Mappers.DiagnosisMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -42,6 +42,13 @@ public class DiagnosisService {
         Diagnosis diagnosis = diagnosisMapper.fromDTO(diagnosisDTO);
         diagnosis.setAnamnesis(anamnesisService.findAnamnesisById(diagnosisDTO.anamnesis()));
         diagnosis.setDate(LocalDateTime.now());
+        return diagnosisRepository.save(diagnosis);
+    }
+
+    public Diagnosis updateDiagnosis(Long id, DiagnosisDTO diagnosisDTO){
+        Diagnosis diagnosis = diagnosisRepository.findById(id).orElse(null);
+        if (diagnosis == null) return null;
+        diagnosisMapper.updateDiagnosisFromDTO(diagnosisDTO, diagnosis);
         return diagnosisRepository.save(diagnosis);
     }
 }

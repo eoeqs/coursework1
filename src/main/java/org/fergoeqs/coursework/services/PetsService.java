@@ -4,7 +4,7 @@ import org.fergoeqs.coursework.dto.PetDTO;
 import org.fergoeqs.coursework.models.AppUser;
 import org.fergoeqs.coursework.models.Pet;
 import org.fergoeqs.coursework.repositories.PetsRepository;
-import org.fergoeqs.coursework.utils.PetMapper;
+import org.fergoeqs.coursework.utils.Mappers.PetMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

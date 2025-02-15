@@ -3,7 +3,7 @@ package org.fergoeqs.coursework.services;
 import org.fergoeqs.coursework.dto.AnamnesisDTO;
 import org.fergoeqs.coursework.models.Anamnesis;
 import org.fergoeqs.coursework.repositories.AnamnesisRepository;
-import org.fergoeqs.coursework.utils.AnamnesisMapper;
+import org.fergoeqs.coursework.utils.Mappers.AnamnesisMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;

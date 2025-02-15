@@ -1,4 +1,4 @@
-package org.fergoeqs.coursework.utils;
+package org.fergoeqs.coursework.utils.Mappers;
 
 import org.fergoeqs.coursework.dto.AppUserDTO;
 import org.fergoeqs.coursework.models.AppUser;
