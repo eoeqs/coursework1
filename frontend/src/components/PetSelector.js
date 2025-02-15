@@ -9,7 +9,6 @@ const PetSelector = () => {
     const [updatedPet, setUpdatedPet] = useState({ name: "", species: "", age: "" });
 
     useEffect(() => {
-        console.log("Token перед запросом:", localStorage.getItem("token"));
 
         axiosInstance.get("/pets/all-pets")
             .then(response => setPets(response.data))
