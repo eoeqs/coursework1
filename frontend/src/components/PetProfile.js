@@ -144,7 +144,7 @@ const PetProfilePage = () => {
                                 <td>{new Date(update.date).toLocaleDateString()}</td>
                                 <td>{update.dynamics ? "Positive" : "Negative"}</td>
                                 <td>
-                                    <button onClick={() => console.log("More info:", update.id)}>
+                                    <button onClick={() => navigate(`/health/${update.id}`)}>
                                         More info
                                     </button>
                                 </td>
