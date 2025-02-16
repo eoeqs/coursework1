@@ -12,12 +12,12 @@ import java.util.List;
 @Service
 public class NotificationService {
     private final NotificationRepository notificationRepository;
-    private SimpMessagingTemplate messagingTemplate;
-    private JavaMailSender mailSender;
+    private final SimpMessagingTemplate messagingTemplate;
+    private final JavaMailSender mailSender;
     private final UserService userService;
 
     public NotificationService(NotificationRepository notificationRepository, SimpMessagingTemplate messagingTemplate,
-                               JavaMailSender mailSender, UserService userService, NotificationMapper notificationMapper) {
+                               JavaMailSender mailSender, UserService userService) {
         this.notificationRepository = notificationRepository;
         this.userService = userService;
         this.mailSender = mailSender;

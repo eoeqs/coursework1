@@ -7,6 +7,7 @@ public record AnamnesisDTO(
     String name,
     String description,
     LocalDate date,
-    Long pet
+    Long pet,
+    Long appointment
 ) {
 }
