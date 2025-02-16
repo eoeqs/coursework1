@@ -5,6 +5,7 @@ import NewPetForm from "./NewPetForm";
 import useAxiosWithAuth from "../AxiosAuth";
 import DogBodyMap from "./DogBodyMap";
 import CatBodyMap from "./CatBodyMap";
+import app from "../App";
 
 const AppointmentPage = () => {
     const { token } = useAuth();
@@ -23,6 +24,7 @@ const AppointmentPage = () => {
     const [slots, setSlots] = useState([]);
     const [selectedSlotId, setSelectedSlotId] = useState("");
     const [priority, setPriority] = useState(false);
+    const [bodyMarker, setBodyMarker] = useState(null);
 
     useEffect(() => {
         if (!token) return;
@@ -72,6 +74,10 @@ const AppointmentPage = () => {
         setShowNewPetForm(false);
     };
 
+    const handleBodyMark = (marker) => {
+        setBodyMarker(marker);
+
+    };
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!token) {
@@ -80,13 +86,22 @@ const AppointmentPage = () => {
         }
 
         try {
-            await axiosInstance.post("/appointments/new-appointment", {
+            const appointmentResponse = await axiosInstance.post("/appointments/new-appointment", {
                 priority,
                 slotId: parseInt(selectedSlotId),
                 petId: parseInt(selectedPetId),
                 description: complaintDescription
             });
-
+            console.log(appointmentResponse.data)
+            if (bodyMarker) {
+                await axiosInstance.post("/body-marker/save", {
+                    positionX: bodyMarker.x,
+                    positionY: bodyMarker.y,
+                    bodyPart: bodyMarker.part,
+                    pet: selectedPetId,
+                    appointment: appointmentResponse.data.id
+                });
+            }
             alert("Appointment successfully booked!");
             navigate("/");
         } catch (error) {
@@ -117,8 +132,8 @@ const AppointmentPage = () => {
                 {selectedAnimal === "" && (
                     <p>Please select an animal type to display the interactive map.</p>
                 )}
-                {selectedAnimal === "dog" && <DogBodyMap onMark={(part) => console.log(part)}/>}
-                {selectedAnimal === "cat" && <CatBodyMap onMark={(part) => console.log(part)}/>}
+                {selectedAnimal === "dog" && <DogBodyMap onMark={handleBodyMark} />}
+                {selectedAnimal === "cat" && <CatBodyMap onMark={handleBodyMark} />}
             </div>
 
 

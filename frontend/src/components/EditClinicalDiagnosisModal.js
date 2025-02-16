@@ -78,6 +78,7 @@ const EditClinicalDiagnosisModal = ({ diagnosis, onClose, onSave }) => {
                 </div>
                 <button type="submit">Save</button>
                 <button type="button" onClick={onClose}>Cancel</button>
+
             </form>
         </div>
     );
