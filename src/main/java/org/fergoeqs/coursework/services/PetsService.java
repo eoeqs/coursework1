@@ -40,10 +40,10 @@ public class PetsService {
     }
 
     @Transactional
-    public void addPet(PetDTO petDTO, AppUser owner) {
+    public Pet addPet(PetDTO petDTO, AppUser owner) {
         Pet pet = petMapper.petDTOToPet(petDTO);
         pet.setOwner(owner);
-        petsRepository.save(pet);
+        return petsRepository.save(pet);
     }
 
     @Transactional

@@ -33,4 +33,8 @@ public class Quarantine {
     @ManyToOne
     @JoinColumn(name = "pet_id")
     private Pet pet;
+
+    @ManyToOne
+    @JoinColumn(name = "vet_id")
+    private AppUser vet;
 }

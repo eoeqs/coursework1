@@ -88,8 +88,7 @@ public class PetsController {
     @PostMapping("/new-pet")
     public ResponseEntity<?> createPet(@RequestBody PetDTO petDTO) throws BadRequestException {
         try {
-            petsService.addPet(petDTO, userService.getAuthenticatedUser());
-            return ResponseEntity.ok(petDTO);
+            return ResponseEntity.ok(petMapper.petToPetDTO(petsService.addPet(petDTO, userService.getAuthenticatedUser())));
         } catch (Exception e) {
             logger.error("Pet creation failed: {}", e.getMessage());
             throw e; //TODO: переписать catch, когда будут валидаторы.

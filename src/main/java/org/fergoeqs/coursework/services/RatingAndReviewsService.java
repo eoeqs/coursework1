@@ -1,5 +1,6 @@
 package org.fergoeqs.coursework.services;
 
+import org.apache.coyote.BadRequestException;
 import org.fergoeqs.coursework.dto.RatingAndReviewsDTO;
 import org.fergoeqs.coursework.models.RatingAndReviews;
 import org.fergoeqs.coursework.repositories.RatingAndReviewsRepository;
@@ -28,10 +29,10 @@ public class RatingAndReviewsService {
         return ratingAndReviewsRepository.findAllByVetId(vetId);
     }
 
-    public RatingAndReviews save(RatingAndReviewsDTO ratingAndReviewsDTO) {
+    public RatingAndReviews save(RatingAndReviewsDTO ratingAndReviewsDTO) throws BadRequestException {
         RatingAndReviews rr = rrMapper.fromDTO(ratingAndReviewsDTO);
         rr.setVet(userService.findById(ratingAndReviewsDTO.vet()).orElse(null));
-        rr.setOwner(userService.findById(ratingAndReviewsDTO.owner()).orElse(null));
+        rr.setOwner(userService.getAuthenticatedUser());
         return ratingAndReviewsRepository.save(rr);
     }
 

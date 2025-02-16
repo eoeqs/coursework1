@@ -62,8 +62,8 @@ public class AppointmentsController {
             if (appointmentDTO == null) {
                 throw new BadRequestException("Appointment data is invalid.");
             }
-            appointmentsService.create(appointmentDTO);
-            return ResponseEntity.ok(appointmentDTO); //TODO: выводить окно с датой записи
+
+            return ResponseEntity.ok(appointmentMapper.appointmentToAppointmentDTO(appointmentsService.create(appointmentDTO))); //TODO: выводить окно с датой записи
         } catch (Exception e) {
             logger.error("Error creating appointment: {}", e.getMessage());
             throw e;
@@ -71,9 +71,9 @@ public class AppointmentsController {
     }
 
     @DeleteMapping("/cancel-appointment/{id}")
-    public ResponseEntity<?> cancelAppointment(@PathVariable Long id) {
+    public ResponseEntity<?> cancelAppointment(@PathVariable Long id, @RequestBody String reason) {
         try {
-            appointmentsService.delete(id);
+            appointmentsService.delete(id, reason);
             return ResponseEntity.ok("Appointment " + id + " canceled");
         } catch (Exception e) {
             logger.error("Error cancelling appointment: {}", e.getMessage());

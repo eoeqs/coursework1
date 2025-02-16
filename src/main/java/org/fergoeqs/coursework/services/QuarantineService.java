@@ -1,6 +1,7 @@
 package org.fergoeqs.coursework.services;
 
 import org.fergoeqs.coursework.dto.QuarantineDTO;
+import org.fergoeqs.coursework.models.AppUser;
 import org.fergoeqs.coursework.models.Quarantine;
 import org.fergoeqs.coursework.models.enums.QuarantineStatus;
 import org.fergoeqs.coursework.repositories.QuarantineRepository;
@@ -16,12 +17,15 @@ public class QuarantineService {
     private final QuarantineRepository quarantineRepository;
     private final SectorsService sectorsService;
     private final PetsService petsService;
+    private final NotificationService notificationService;
     private final QuarantineMapper quarantineMapper;
 
-    public QuarantineService(QuarantineRepository quarantineRepository, SectorsService sectorsService, PetsService petsService, QuarantineMapper quarantineMapper) {
+    public QuarantineService(QuarantineRepository quarantineRepository, SectorsService sectorsService, PetsService petsService,
+                             NotificationService notificationService, QuarantineMapper quarantineMapper) {
         this.quarantineRepository = quarantineRepository;
         this.sectorsService = sectorsService;
         this.petsService = petsService;
+        this.notificationService = notificationService;
         this.quarantineMapper = quarantineMapper;
     }
 
@@ -37,8 +41,9 @@ public class QuarantineService {
         return quarantineRepository.findAll();
     }
 
-    public Quarantine save(QuarantineDTO quarantineDTO) { //TODO: валидировать startDate < endDate
+    public Quarantine save(QuarantineDTO quarantineDTO, AppUser appUser) { //TODO: валидировать startDate < endDate
         Quarantine quarantine = quarantineMapper.fromDTO(quarantineDTO);
+        quarantine.setVet(appUser);
         quarantine.setStatus(QuarantineStatus.CURRENT);
         return quarantineRepository.save(setRelativeFields(quarantine, quarantineDTO));
     }
@@ -47,7 +52,7 @@ public class QuarantineService {
         quarantineRepository.deleteById(id);
     }
 
-    @Scheduled(cron = "0 0 * * * *")
+    @Scheduled(cron = "0 * * * * *")
     public void updateExpiredQuarantines() {
         LocalDateTime now = LocalDateTime.now();
 
@@ -56,7 +61,11 @@ public class QuarantineService {
         for (Quarantine quarantine : quarantines) {
             quarantine.setStatus(QuarantineStatus.DONE);
             quarantineRepository.save(quarantine);
+            String petName = quarantine.getPet().getName();
+            String message = "Quarantine for pet " + petName + " has been completed!";
+            notificationService.sendNotification(quarantine.getVet().getId(), message, quarantine.getVet().getEmail());
         }
+
     }
 
     private Quarantine setRelativeFields(Quarantine quarantine, QuarantineDTO quarantineDTO) {

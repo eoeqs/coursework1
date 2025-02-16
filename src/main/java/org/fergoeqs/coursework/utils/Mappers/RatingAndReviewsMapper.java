@@ -10,11 +10,11 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface RatingAndReviewsMapper {
     @Mapping(source = "vet", target = "vet.id")
-    @Mapping(source = "owner", target = "owner.id")
+    @Mapping(target = "owner", ignore = true)
     @Mapping(target = "id", ignore = true)
     RatingAndReviews fromDTO(RatingAndReviewsDTO ratingAndReviewsDTO);
     @Mapping(source = "vet", target = "vet.id")
-    @Mapping(source = "owner", target = "owner.id")
+    @Mapping(target = "owner", ignore = true)
     @Mapping(target = "id", ignore = true)
     List<RatingAndReviews> fromDTOs(List<RatingAndReviewsDTO> ratingAndReviewsListDTO);
 
