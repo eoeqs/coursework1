@@ -5,13 +5,13 @@ const useBodyMap = (onMark) => {
     const [clickPoint, setClickPoint] = useState(null);
 
     const handleClick = (event, part) => {
+        const x = event.nativeEvent.offsetX;
+        const y = event.nativeEvent.offsetY;
         setSelectedPart(part);
-        setClickPoint({ x: event.nativeEvent.offsetX, y: event.nativeEvent.offsetY });
-
-        console.log(`Chosen body part: ${part}, Coordinates: (${event.nativeEvent.offsetX}, ${event.nativeEvent.offsetY})`);
+        setClickPoint({ x, y });
 
         if (onMark) {
-            onMark(part);
+            onMark({ part, x, y });
         }
     };
 
