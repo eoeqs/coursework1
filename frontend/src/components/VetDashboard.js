@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../AuthProvider";
 import useAxiosWithAuth from "../AxiosAuth";
+import PetProfile from "./PetProfile";
+import {useNavigate} from "react-router-dom";
 
 const VetDashboard = () => {
     const { token } = useAuth();
@@ -13,6 +15,8 @@ const VetDashboard = () => {
     const [createAnamnesis, setCreateAnamnesis] = useState(false);
     const [doctorPets, setDoctorPets] = useState([]);
     const [userRole, setUserRole] = useState(null);
+    const [selectedPetId, setSelectedPetId] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (!token) return;
@@ -99,7 +103,7 @@ const VetDashboard = () => {
         if (!selectedAppointment) return;
 
         try {
-            await axiosInstance.post(`/pets/bind/${selectedAppointment.pet.id}`);
+            await axiosInstance.put(`/pets/bind/${selectedAppointment.pet.id}`);
             alert("Pet successfully bound to the vet!");
 
             if (createAnamnesis) {
@@ -133,6 +137,13 @@ const VetDashboard = () => {
         }
     };
 
+    const handleViewPetProfile = (petId) => {
+        navigate(`/pet/${petId}`);
+    };
+
+    const closePetProfile = () => {
+        setSelectedPetId(null);
+    };
     if (loading) {
         return <div>Loading...</div>;
     }
@@ -181,7 +192,7 @@ const VetDashboard = () => {
                                         <td>{pet.age}</td>
                                         <td>{pet.sex}</td>
                                         <td>
-                                            <button onClick={() => console.log("View Pet Profile:", pet.id)}>
+                                            <button onClick={() => handleViewPetProfile(pet.id)}>
                                                 View Pet Profile
                                             </button>
                                         </td>
@@ -262,6 +273,9 @@ const VetDashboard = () => {
                     )}
                     <button onClick={closeModal}>Close</button>
                 </div>
+            )}
+            {selectedPetId && (
+                <PetProfile petId={selectedPetId} onClose={closePetProfile} />
             )}
         </div>
     );
