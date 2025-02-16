@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.fergoeqs.coursework.models.enums.QuarantineStatus;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "quarantine")
@@ -19,13 +20,17 @@ public class Quarantine {
 
     private String reason;
     private String description;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
 
     @Enumerated(EnumType.STRING)
     private QuarantineStatus status;
 
     @ManyToOne
     @JoinColumn(name = "sector_id")
-    private Sector sector;
+    private Sector sector; //нужно ли из секторов доставать каратины?
+
+    @ManyToOne
+    @JoinColumn(name = "pet_id")
+    private Pet pet;
 }

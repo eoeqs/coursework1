@@ -1,6 +1,8 @@
 package org.fergoeqs.coursework.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,6 +17,8 @@ public class RatingAndReviews {
     private Long id;
 
     @Column(nullable = false)
+    @Min(1)
+    @Max(5)
     private Integer rating;
 
     private String review;

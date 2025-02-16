@@ -16,7 +16,7 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDateTime dateTime;
+    private LocalDateTime dateTime = LocalDateTime.now();
     private String content;
 
     @ManyToOne
