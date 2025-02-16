@@ -24,4 +24,8 @@ public class Anamnesis {
     @ManyToOne
     @JoinColumn(name = "pet_id")
     private Pet pet;
+
+    @OneToOne
+    @JoinColumn(name = "appointment_id")
+    private Appointment appointment;
 }
