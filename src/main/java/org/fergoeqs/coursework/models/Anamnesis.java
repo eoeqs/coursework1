@@ -1,6 +1,7 @@
 package org.fergoeqs.coursework.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,14 +18,17 @@ public class Anamnesis {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     private String name; //например, Headache
     private String description;
     private LocalDate date;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "pet_id")
     private Pet pet;
 
+    @NotNull
     @OneToOne
     @JoinColumn(name = "appointment_id")
     private Appointment appointment;

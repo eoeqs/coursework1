@@ -1,5 +1,6 @@
 package org.fergoeqs.coursework.controllers;
 
+import org.apache.coyote.BadRequestException;
 import org.fergoeqs.coursework.dto.RatingAndReviewsDTO;
 import org.fergoeqs.coursework.services.RatingAndReviewsService;
 import org.fergoeqs.coursework.utils.Mappers.RatingAndReviewsMapper;
@@ -41,7 +42,7 @@ public class RatingAndReviewsController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<?> saveRatingAndReviews(@RequestBody RatingAndReviewsDTO ratingAndReviewsDTO) {
+    public ResponseEntity<?> saveRatingAndReviews(@RequestBody RatingAndReviewsDTO ratingAndReviewsDTO) throws BadRequestException {
         try {
             return ResponseEntity.ok(ratingAndReviewsMapper.toDTO(ratingAndReviewsService.save(ratingAndReviewsDTO)));
         } catch (Exception e) {

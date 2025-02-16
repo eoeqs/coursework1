@@ -3,6 +3,7 @@ package org.fergoeqs.coursework.models;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,10 +24,12 @@ public class RatingAndReviews {
 
     private String review;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "vet_id", nullable = false)
     private AppUser vet;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
     private AppUser owner;

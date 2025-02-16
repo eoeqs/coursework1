@@ -1,6 +1,7 @@
 package org.fergoeqs.coursework.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,10 +19,12 @@ public class Appointment {
 
     String description;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "pet_id", nullable = false)
     private Pet pet;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "slot_id")
     private Slot slot;

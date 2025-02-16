@@ -1,6 +1,7 @@
 package org.fergoeqs.coursework.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,8 +21,10 @@ public class HealthUpdate {
     private String symptoms;
     private String notes;
 
+    @NotNull
     private boolean dynamics;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "pet_id")
     private Pet pet;

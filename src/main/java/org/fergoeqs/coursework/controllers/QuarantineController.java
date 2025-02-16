@@ -1,7 +1,9 @@
 package org.fergoeqs.coursework.controllers;
 
+import org.apache.coyote.BadRequestException;
 import org.fergoeqs.coursework.dto.QuarantineDTO;
 import org.fergoeqs.coursework.services.QuarantineService;
+import org.fergoeqs.coursework.services.UserService;
 import org.fergoeqs.coursework.utils.Mappers.QuarantineMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,10 +15,12 @@ import org.springframework.web.bind.annotation.*;
 public class QuarantineController {
     private final QuarantineService quarantineService;
     private final QuarantineMapper quarantineMapper;
+    private final UserService userService;
     private static final Logger logger = LoggerFactory.getLogger(QuarantineController.class);
 
-    public QuarantineController(QuarantineService quarantineService, QuarantineMapper quarantineMapper) {
+    public QuarantineController(QuarantineService quarantineService, QuarantineMapper quarantineMapper, UserService userService) {
         this.quarantineService = quarantineService;
+        this.userService = userService;
         this.quarantineMapper = quarantineMapper;
     }
 
@@ -51,9 +55,10 @@ public class QuarantineController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<?> saveQuarantine(@RequestBody QuarantineDTO quarantineDTO) {
+    public ResponseEntity<?> saveQuarantine(@RequestBody QuarantineDTO quarantineDTO) throws BadRequestException {
         try {
-            return ResponseEntity.ok(quarantineMapper.toDTO(quarantineService.save(quarantineDTO)));
+
+            return ResponseEntity.ok(quarantineMapper.toDTO(quarantineService.save(quarantineDTO, userService.getAuthenticatedUser())));
         } catch (Exception e) {
             logger.error("Error occurred while saving quarantine", e);
             throw e;
