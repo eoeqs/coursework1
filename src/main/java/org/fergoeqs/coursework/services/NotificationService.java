@@ -1,7 +1,6 @@
 package org.fergoeqs.coursework.services;
 import org.fergoeqs.coursework.models.Notification;
 import org.fergoeqs.coursework.repositories.NotificationRepository;
-import org.fergoeqs.coursework.utils.Mappers.NotificationMapper;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
