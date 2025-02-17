@@ -4,6 +4,7 @@ const AddAnamnesisModal = ({ petId, onClose, onSave }) => {
     const [formData, setFormData] = useState({
         date: new Date().toISOString().split("T")[0],
         description: "",
+        appointment: "",
     });
 
     const handleChange = (e) => {

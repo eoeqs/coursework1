@@ -5,6 +5,7 @@ import EditPetModal from "./EditPetModal";
 import AddAnamnesisModal from "./AddAnamnesisModal";
 import AddHealthUpdateModal from "./AddHealthUpdateModal";
 import PetInfo from "./PetInfo";
+import HealthUpdateDetailsModal from "./HealthUpdateDetailsModal";
 
 const PetProfilePage = () => {
     const { petId } = useParams();
@@ -18,6 +19,9 @@ const PetProfilePage = () => {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isAddAnamnesisModalOpen, setIsAddAnamnesisModalOpen] = useState(false);
     const [isAddHealthUpdateModalOpen, setIsAddHealthUpdateModalOpen] = useState(false);
+    const [isHealthUpdateDetailsModalOpen, setIsHealthUpdateDetailsModalOpen] = useState(false);
+    const [selectedHealthUpdateId, setSelectedHealthUpdateId] = useState(null);
+    const [upcomingAppointments, setUpcomingAppointments] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -33,6 +37,18 @@ const PetProfilePage = () => {
 
                 const healthUpdatesResponse = await axiosInstance.get(`/health/all/${petId}`);
                 setHealthUpdates(healthUpdatesResponse.data);
+
+                const appointmentsResponse = await axiosInstance.get(`/appointments/upcoming-pet/${petId}`);
+                const appointmentsWithSlots = await Promise.all(
+                    appointmentsResponse.data.map(async (appointment) => {
+                        const slotResponse = await axiosInstance.get(`/slots/${appointment.slotId}`);
+                        return {
+                            ...appointment,
+                            slot: slotResponse.data,
+                        };
+                    })
+                );
+                setUpcomingAppointments(appointmentsWithSlots);
             } catch (error) {
                 console.error("Error fetching data:", error);
                 setError("Failed to fetch data. Please try again later.");
@@ -58,7 +74,11 @@ const PetProfilePage = () => {
 
     const handleSaveAnamnesis = async (anamnesisData) => {
         try {
-            const response = await axiosInstance.post("/anamnesis/save", anamnesisData);
+            const response = await axiosInstance.post("/anamnesis/save", {
+                ...anamnesisData,
+                pet: petId,
+                appointment: anamnesisData.appointment,
+            });
             setAnamneses([...anamneses, response.data]);
             setIsAddAnamnesisModalOpen(false);
             alert("Anamnesis saved successfully!");
@@ -80,6 +100,11 @@ const PetProfilePage = () => {
         }
     };
 
+    const handleViewHealthUpdateDetails = (id) => {
+        setSelectedHealthUpdateId(id);
+        setIsHealthUpdateDetailsModalOpen(true);
+    };
+
     if (loading) {
         return <div>Loading...</div>;
     }
@@ -96,6 +121,32 @@ const PetProfilePage = () => {
         <div style={{ display: "flex", gap: "20px" }}>
             <div style={{ flex: 1 }}>
                 <PetInfo petInfo={petInfo} onEdit={() => setIsEditModalOpen(true)} />
+
+                <h2>Upcoming Appointments</h2>
+                {upcomingAppointments.length > 0 ? (
+                    <table border="1" cellPadding="10" cellSpacing="0">
+                        <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Doctor</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {upcomingAppointments.map((appointment) => (
+                            <tr key={appointment.id}>
+                                <td>{new Date(appointment.slot.date).toLocaleDateString()}</td>
+                                <td>{appointment.slot.startTime} - {appointment.slot.endTime}</td>
+                                <td>{appointment.slot.vetId}</td>
+                                <td>{appointment.description}</td>
+                            </tr>
+                        ))}
+                        </tbody>
+                    </table>
+                ) : (
+                    <p>No upcoming appointments found.</p>
+                )}
             </div>
 
             <div style={{ flex: 1 }}>
@@ -144,7 +195,7 @@ const PetProfilePage = () => {
                                 <td>{new Date(update.date).toLocaleDateString()}</td>
                                 <td>{update.dynamics ? "Positive" : "Negative"}</td>
                                 <td>
-                                    <button onClick={() => navigate(`/health/${update.id}`)}>
+                                    <button onClick={() => handleViewHealthUpdateDetails(update.id)}>
                                         More info
                                     </button>
                                 </td>
@@ -179,6 +230,13 @@ const PetProfilePage = () => {
                     petId={petId}
                     onClose={() => setIsAddHealthUpdateModalOpen(false)}
                     onSave={handleSaveHealthUpdate}
+                />
+            )}
+
+            {isHealthUpdateDetailsModalOpen && (
+                <HealthUpdateDetailsModal
+                    id={selectedHealthUpdateId}
+                    onClose={() => setIsHealthUpdateDetailsModalOpen(false)}
                 />
             )}
         </div>

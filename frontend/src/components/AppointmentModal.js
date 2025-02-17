@@ -14,12 +14,21 @@ const AppointmentModal = ({ appointment, onClose }) => {
             zIndex: 1000,
         }}>
             <h3>Appointment Details</h3>
-            <p><strong>Date:</strong> {new Date(appointment.date).toLocaleDateString()}</p>
-            <p><strong>Time:</strong> {appointment.time}</p>
             <p><strong>Description:</strong> {appointment.description}</p>
             <p><strong>Priority:</strong> {appointment.priority ? "Yes" : "No"}</p>
+
+            {appointment.slot && (
+                <div>
+                    <p><strong>Date:</strong> {new Date(appointment.slot.date).toLocaleDateString()}</p>
+                    <p><strong>Start Time:</strong> {appointment.slot.startTime}</p>
+                    <p><strong>End Time:</strong> {appointment.slot.endTime}</p>
+                    <p><strong>Vet ID:</strong> {appointment.slot.vetId}</p>
+                </div>
+            )}
+
             <button onClick={onClose}>Close</button>
         </div>
     );
 };
+
 export default AppointmentModal;
