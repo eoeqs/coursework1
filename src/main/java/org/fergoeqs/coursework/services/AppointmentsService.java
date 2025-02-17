@@ -50,6 +50,13 @@ public class AppointmentsService {
         return appointmentsRepository.findBySlot_VetId(vetId);
     }
 
+    public List<Appointment> getUpcomingVetAppointments(Long vetId) {
+        return appointmentsRepository.findBySlotVetIdAndSlotDateGreaterThanEqual(vetId, LocalDate.now());
+    }
+    public List<Appointment> getUpcomingPetAppointments(Long petId) {
+        return appointmentsRepository.findByPetIdAndSlotDateGreaterThanEqual(petId, LocalDate.now());
+    }
+
     @Transactional
     public Appointment create(AppointmentDTO appointmentDTO) {
         Appointment appointment = new Appointment();

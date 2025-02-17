@@ -32,4 +32,6 @@ public class Anamnesis {
     @OneToOne
     @JoinColumn(name = "appointment_id")
     private Appointment appointment;
+
+    private String anamnesisUrl;
 }

@@ -56,6 +56,28 @@ public class AppointmentsController {
         }
     }
 
+    @GetMapping("upcoming-vet/{vetId}")
+    public ResponseEntity<?> getUpcomingVetAppointments(@PathVariable Long vetId) {
+        try {
+            List<Appointment> appointments = appointmentsService.getUpcomingVetAppointments(vetId);
+            return ResponseEntity.ok(appointmentMapper.appointmentsToAppointmentDTOs(appointments));
+        } catch (Exception e) {
+            logger.error("Error getting upcoming vet's appointments: {}", e.getMessage());
+            throw e;
+        }
+    }
+
+    @GetMapping("upcoming-pet/{petId}")
+    public ResponseEntity<?> getUpcomingPetAppointments(@PathVariable Long petId) {
+        try {
+            List<Appointment> appointments = appointmentsService.getUpcomingPetAppointments(petId);
+            return ResponseEntity.ok(appointmentMapper.appointmentsToAppointmentDTOs(appointments));
+        } catch (Exception e) {
+            logger.error("Error getting upcoming pet's appointments: {}", e.getMessage());
+            throw e;
+        }
+    }
+
     @PostMapping("/new-appointment")
     public ResponseEntity<?> createAppointment(@RequestBody AppointmentDTO appointmentDTO) throws BadRequestException {
         try {
