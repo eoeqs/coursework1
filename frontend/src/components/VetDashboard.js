@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "../AuthProvider";
 import useAxiosWithAuth from "../AxiosAuth";
 import PetProfile from "./PetProfile";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const VetDashboard = () => {
     const { token } = useAuth();
@@ -39,7 +39,7 @@ const VetDashboard = () => {
                     setDoctorPets(doctorPetsResponse.data);
                 }
 
-                const appointmentsResponse = await axiosInstance.get(`/appointments/vet-appointments/${vetInfoResponse.data.id}`);
+                const appointmentsResponse = await axiosInstance.get(`/appointments/upcoming-vet/${vetInfoResponse.data.id}`);
                 const appointmentPromises = appointmentsResponse.data.map(async (appointment) => {
                     const [slotResponse, petResponse] = await Promise.all([
                         axiosInstance.get(`/slots/${appointment.slotId}`),
@@ -103,15 +103,18 @@ const VetDashboard = () => {
         if (!selectedAppointment) return;
 
         try {
+            // Привязка питомца к ветеринару
             await axiosInstance.put(`/pets/bind/${selectedAppointment.pet.id}`);
             alert("Pet successfully bound to the vet!");
 
+            // Создание анамнеза, если выбрана опция
             if (createAnamnesis) {
                 const anamnesisDTO = {
                     pet: selectedAppointment.pet.id,
                     name: selectedAppointment.pet.name,
                     description: selectedAppointment.description,
-                    date: new Date().toISOString()
+                    date: new Date().toISOString(),
+                    appointment: selectedAppointment.id // Передаем appointmentId
                 };
                 await axiosInstance.post("/anamnesis/save", anamnesisDTO);
                 alert("Anamnesis successfully created!");
@@ -144,6 +147,7 @@ const VetDashboard = () => {
     const closePetProfile = () => {
         setSelectedPetId(null);
     };
+
     if (loading) {
         return <div>Loading...</div>;
     }

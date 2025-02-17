@@ -20,6 +20,7 @@ public class AnamnesisController {
         this.anamnesisMapper = anamnesisMapper;
     }
 
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getAnamnesis(@PathVariable Long id) {
         try {

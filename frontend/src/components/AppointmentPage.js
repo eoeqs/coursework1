@@ -5,7 +5,6 @@ import NewPetForm from "./NewPetForm";
 import useAxiosWithAuth from "../AxiosAuth";
 import DogBodyMap from "./DogBodyMap";
 import CatBodyMap from "./CatBodyMap";
-import app from "../App";
 
 const AppointmentPage = () => {
     const { token } = useAuth();
@@ -92,7 +91,6 @@ const AppointmentPage = () => {
                 petId: parseInt(selectedPetId),
                 description: complaintDescription
             });
-            console.log(appointmentResponse.data)
             if (bodyMarker) {
                 await axiosInstance.post("/body-marker/save", {
                     positionX: bodyMarker.x,

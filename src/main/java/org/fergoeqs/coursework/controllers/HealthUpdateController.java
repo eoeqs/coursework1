@@ -19,7 +19,15 @@ public class HealthUpdateController {
         this.healthUpdateService = healthUpdateService;
         this.healthUpdateMapper = healthUpdateMapper;
     }
-
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getHealthUpdate(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(healthUpdateMapper.toDTO(healthUpdateService.findById(id)));
+        } catch (Exception e) {
+            logger.error("Error while fetching health update with id: {}", id, e);
+            throw e;
+        }
+    }
     @GetMapping("/first/{petId}")
     public ResponseEntity<?> getFirstHealthUpdate(@PathVariable Long petId) {
         try {

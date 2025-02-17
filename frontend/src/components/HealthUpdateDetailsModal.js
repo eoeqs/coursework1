@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import useAxiosWithAuth from "../AxiosAuth";
 
-const HealthUpdateDetailsPage = () => {
-    const { id } = useParams();
+const HealthUpdateDetailsModal = ({ id, onClose }) => {
     const axiosInstance = useAxiosWithAuth();
     const [healthUpdate, setHealthUpdate] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -38,7 +36,7 @@ const HealthUpdateDetailsPage = () => {
     }
 
     return (
-        <div>
+        <div style={modalStyles}>
             <h2>Health Update Details</h2>
             <div>
                 <p><strong>Date:</strong> {new Date(healthUpdate.date).toLocaleDateString()}</p>
@@ -46,9 +44,21 @@ const HealthUpdateDetailsPage = () => {
                 <p><strong>Symptoms:</strong> {healthUpdate.symptoms || "No symptoms provided."}</p>
                 <p><strong>Notes:</strong> {healthUpdate.notes || "No notes provided."}</p>
             </div>
-            <button onClick={() => window.history.back()}>Back</button>
+            <button onClick={onClose}>Close</button>
         </div>
     );
 };
 
-export default HealthUpdateDetailsPage;
+const modalStyles = {
+    position: "fixed",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    backgroundColor: "white",
+    padding: "20px",
+    borderRadius: "8px",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+    zIndex: 1000,
+};
+
+export default HealthUpdateDetailsModal;

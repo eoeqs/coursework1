@@ -31,7 +31,7 @@ const PetSelector = () => {
     };
 
     const handleUpdatePet = () => {
-        axiosInstance.post(`/pets/update-pet/${selectedPet.id}`, updatedPet)
+        axiosInstance.put(`/pets/update-pet/${selectedPet.id}`, updatedPet)
             .then(response => {
                 alert("Pet updated successfully!");
                 setSelectedPet(response.data);

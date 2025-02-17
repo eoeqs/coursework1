@@ -11,7 +11,7 @@ import CatBodyMap from "./components/CatBodyMap";
 import VetDashboard from "./components/VetDashboard";
 import PetProfile from "./components/PetProfile";
 import AnamnesisDetailsPage from "./components/AnamnesisDetailsPage";
-import HealthUpdateDetailsPage from "./components/HealthUpdateDetailsPage";
+import HealthUpdateDetailsModal from "./components/HealthUpdateDetailsModal";
 
 
 const App = () => {
@@ -31,7 +31,7 @@ const App = () => {
                 <Route path="/vet-dashboard" element={<VetDashboard/>}/>
                 <Route path="/pet/:petId" element={<PetProfile/>} />
                 <Route path="/anamnesis/:id" element={<AnamnesisDetailsPage />} />
-                <Route path="/health/:id" element={<HealthUpdateDetailsPage />} />
+                <Route path="/health/:id" element={<HealthUpdateDetailsModal />} />
             </Routes>
         </Router>
     );
