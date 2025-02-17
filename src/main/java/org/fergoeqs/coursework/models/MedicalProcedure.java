@@ -24,6 +24,12 @@ public class MedicalProcedure { //для таймлайна процедур
     private String notes; // доп. примечания
 
     @ManyToOne
+    @JoinColumn(name = "pet_id")
+    private Pet pet;
+
+    @ManyToOne
     @JoinColumn(name = "vet_id")
     private AppUser vet;
+
+    private String reportUrl;
 }

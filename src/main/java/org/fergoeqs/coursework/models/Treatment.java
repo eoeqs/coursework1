@@ -24,6 +24,12 @@ public class Treatment {
     private Diagnosis diagnosis;
 
     @ManyToOne
-    @JoinColumn(name = "medical_procedure_id")
-    private MedicalProcedure medicalProcedure;
+    @JoinColumn(name = "pet_id")
+    private Pet pet;
+
+    private Boolean isCompleted;
+
+    //    @ManyToOne
+    //    @JoinColumn(name = "medical_procedure_id")
+    //    private MedicalProcedure medicalProcedure; //зачем оно тут было?
 }
