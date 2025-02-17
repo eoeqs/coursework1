@@ -53,7 +53,7 @@ public class QuarantineService {
     }
 
     @Scheduled(cron = "0 * * * * *")
-    public void updateExpiredQuarantines() {
+    public void updateExpiredQuarantines() { //TODO: потом поменять время на адекватное
         LocalDateTime now = LocalDateTime.now();
 
         List<Quarantine> quarantines = quarantineRepository.findByEndDateBeforeAndStatusNot(now, QuarantineStatus.DONE);

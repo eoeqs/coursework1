@@ -1,7 +1,6 @@
 package org.fergoeqs.coursework.services;
 import org.fergoeqs.coursework.models.Notification;
 import org.fergoeqs.coursework.repositories.NotificationRepository;
-import org.fergoeqs.coursework.utils.Mappers.NotificationMapper;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -12,12 +11,12 @@ import java.util.List;
 @Service
 public class NotificationService {
     private final NotificationRepository notificationRepository;
-    private SimpMessagingTemplate messagingTemplate;
-    private JavaMailSender mailSender;
+    private final SimpMessagingTemplate messagingTemplate;
+    private final JavaMailSender mailSender;
     private final UserService userService;
 
     public NotificationService(NotificationRepository notificationRepository, SimpMessagingTemplate messagingTemplate,
-                               JavaMailSender mailSender, UserService userService, NotificationMapper notificationMapper) {
+                               JavaMailSender mailSender, UserService userService) {
         this.notificationRepository = notificationRepository;
         this.userService = userService;
         this.mailSender = mailSender;

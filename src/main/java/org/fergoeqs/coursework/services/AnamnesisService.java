@@ -13,11 +13,14 @@ import java.util.List;
 public class AnamnesisService {
     private final AnamnesisRepository anamnesisRepository;
     private final PetsService petsService;
+    private final AppointmentsService appointmentsService;
     private final AnamnesisMapper anamnesisMapper;
 
-    public AnamnesisService(AnamnesisRepository anamnesisRepository, AnamnesisMapper anamnesisMapper, PetsService petsService) {
+    public AnamnesisService(AnamnesisRepository anamnesisRepository, AnamnesisMapper anamnesisMapper,
+                            PetsService petsService, AppointmentsService appointmentsService) {
         this.anamnesisRepository = anamnesisRepository;
         this.petsService = petsService;
+        this.appointmentsService = appointmentsService;
         this.anamnesisMapper = anamnesisMapper;
     }
 
@@ -32,6 +35,7 @@ public class AnamnesisService {
     public Anamnesis saveAnamnesis(AnamnesisDTO anamnesisDTO) {
         Anamnesis anamnesis = anamnesisMapper.fromDTO(anamnesisDTO);
         anamnesis.setPet(petsService.findPetById(anamnesisDTO.pet()));
+        anamnesis.setAppointment(appointmentsService.findById(anamnesisDTO.appointment()));
         anamnesis.setDate(LocalDate.now());
         return anamnesisRepository.save(anamnesis);
     }

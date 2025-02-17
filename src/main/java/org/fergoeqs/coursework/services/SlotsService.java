@@ -38,7 +38,7 @@ public class SlotsService {
         availableSlot.setEndTime(availableSlotDTO.endTime());
         availableSlot.setVet(vet);
         availableSlot.setIsAvailable(true);
-        return slotsRepository.save(availableSlot);
+        return slotsRepository.save(availableSlot); //TODO: маппер
     }
 
     public void updateSlotStatus(Long id, Boolean isAvailable) {

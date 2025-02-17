@@ -14,8 +14,10 @@ public interface SlotMapper {
     @Mapping(source = "vet.id", target = "vetId")
     List<SlotDTO> slotsToSlotDTOs(List<Slot> slots);
 
+    @Mapping(target = "id", ignore = true)
     @Mapping(source = "vetId", target = "vet.id")
     Slot slotDTOToSlot(SlotDTO slotDTO);
+    @Mapping(target = "id", ignore = true)
     @Mapping(source = "vetId", target = "vet.id")
     List<Slot> slotDTOsToSlots(List<SlotDTO> slotDTOs);
 }
