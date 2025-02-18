@@ -19,9 +19,12 @@ public class Diagnosis {
 
     @NotNull
     private String name;
+
+    @Column(length = 1000)
     private String description;
     private LocalDateTime date;
     private Boolean contagious;
+    @Column(length = 1000)
     private String examinationPlan; //план обследования
 
     @NotNull

@@ -18,7 +18,9 @@ public class HealthUpdate {
     private Long id;
 
     private LocalDateTime date;
+    @Column(length = 1000)
     private String symptoms;
+    @Column(length = 1000)
     private String notes;
 
     @NotNull

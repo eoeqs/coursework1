@@ -75,6 +75,16 @@ public class TreatmentController {
         }
     }
 
+    @PutMapping("/complete/{id}")
+    public ResponseEntity<?> completeTreatment(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(treatmentMapper.toDTO(treatmentService.completeTreatment(id)));
+        } catch (Exception e) {
+            logger.error("Error completing treatment: {}", e.getMessage());
+            throw e;
+        }
+    }
+
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteTreatment(@PathVariable Long id) {
         try {

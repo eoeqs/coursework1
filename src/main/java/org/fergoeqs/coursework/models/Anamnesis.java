@@ -20,6 +20,8 @@ public class Anamnesis {
 
     @NotNull
     private String name; //например, Headache
+
+    @Column(length = 1000)
     private String description;
     private LocalDate date;
 

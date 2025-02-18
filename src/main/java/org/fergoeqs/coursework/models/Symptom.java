@@ -15,6 +15,7 @@ public class Symptom {
     private Long id;
 
     private String name;
+    @Column(length = 700)
     private String description;
 }
 

@@ -46,6 +46,13 @@ public class TreatmentService {
         return treatmentRepository.save(setRelativeFields(treatment, treatmentDTO));
     }
 
+    public Treatment completeTreatment(Long id) {
+        Treatment treatment = treatmentRepository.findById(id).orElse(null);
+        assert treatment != null;
+        treatment.setIsCompleted(true);
+        return treatmentRepository.save(treatment);
+    }
+
     public void deleteTreatmentById(Long id) {
         treatmentRepository.deleteById(id);
     }
