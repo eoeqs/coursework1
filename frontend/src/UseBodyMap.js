@@ -1,12 +1,22 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-const useBodyMap = (onMark) => {
-    const [selectedPart, setSelectedPart] = useState(null);
-    const [clickPoint, setClickPoint] = useState(null);
+const useBodyMap = (onMark, initialMarker) => {
+    const [selectedPart, setSelectedPart] = useState(initialMarker?.bodyPart || null);
+    const [clickPoint, setClickPoint] = useState(
+        initialMarker ? { x: initialMarker.positionX, y: initialMarker.positionY } : null
+    );
+
+    useEffect(() => {
+        if (initialMarker) {
+            setSelectedPart(initialMarker.bodyPart);
+            setClickPoint({ x: initialMarker.positionX, y: initialMarker.positionY });
+        }
+    }, [initialMarker]);
 
     const handleClick = (event, part) => {
         const x = event.nativeEvent.offsetX;
         const y = event.nativeEvent.offsetY;
+
         setSelectedPart(part);
         setClickPoint({ x, y });
 
