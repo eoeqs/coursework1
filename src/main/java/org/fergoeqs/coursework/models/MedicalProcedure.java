@@ -20,6 +20,8 @@ public class MedicalProcedure { //для таймлайна процедур
     private ProcedureType type;
     private String name;
     private LocalDateTime date;
+
+    @Column(length = 2000)
     private String description;
     private String notes; // доп. примечания
 
@@ -30,6 +32,10 @@ public class MedicalProcedure { //для таймлайна процедур
     @ManyToOne
     @JoinColumn(name = "vet_id")
     private AppUser vet;
+
+    @ManyToOne
+    @JoinColumn(name = "anamnesis_id")
+    private Anamnesis anamnesis;
 
     private String reportUrl;
 }

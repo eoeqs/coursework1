@@ -7,6 +7,7 @@ import org.fergoeqs.coursework.utils.Mappers.RecommendedDiagnosisMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class RecommendedDiagnosisController {
         this.recommendedDiagnosisMapper = recommendedDiagnosisMapper;
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_VET')")
     @GetMapping("/all-by-symptoms")
     public ResponseEntity<?> getAllRecommendedDiagnosisBySymptoms(@RequestParam List<Long> symptomsId,
                                                                   @RequestParam BodyPart bodyPart) {
@@ -35,6 +37,7 @@ public class RecommendedDiagnosisController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_VET')")
     @PostMapping("/save")
     public ResponseEntity<?> saveRecommendedDiagnosis(@RequestBody RecommendedDiagnosisDTO recommendedDiagnosisDTO) {
         try {

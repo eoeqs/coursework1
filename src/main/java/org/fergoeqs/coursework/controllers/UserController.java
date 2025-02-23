@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
@@ -73,6 +74,18 @@ public class UserController {
         } catch (Exception e) {
             logger.error("Authentication failed: {}", e.getMessage());
             throw new UnauthorizedAccessException("Authentication failed");
+        }
+    }
+
+    @PutMapping("/update-avatar")
+    public ResponseEntity<?> updateUserAvatar(@RequestParam("avatar") MultipartFile avatar) {
+        try {
+            AppUser user = userService.getAuthenticatedUser();
+            userService.updateUserAvatar(user, avatar);
+            return ResponseEntity.ok("Avatar updated");
+        } catch (Exception e) {
+            logger.error("Error updating avatar: {}", e.getMessage());
+            throw new InternalServerErrorException("Error updating avatar");
         }
     }
 

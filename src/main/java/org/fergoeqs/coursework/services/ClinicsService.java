@@ -5,9 +5,11 @@ import org.fergoeqs.coursework.models.Clinic;
 import org.fergoeqs.coursework.repositories.ClinicsRepository;
 import org.fergoeqs.coursework.utils.Mappers.ClinicMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Transactional(readOnly = true)
 @Service
 public class ClinicsService {
     private final ClinicsRepository clinicsRepository;
@@ -25,14 +27,17 @@ public class ClinicsService {
         return clinicsRepository.findAll();
     }
 
+    @Transactional
     public Clinic save(ClinicDTO clinicDTO) {
         return clinicsRepository.save(clinicMapper.clinicDTOToClinic(clinicDTO));
     }
 
+    @Transactional
     public void delete(Long clinicId) {
         clinicsRepository.deleteById(clinicId);
     }
 
+    @Transactional
     public void update(ClinicDTO clinicDTO) {
         clinicsRepository.save(clinicMapper.clinicDTOToClinic(clinicDTO));
     }

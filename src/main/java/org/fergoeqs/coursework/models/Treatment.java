@@ -29,7 +29,4 @@ public class Treatment {
 
     private Boolean isCompleted;
 
-    //    @ManyToOne
-    //    @JoinColumn(name = "medical_procedure_id")
-    //    private MedicalProcedure medicalProcedure; //зачем оно тут было?
 }

@@ -67,6 +67,9 @@ public class AppUser implements UserDetails {
 
     private String workingHours;
 
+    @Column(length = 500)
+    private String photoUrl;
+
 
 
     public Optional<RoleType> getPrimaryRole() {

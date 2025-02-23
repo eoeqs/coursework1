@@ -14,5 +14,6 @@ public record AppUserDTO(
     Long clinic,
     String schedule,
     String qualification,
-    String workingHours) {
+    String workingHours,
+    String photoUrl) {
 }

@@ -8,6 +8,7 @@ import org.fergoeqs.coursework.utils.Mappers.QuarantineMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -54,6 +55,7 @@ public class QuarantineController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_VET')")
     @PostMapping("/save")
     public ResponseEntity<?> saveQuarantine(@RequestBody QuarantineDTO quarantineDTO) throws BadRequestException {
         try {
@@ -65,6 +67,7 @@ public class QuarantineController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_VET')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteQuarantine(@PathVariable Long id) {
         try {

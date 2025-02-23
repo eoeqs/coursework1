@@ -5,9 +5,10 @@ import org.fergoeqs.coursework.models.BodyMarker;
 import org.fergoeqs.coursework.repositories.BodyMarkersRepository;
 import org.fergoeqs.coursework.utils.Mappers.BodyMarkerMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
-
+@Transactional(readOnly = true)
 @Service
 public class BodyMarkersService {
     private final BodyMarkersRepository bodyMarkersRepository;
@@ -27,11 +28,13 @@ public class BodyMarkersService {
         return bodyMarkersRepository.findById(id).orElse(null);
     }
 
+    @Transactional
     public BodyMarker save(BodyMarkerDTO bodyMarkerDTO) {
         BodyMarker bodyMarker = bodyMarkerMapper.fromDTO(bodyMarkerDTO);
         return bodyMarkersRepository.save(setRelativeFields(bodyMarker, bodyMarkerDTO));
     }
 
+    @Transactional
     public BodyMarker update(Long id, BodyMarkerDTO bodyMarkerDTO) {
         BodyMarker bodyMarker = bodyMarkersRepository.findById(id).orElse(null);
         assert bodyMarker != null : "bodyMarker can't be null";

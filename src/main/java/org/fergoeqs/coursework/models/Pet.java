@@ -42,4 +42,7 @@ public class Pet {
     @ManyToOne
     @JoinColumn(name = "sector_id")
     private Sector sector;
+
+    @Column(length = 500)
+    private String photoUrl; //TODO: добавить фото-заглушку, если аватарка не загружена
 }

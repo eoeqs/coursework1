@@ -7,6 +7,7 @@ import org.fergoeqs.coursework.utils.Mappers.SlotMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -56,6 +57,7 @@ public class SlotsController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_VET')")
     @PostMapping("/add-slot")
     public ResponseEntity<?> addSlot(@RequestBody SlotDTO slotDTO) {
         try {
@@ -89,6 +91,7 @@ public class SlotsController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_VET')")
     @DeleteMapping("/delete-slot/{id}")
     public ResponseEntity<?> deleteSlot(@PathVariable Long id) {
         try {

@@ -6,6 +6,7 @@ import org.fergoeqs.coursework.utils.Mappers.ClinicMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,6 +43,7 @@ public class ClinicsController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/save")
     public ResponseEntity<?> saveClinic(@RequestBody ClinicDTO clinicDTO) {
         try {

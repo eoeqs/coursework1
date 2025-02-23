@@ -11,5 +11,8 @@ public record MedicalProcedureDTO (
     LocalDateTime date,
     String description,
     String notes,
-    Long vet)
+    Long pet,
+    Long vet,
+    String reportUrl,
+    Long anamnesis)
 {}

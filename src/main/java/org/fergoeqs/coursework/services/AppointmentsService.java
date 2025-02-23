@@ -85,6 +85,7 @@ public class AppointmentsService {
         }
     }
 
+
     private void sendNotification(Appointment appointment, String message) {
         AppUser owner = appointment.getPet().getOwner();
         notificationService.sendNotification(owner.getId(), message, owner.getEmail());

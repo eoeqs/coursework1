@@ -19,6 +19,7 @@ public class HealthUpdateController {
         this.healthUpdateService = healthUpdateService;
         this.healthUpdateMapper = healthUpdateMapper;
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getHealthUpdate(@PathVariable Long id) {
         try {
@@ -28,6 +29,7 @@ public class HealthUpdateController {
             throw e;
         }
     }
+
     @GetMapping("/first/{petId}")
     public ResponseEntity<?> getFirstHealthUpdate(@PathVariable Long petId) {
         try {

@@ -17,6 +17,7 @@ public class Appointment {
 
     private Boolean priority;
 
+    @Column(length = 1000)
     String description;
 
     @NotNull

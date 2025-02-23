@@ -18,11 +18,10 @@ public class DiagnosticAttachment {
 
     private String name;
     private String description;
-    private String filePath;
+    private String fileUrl;
     private LocalDateTime uploadDate;
-    private String fileType;
 
     @ManyToOne
-    @JoinColumn(name = "diagnosis_id")
-    private Diagnosis diagnosis;
+    @JoinColumn(name = "anamnesis_id")
+    private Anamnesis anamnesis;
 }

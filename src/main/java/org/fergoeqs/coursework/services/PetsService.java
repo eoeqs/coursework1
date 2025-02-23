@@ -7,7 +7,9 @@ import org.fergoeqs.coursework.repositories.PetsRepository;
 import org.fergoeqs.coursework.utils.Mappers.PetMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Transactional(readOnly = true)
@@ -16,11 +18,14 @@ public class PetsService {
     private final PetsRepository petsRepository;
     private final PetMapper petMapper;
     private final SectorsService sectorsService;
+    private final StorageService storageService;
 
-    public PetsService(PetsRepository petsRepository, PetMapper petMapper, SectorsService sectorsService) {
+    public PetsService(PetsRepository petsRepository, PetMapper petMapper, SectorsService sectorsService,
+                       StorageService storageService) {
         this.petsRepository = petsRepository;
         this.petMapper = petMapper;
         this.sectorsService = sectorsService;
+        this.storageService = storageService;
     }
 
     public List<Pet> findAllPets() {
@@ -90,14 +95,36 @@ public class PetsService {
         petsRepository.save(pet);
     }
 
+    @Transactional
+    public void unbindPet(Long petId) {
+        Pet pet = petsRepository.findById(petId).orElseThrow();
+        pet.setActualVet(null);
+        petsRepository.save(pet);
+    }
+
+    @Transactional
+    public void updatePetAvatar(Long petId, MultipartFile avatar) throws IOException {
+        Pet pet = petsRepository.findById(petId)
+                .orElseThrow(() -> new IllegalArgumentException("Pet not found"));
+        String contentType = avatar.getContentType();
+        if (contentType == null || (!contentType.equals("image/png") && !contentType.equals("image/jpeg"))) {
+            throw new IllegalArgumentException("Invalid file type. Only PNG and JPEG are allowed.");
+        }
+        String objectName = "avatar/" + petId;
+        storageService.uploadFile("pets", objectName, avatar.getInputStream(), contentType);
+        pet.setPhotoUrl(storageService.generatePublicUrl("pets", objectName));
+        petsRepository.save(pet);
+    }
+
+
     private boolean isVet(AppUser user) {
         return user.getAuthorities().stream()
-                .anyMatch(auth -> auth.getAuthority().equals("VET"));
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_VET"));
     }
 
     private boolean isAdmin(AppUser user) {
         return user.getAuthorities().stream()
-                .anyMatch(auth -> auth.getAuthority().equals("ADMIN"));
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
     }
 
 }

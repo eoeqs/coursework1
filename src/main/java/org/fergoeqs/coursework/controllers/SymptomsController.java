@@ -6,6 +6,7 @@ import org.fergoeqs.coursework.utils.Mappers.SymptomMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -30,6 +31,7 @@ public class SymptomsController {
         }
     }
 
+
     @GetMapping("/by-diagnosis/{diagnosisId}")
     public ResponseEntity<?> getSymptomsByDiagnosis(@PathVariable Long diagnosisId) { //pathVariable ли?
         try {
@@ -40,6 +42,7 @@ public class SymptomsController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_VET')")
     @PostMapping("/save")
     public ResponseEntity<?> saveSymptom(@RequestBody SymptomDTO symptomDTO) {
         try {

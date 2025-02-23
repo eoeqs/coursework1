@@ -10,8 +10,11 @@ import org.fergoeqs.coursework.utils.Mappers.PetMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -103,10 +106,11 @@ public class PetsController {
             return ResponseEntity.ok(petMapper.petToPetDTO(petsService.updatePet(petId, userService.getAuthenticatedUser(), petDTO)));
         } catch (Exception e) {
             logger.error("Pet updating failed: {}", e.getMessage());
-            throw e; //TODO: переписать эксепшены
+            throw e; //TODO: проверять, что редактировать может только владелец или врач
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_VET')")
     @PutMapping("/bind/{petId}")
     public ResponseEntity<?> bindPet(@PathVariable Long petId) throws BadRequestException {
         try {
@@ -118,6 +122,7 @@ public class PetsController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_VET')")
     @PutMapping("/sector-place/{petId}") //TODO: requestParam удобно?????
     public ResponseEntity<?> setSectorPlace(@PathVariable Long petId, @RequestParam Long sectorId) {
         try {
@@ -129,6 +134,30 @@ public class PetsController {
         } //TODO: нужен ли эндпоинт на вызволение из сектора?
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_VET')")
+    @PutMapping("/unbind/{petId}")
+    public ResponseEntity<?> unbindPet(@PathVariable Long petId) throws BadRequestException {
+        try {
+            petsService.unbindPet(petId);
+            return ResponseEntity.ok("Pet" + petId + " unbound");
+        } catch (Exception e) {
+            logger.error("Pet unbinding failed: {}", e.getMessage());
+            throw e;
+        }
+    }
+
+    @PutMapping("/update-avatar/{petId}")
+    public ResponseEntity<?> updatePetAvatar(@PathVariable Long petId, @RequestParam("avatar") MultipartFile avatar) throws IOException {
+        try {
+            petsService.updatePetAvatar(petId, avatar);
+            return ResponseEntity.ok("Pet " + petId + " avatar updated");
+        } catch (Exception e) {
+            logger.error("Pet avatar updating failed: {}", e.getMessage());
+            throw e; //TODO: проверять, что может делать только врач или овнер
+        }
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_VET')")
     @DeleteMapping("/delete-pet/{petId}")
     public ResponseEntity<?> deletePet(@PathVariable Long petId) throws BadRequestException {
         try {

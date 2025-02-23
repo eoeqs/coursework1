@@ -7,6 +7,7 @@ import org.fergoeqs.coursework.utils.Mappers.TreatmentMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -55,6 +56,7 @@ public class TreatmentController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_VET')")
     @PostMapping("/add")
     public ResponseEntity<?> addTreatment(@RequestBody TreatmentDTO treatmentDTO) {
         try {
@@ -65,6 +67,7 @@ public class TreatmentController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_VET')")
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateTreatment(@PathVariable Long id, @RequestBody TreatmentDTO treatmentDTO) {
         try {
@@ -75,6 +78,18 @@ public class TreatmentController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_VET')")
+    @PutMapping("/complete/{id}")
+    public ResponseEntity<?> completeTreatment(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(treatmentMapper.toDTO(treatmentService.completeTreatment(id)));
+        } catch (Exception e) {
+            logger.error("Error completing treatment: {}", e.getMessage());
+            throw e;
+        }
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_VET')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteTreatment(@PathVariable Long id) {
         try {
