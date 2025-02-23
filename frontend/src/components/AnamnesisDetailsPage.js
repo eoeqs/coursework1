@@ -47,7 +47,6 @@ const AnamnesisDetailsPage = () => {
                 const appointmentResponse = await axiosInstance.get(`/appointments/appointment/${anamnesisResponse.data.appointment}`);
                 setAppointment(appointmentResponse.data);
 
-                // Получаем данные слота по slotId из appointment
                 if (appointmentResponse.data.slotId) {
                     const slotResponse = await axiosInstance.get(`/slots/${appointmentResponse.data.slotId}`);
                     setAppointment(prevAppointment => ({

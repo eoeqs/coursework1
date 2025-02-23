@@ -3,6 +3,8 @@ import { useAuth } from "../AuthProvider";
 import useAxiosWithAuth from "../AxiosAuth";
 import PetProfile from "./PetProfile";
 import { useNavigate } from "react-router-dom";
+import DogBodyMap from "./DogBodyMap";
+import CatBodyMap from "./CatBodyMap";
 
 const VetDashboard = () => {
     const { token } = useAuth();
@@ -17,6 +19,8 @@ const VetDashboard = () => {
     const [userRole, setUserRole] = useState(null);
     const [selectedPetId, setSelectedPetId] = useState(null);
     const navigate = useNavigate();
+    const [bodyMarker, setBodyMarker] = useState(null);
+
 
     useEffect(() => {
         if (!token) return;
@@ -71,7 +75,8 @@ const VetDashboard = () => {
             if (!appointment) {
                 throw new Error("Appointment not found");
             }
-
+            const markerResponse = await axiosInstance.get(`/body-marker/appointment/${appointmentId}`);
+            setBodyMarker(markerResponse.data);
             const appointmentResponse = await axiosInstance.get(`/appointments/appointment/${appointmentId}`);
             const appointmentData = appointmentResponse.data;
 
@@ -263,6 +268,25 @@ const VetDashboard = () => {
                     <p><strong>Date:</strong> {selectedAppointment.slot.date}</p>
                     <p><strong>Time:</strong> {selectedAppointment.slot.startTime} - {selectedAppointment.slot.endTime}</p>
                     <p><strong>Priority:</strong> {selectedAppointment.priority ? "Yes" : "No"}</p>
+
+
+                    <div style={{ margin: "20px 0" }}>
+                    <h4>Body Marker</h4>
+                    {selectedAppointment.pet.type === "DOG" ? (
+                        <DogBodyMap
+                            initialMarker={bodyMarker}
+                            readOnly={true}
+                        />
+                    ) : selectedAppointment.pet.type === "CAT" ? (
+                        <CatBodyMap
+                            initialMarker={bodyMarker}
+                            readOnly={true}
+                        />
+                    ) : (
+                        <p>Unknown animal type</p>
+                    )}
+                </div>
+
                     <label>
                         <input
                             type="checkbox"
