@@ -37,7 +37,7 @@ public class UserService {
         }
 
         AppUser user = new AppUser(username, passwordEncoder.encode(password));
-        user.getRoles().add(RoleType.USER);
+        user.getRoles().add(RoleType.ROLE_USER);
         return userRepository.save(user);
     }
 
@@ -92,12 +92,12 @@ public class UserService {
 
     public boolean isVet(AppUser user) {
         return user.getAuthorities().stream()
-                .anyMatch(auth -> auth.getAuthority().equals("VET"));
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_VET"));
     }
 
     public boolean isAdmin(AppUser user) {
         return user.getAuthorities().stream()
-                .anyMatch(auth -> auth.getAuthority().equals("ADMIN"));
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
     }
 
 //TODO: назначение ролей + на регистрацию клиента отдельную ручку контроллера чтоб роль сразу ставилась OWNER, аналогично для питомца

@@ -7,6 +7,7 @@ import org.fergoeqs.coursework.utils.Mappers.RatingAndReviewsMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -41,13 +42,14 @@ public class RatingAndReviewsController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_OWNER')")
     @PostMapping("/save")
     public ResponseEntity<?> saveRatingAndReviews(@RequestBody RatingAndReviewsDTO ratingAndReviewsDTO) throws BadRequestException {
         try {
             return ResponseEntity.ok(ratingAndReviewsMapper.toDTO(ratingAndReviewsService.save(ratingAndReviewsDTO)));
         } catch (Exception e) {
             logger.error("Error occurred while saving rating and reviews", e);
-            throw e;
+            throw e; //TODO: проверять, что отзывы может писать только овнер, который был когда-то записан к этому врачу
         }
     }
 }

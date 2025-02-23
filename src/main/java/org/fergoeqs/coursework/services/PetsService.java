@@ -119,12 +119,12 @@ public class PetsService {
 
     private boolean isVet(AppUser user) {
         return user.getAuthorities().stream()
-                .anyMatch(auth -> auth.getAuthority().equals("VET"));
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_VET"));
     }
 
     private boolean isAdmin(AppUser user) {
         return user.getAuthorities().stream()
-                .anyMatch(auth -> auth.getAuthority().equals("ADMIN"));
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
     }
 
 }

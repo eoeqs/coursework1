@@ -42,7 +42,7 @@ public class AuthenticationService {
         user.setPhoneNumber(input.phoneNumber());
         user.setName(input.name());
         user.setSurname(input.surname());
-        user.setRoles(new HashSet<>(Set.of(RoleType.USER)));
+        user.setRoles(new HashSet<>(Set.of(RoleType.ROLE_USER)));
 
         logger.info("User roles before save: {}", user.getRoles());
 

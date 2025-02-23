@@ -6,6 +6,7 @@ import org.fergoeqs.coursework.utils.Mappers.MedicalProcedureMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -62,6 +63,7 @@ public class MedicalProcedureController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_VET')")
     @PostMapping("/add")
     public ResponseEntity<?> addProcedure(@RequestBody MedicalProcedureDTO medicalProcedureDTO) throws IOException {
         try {

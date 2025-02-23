@@ -44,5 +44,5 @@ public class Pet {
     private Sector sector;
 
     @Column(length = 500)
-    private String photoUrl;
+    private String photoUrl; //TODO: добавить фото-заглушку, если аватарка не загружена
 }

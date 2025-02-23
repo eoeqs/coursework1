@@ -1,5 +1,5 @@
 package org.fergoeqs.coursework.models.enums;
 
 public enum RoleType {
-    ADMIN, VET, OWNER, USER
+    ROLE_ADMIN, ROLE_VET, ROLE_OWNER, ROLE_USER
 }
