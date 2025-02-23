@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import React from "react";
 import useBodyMap from "../UseBodyMap";
 
-const CatBodyMap = ({onMark}) => {
-    const { selectedPart, clickPoint, handleClick } = useBodyMap(onMark);
+const CatBodyMap = ({ onMark, initialMarker, readOnly = false }) => {
+    const { selectedPart, clickPoint, handleClick } = useBodyMap(onMark, initialMarker);
 
 
 
     return (
-        <svg viewBox="0 0 500 500" width="500" height="500">
+        <svg viewBox="0 0 500 500" width="500" height="500" style={{ pointerEvents: readOnly ? "none" : "auto" }}>
             <path
                 d="m 144.01414,136.16528 -9.35444,-24.94519 -10.60171,12.47259 -6.85992,11.84897 -4.98904,15.59074 -3.11815,9.35445 50.51401,32.42874 16.838,-0.62363 9.97807,-11.84896 3.11815,-4.36541 -6.23629,-8.10719 -4.36541,-3.11815 -2.49452,-11.22533 -8.73082,-7.48356 -7.48355,-3.11815 4.98903,-22.45067 z"
                 fill={selectedPart === "HEAD" ? "red" : "black"}
