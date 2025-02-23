@@ -6,7 +6,15 @@ const PetInfo = ({ petInfo, onEdit }) => {
             <h2>Pet Profile</h2>
             <div>
                 <div>
-                    Pet profile pic placeholder
+                    {petInfo.photoUrl ? (
+                        <img
+                            src={petInfo.photoUrl}
+                            alt={`${petInfo.name}'s avatar`}
+                            style={{width: '200px', height: '200px', borderRadius: '50%'}}
+                        />
+                    ) : (
+                        <div>Pet profile pic placeholder</div>
+                    )}
                 </div>
             </div>
 

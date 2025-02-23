@@ -11,7 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -127,6 +129,28 @@ public class PetsController {
             logger.error("Pet sector setting failed: {}", e.getMessage());
             throw e;
         } //TODO: нужен ли эндпоинт на вызволение из сектора?
+    }
+
+    @PutMapping("/unbind/{petId}")
+    public ResponseEntity<?> unbindPet(@PathVariable Long petId) throws BadRequestException {
+        try {
+            petsService.unbindPet(petId);
+            return ResponseEntity.ok("Pet" + petId + " unbound");
+        } catch (Exception e) {
+            logger.error("Pet unbinding failed: {}", e.getMessage());
+            throw e;
+        }
+    }
+
+    @PutMapping("/update-avatar/{petId}")
+    public ResponseEntity<?> updatePetAvatar(@PathVariable Long petId, @RequestParam("avatar") MultipartFile avatar) throws IOException {
+        try {
+            petsService.updatePetAvatar(petId, avatar);
+            return ResponseEntity.ok("Pet " + petId + " avatar updated");
+        } catch (Exception e) {
+            logger.error("Pet avatar updating failed: {}", e.getMessage());
+            throw e;
+        }
     }
 
     @DeleteMapping("/delete-pet/{petId}")

@@ -53,7 +53,7 @@ public class MedicalProcedureService {
         MedicalProcedure mp = setRelativeFields(mpMapper.fromDTO(mpDTO), mpDTO);
         mp.setDate(LocalDateTime.now());
         mp.setReportUrl(reportGenerator.generateProcedureReport(medicalProcedureRepository.save(mp)));
-        return mp;
+        return medicalProcedureRepository.save(mp);
     }
 
     private MedicalProcedure setRelativeFields(MedicalProcedure mp, MedicalProcedureDTO mpDTO) {

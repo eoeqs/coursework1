@@ -73,7 +73,7 @@ public class ReportGenerator {
         contentStream.newLineAtOffset(40, 150);
         contentStream.showText(("Date: " + procedure.getDate().format(java.time.format.DateTimeFormatter.ofPattern("dd.MM.yyyy"))));
         contentStream.newLineAtOffset(0, -15);
-        contentStream.showText("Veterinarian: " + procedure.getVet().getName());
+        contentStream.showText("Veterinarian: " + procedure.getVet().getName() + " " + procedure.getVet().getSurname());
         contentStream.endText();
 
         contentStream.drawImage(stamp, 450, 40, 100, 100);
@@ -89,7 +89,6 @@ public class ReportGenerator {
         String objectName = "medical_report_" + procedure.getId() + ".pdf";
         String bucketName = "vetcare";
 
-        storageService.prepareUploadFile(bucketName, objectName, pdfInputStream, "application/pdf");
         storageService.uploadFile(bucketName, objectName, pdfInputStream, "application/pdf");
         System.out.println(storageService.generateUrl(bucketName, objectName));
 

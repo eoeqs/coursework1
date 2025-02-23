@@ -12,5 +12,5 @@ public record PetDTO (Long id,
     PetType type,
     BigDecimal weight,
     SexEnum sex,
-    Integer age, Long actualVet, Long owner, Long sector)
+    Integer age, Long actualVet, Long owner, Long sector, String photoUrl)
 {}

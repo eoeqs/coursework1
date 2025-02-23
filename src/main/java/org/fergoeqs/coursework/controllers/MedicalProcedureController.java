@@ -32,6 +32,16 @@ public class MedicalProcedureController {
         }
     }
 
+    @GetMapping("/report/{id}")
+    public ResponseEntity<?> getProcedureReport(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(medicalProcedureService.getReportUrl(id));
+        } catch (Exception e) {
+            logger.error("Error getting procedure report: {}", e.getMessage());
+            throw e;
+        }
+    }
+
     @GetMapping("/all-by-pet/{petId}")
     public ResponseEntity<?> getAllProceduresByPet(@PathVariable Long petId) {
         try {
