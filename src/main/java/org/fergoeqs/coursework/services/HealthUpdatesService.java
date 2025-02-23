@@ -6,10 +6,12 @@ import org.fergoeqs.coursework.models.Pet;
 import org.fergoeqs.coursework.repositories.HealthUpdatesRepository;
 import org.fergoeqs.coursework.utils.Mappers.HealthUpdateMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Transactional(readOnly = true)
 @Service
 public class HealthUpdatesService {
     private final HealthUpdatesRepository healthUpdatesRepository;
@@ -35,6 +37,7 @@ public class HealthUpdatesService {
         return healthUpdatesRepository.findById(id).orElse(null);
     }
 
+    @Transactional
     public HealthUpdate save(HealthUpdateDTO healthUpdateDTO) {
         HealthUpdate healthUpdate = healthUpdateMapper.fromDTO(healthUpdateDTO);
         healthUpdate.setPet(petsService.findPetById(healthUpdateDTO.pet()));
@@ -42,6 +45,7 @@ public class HealthUpdatesService {
         return healthUpdatesRepository.save(healthUpdate);
     }
 
+    @Transactional
     public HealthUpdate saveWithAppointment(Pet pet, String symptoms) {
         HealthUpdate healthUpdate = new HealthUpdate();
         healthUpdate.setPet(pet);

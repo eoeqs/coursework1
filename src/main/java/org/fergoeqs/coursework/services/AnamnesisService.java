@@ -5,10 +5,11 @@ import org.fergoeqs.coursework.models.Anamnesis;
 import org.fergoeqs.coursework.repositories.AnamnesisRepository;
 import org.fergoeqs.coursework.utils.Mappers.AnamnesisMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
-
+@Transactional(readOnly = true)
 @Service
 public class AnamnesisService {
     private final AnamnesisRepository anamnesisRepository;
@@ -32,6 +33,7 @@ public class AnamnesisService {
         return anamnesisRepository.findByPetId(petId);
     }
 
+    @Transactional
     public Anamnesis saveAnamnesis(AnamnesisDTO anamnesisDTO) {
         Anamnesis anamnesis = anamnesisMapper.fromDTO(anamnesisDTO);
         anamnesis.setPet(petsService.findPetById(anamnesisDTO.pet()));
@@ -40,6 +42,7 @@ public class AnamnesisService {
         return anamnesisRepository.save(anamnesis);
     }
 
+    @Transactional
     public void deleteAnamnesis(Long id) {
         anamnesisRepository.deleteById(id);
     }

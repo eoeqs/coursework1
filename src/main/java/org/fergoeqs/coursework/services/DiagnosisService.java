@@ -5,10 +5,12 @@ import org.fergoeqs.coursework.models.Diagnosis;
 import org.fergoeqs.coursework.repositories.DiagnosisRepository;
 import org.fergoeqs.coursework.utils.Mappers.DiagnosisMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Transactional(readOnly = true)
 @Service
 public class DiagnosisService {
     private final DiagnosisRepository diagnosisRepository;
@@ -38,6 +40,7 @@ public class DiagnosisService {
         return diagnosisRepository.findFirstByAnamnesisIdOrderByDateAsc(anamnesisId).orElse(null);
     }
 
+    @Transactional
     public Diagnosis saveDiagnosis(DiagnosisDTO diagnosisDTO){
         Diagnosis diagnosis = diagnosisMapper.fromDTO(diagnosisDTO);
         diagnosis.setAnamnesis(anamnesisService.findAnamnesisById(diagnosisDTO.anamnesis()));
@@ -45,6 +48,7 @@ public class DiagnosisService {
         return diagnosisRepository.save(diagnosis);
     }
 
+    @Transactional
     public Diagnosis updateDiagnosis(Long id, DiagnosisDTO diagnosisDTO){
         Diagnosis diagnosis = diagnosisRepository.findById(id).orElse(null);
         if (diagnosis == null) return null;

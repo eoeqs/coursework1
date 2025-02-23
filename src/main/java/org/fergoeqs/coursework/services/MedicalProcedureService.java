@@ -6,6 +6,7 @@ import org.fergoeqs.coursework.repositories.MedicalProcedureRepository;
 import org.fergoeqs.coursework.utils.Mappers.MedicalProcedureMapper;
 import org.fergoeqs.coursework.utils.ReportGenerator;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -48,6 +49,7 @@ public class MedicalProcedureService {
         String url = (mp != null ? mp.getReportUrl() : null);
         return reportGenerator.generateReportUrl(url);
     }
+
 
     public MedicalProcedure save(MedicalProcedureDTO mpDTO) throws IOException {
         MedicalProcedure mp = setRelativeFields(mpMapper.fromDTO(mpDTO), mpDTO);
