@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import useBodyMap from "../UseBodyMap";
 
-const CatBodyMap = ({ onMark, initialMarker }) => {
-    const { selectedPart, clickPoint, handleClick } = useBodyMap(onMark, initialMarker);
+const CatBodyMap = ({onMark}) => {
+    const { selectedPart, clickPoint, handleClick } = useBodyMap(onMark);
 
 
 

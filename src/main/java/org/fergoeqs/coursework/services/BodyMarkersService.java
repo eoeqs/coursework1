@@ -6,8 +6,6 @@ import org.fergoeqs.coursework.repositories.BodyMarkersRepository;
 import org.fergoeqs.coursework.utils.Mappers.BodyMarkerMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class BodyMarkersService {
     private final BodyMarkersRepository bodyMarkersRepository;
@@ -43,9 +41,5 @@ public class BodyMarkersService {
         bodyMarker.setPet(petsService.findPetById(bodyMarkerDTO.pet()));
         bodyMarker.setAppointment(appointmentsService.findById(bodyMarkerDTO.appointment()));
         return bodyMarker;
-    }
-
-    public Optional<BodyMarker> findByAppointmentId(Long appointmentId) {
-        return bodyMarkersRepository.findByAppointmentId(appointmentId);
     }
 }
