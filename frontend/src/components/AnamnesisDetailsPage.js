@@ -44,8 +44,16 @@ const AnamnesisDetailsPage = () => {
                 const clinicalDiagnosesResponse = await axiosInstance.get(`/diagnosis/all-diagnoses/${id}`);
                 setClinicalDiagnoses(clinicalDiagnosesResponse.data);
 
-                // const appointmentResponse = await axiosInstance.get(`/appointments/appointment/${anamnesisResponse.data.appointmentId}`);
-                // setAppointment(appointmentResponse.data);
+                const appointmentResponse = await axiosInstance.get(`/appointments/appointment/${anamnesisResponse.data.appointment}`);
+                setAppointment(appointmentResponse.data);
+
+                if (appointmentResponse.data.slotId) {
+                    const slotResponse = await axiosInstance.get(`/slots/${appointmentResponse.data.slotId}`);
+                    setAppointment(prevAppointment => ({
+                        ...prevAppointment,
+                        slot: slotResponse.data
+                    }));
+                }
             } catch (error) {
                 console.error("Error fetching data:", error);
                 setError("Failed to fetch data. Please try again later.");
@@ -242,5 +250,5 @@ const AnamnesisDetailsPage = () => {
         </div>
     );
 };
-// TODO: procedures preformed, generating report, treatment recommendation
+
 export default AnamnesisDetailsPage;

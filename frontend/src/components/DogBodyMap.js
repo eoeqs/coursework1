@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import useBodyMap from "../UseBodyMap";
 
-const DogBodyMap = ({ onMark }) => {
-    const { selectedPart, clickPoint, handleClick } = useBodyMap(onMark);
+const DogBodyMap = ({ onMark, initialMarker,  readOnly = false }) => {
+    const { selectedPart, clickPoint, handleClick } = useBodyMap(onMark, initialMarker);
 
 
     return (

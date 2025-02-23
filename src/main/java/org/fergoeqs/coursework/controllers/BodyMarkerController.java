@@ -30,6 +30,19 @@ public class BodyMarkerController {
         }
     }
 
+    @GetMapping("/appointment/{appointmentId}")
+    public ResponseEntity<?> getByAppointment(@PathVariable Long appointmentId) {
+        try {
+            return ResponseEntity.ok(
+                    bodyMarkersService.findByAppointmentId(appointmentId)
+                            .map(bodyMarkerMapper::toDTO)
+                            .orElse(null)
+            );
+        } catch (Exception e) {
+            logger.error("Error fetching marker for appointment: {}", appointmentId, e);
+            throw e;
+        }
+    }
     @PostMapping("/save")
     public ResponseEntity<?> saveBodyMarker(@RequestBody BodyMarkerDTO bodyMarkerDTO) {
         try {

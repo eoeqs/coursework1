@@ -2,7 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "../AuthProvider";
 import useAxiosWithAuth from "../AxiosAuth";
 import PetProfile from "./PetProfile";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import DogBodyMap from "./DogBodyMap";
+import CatBodyMap from "./CatBodyMap";
 
 const VetDashboard = () => {
     const { token } = useAuth();
@@ -17,6 +19,8 @@ const VetDashboard = () => {
     const [userRole, setUserRole] = useState(null);
     const [selectedPetId, setSelectedPetId] = useState(null);
     const navigate = useNavigate();
+    const [bodyMarker, setBodyMarker] = useState(null);
+
 
     useEffect(() => {
         if (!token) return;
@@ -39,7 +43,7 @@ const VetDashboard = () => {
                     setDoctorPets(doctorPetsResponse.data);
                 }
 
-                const appointmentsResponse = await axiosInstance.get(`/appointments/vet-appointments/${vetInfoResponse.data.id}`);
+                const appointmentsResponse = await axiosInstance.get(`/appointments/upcoming-vet/${vetInfoResponse.data.id}`);
                 const appointmentPromises = appointmentsResponse.data.map(async (appointment) => {
                     const [slotResponse, petResponse] = await Promise.all([
                         axiosInstance.get(`/slots/${appointment.slotId}`),
@@ -71,7 +75,8 @@ const VetDashboard = () => {
             if (!appointment) {
                 throw new Error("Appointment not found");
             }
-
+            const markerResponse = await axiosInstance.get(`/body-marker/appointment/${appointmentId}`);
+            setBodyMarker(markerResponse.data);
             const appointmentResponse = await axiosInstance.get(`/appointments/appointment/${appointmentId}`);
             const appointmentData = appointmentResponse.data;
 
@@ -103,15 +108,18 @@ const VetDashboard = () => {
         if (!selectedAppointment) return;
 
         try {
+            // Привязка питомца к ветеринару
             await axiosInstance.put(`/pets/bind/${selectedAppointment.pet.id}`);
             alert("Pet successfully bound to the vet!");
 
+            // Создание анамнеза, если выбрана опция
             if (createAnamnesis) {
                 const anamnesisDTO = {
                     pet: selectedAppointment.pet.id,
                     name: selectedAppointment.pet.name,
                     description: selectedAppointment.description,
-                    date: new Date().toISOString()
+                    date: new Date().toISOString(),
+                    appointment: selectedAppointment.id // Передаем appointmentId
                 };
                 await axiosInstance.post("/anamnesis/save", anamnesisDTO);
                 alert("Anamnesis successfully created!");
@@ -144,6 +152,7 @@ const VetDashboard = () => {
     const closePetProfile = () => {
         setSelectedPetId(null);
     };
+
     if (loading) {
         return <div>Loading...</div>;
     }
@@ -259,6 +268,25 @@ const VetDashboard = () => {
                     <p><strong>Date:</strong> {selectedAppointment.slot.date}</p>
                     <p><strong>Time:</strong> {selectedAppointment.slot.startTime} - {selectedAppointment.slot.endTime}</p>
                     <p><strong>Priority:</strong> {selectedAppointment.priority ? "Yes" : "No"}</p>
+
+
+                    <div style={{ margin: "20px 0" }}>
+                    <h4>Body Marker</h4>
+                    {selectedAppointment.pet.type === "DOG" ? (
+                        <DogBodyMap
+                            initialMarker={bodyMarker}
+                            readOnly={true}
+                        />
+                    ) : selectedAppointment.pet.type === "CAT" ? (
+                        <CatBodyMap
+                            initialMarker={bodyMarker}
+                            readOnly={true}
+                        />
+                    ) : (
+                        <p>Unknown animal type</p>
+                    )}
+                </div>
+
                     <label>
                         <input
                             type="checkbox"
