@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import {useParams, useNavigate} from "react-router-dom";
 import useAxiosWithAuth from "../AxiosAuth";
 import EditPetModal from "./EditPetModal";
 import AddAnamnesisModal from "./AddAnamnesisModal";
@@ -8,7 +8,7 @@ import PetInfo from "./PetInfo";
 import HealthUpdateDetailsModal from "./HealthUpdateDetailsModal";
 
 const PetProfilePage = () => {
-    const { petId } = useParams();
+    const {petId} = useParams();
     const navigate = useNavigate();
     const axiosInstance = useAxiosWithAuth();
     const [petInfo, setPetInfo] = useState(null);
@@ -130,7 +130,12 @@ const PetProfilePage = () => {
     return (
         <div className="container mt-5" style={{display: "flex", gap: "100px"}}>
             <div className="ps-3">
-                <PetInfo petInfo={petInfo} onEdit={() => setIsEditModalOpen(true)}/>
+                <PetInfo petInfo={petInfo}/>
+
+                <button className="button rounded-3 btn-no-border" onClick={() => setIsEditModalOpen(true)}>
+                    Edit pet profile
+                </button>
+
                 <div className="bg-treatment container mt-3 rounded-1 upcoming-appointments" style={{padding: "20px"}}>
                     <h4>Upcoming Appointments</h4>
                     {upcomingAppointments.length > 0 ? (
