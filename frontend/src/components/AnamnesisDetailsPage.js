@@ -44,7 +44,6 @@ const AnamnesisDetailsPage = () => {
                 }
 
                 const diagnosisResponse = await axiosInstance.get(`/diagnosis/preliminary-diagnosis/${id}`);
-                console.log(diagnosisResponse.data)
                 setDiagnosis(diagnosisResponse.data);
 
                 const clinicalDiagnosesResponse = await axiosInstance.get(`/diagnosis/all-diagnoses/${id}`);
@@ -99,6 +98,18 @@ const AnamnesisDetailsPage = () => {
         } catch (error) {
             console.error("Error updating examination plan:", error);
             alert("Failed to update examination plan. Please try again later.");
+        }
+    };
+
+    const handleSavePreliminaryDiagnosis = async (diagnosisData) => {
+        try {
+            const response = await axiosInstance.post("/diagnosis/save", { ...diagnosisData, anamnesis: id });
+            setDiagnosis(response.data);
+            setIsEditClinicalDiagnosisModalOpen(false);
+            alert("Preliminary Diagnosis saved successfully!");
+        } catch (error) {
+            console.error("Error saving preliminary diagnosis:", error);
+            alert("Failed to save preliminary diagnosis. Please try again later.");
         }
     };
 
@@ -206,7 +217,8 @@ const AnamnesisDetailsPage = () => {
                                     <strong>Date:</strong> {new Date(diagnosis.date).toLocaleDateString()}</p>
                                 <p style={{marginBottom: '5px'}}>
                                     <strong>Contagious:</strong> {diagnosis.contagious ? "Yes" : "No"}</p>
-                                <p style={{marginBottom: '0px'}}><strong>Description:</strong> {diagnosis.description}</p>
+                                <p style={{marginBottom: '0px'}}><strong>Description:</strong> {diagnosis.description}
+                                </p>
                                 <div style={{marginTop: "auto", textAlign: "right"}}>
                                     <button className="button btn-no-border"
 
@@ -216,6 +228,14 @@ const AnamnesisDetailsPage = () => {
                             </div>
                         ) : (
                             <p>No preliminary diagnosis provided.</p>
+                        )}
+                        {!diagnosis && (
+                            <button className="button rounded-3 btn-no-border" onClick={() => {
+                                setSelectedClinicalDiagnosis(null);
+                                setIsEditClinicalDiagnosisModalOpen(true);
+                            }}>
+                                Add Preliminary Diagnosis
+                            </button>
                         )}
                     </div>
                 </div>
@@ -288,91 +308,90 @@ const AnamnesisDetailsPage = () => {
             </div>
 
             <div className="mt-1 rounded-1 treatment-vet element-space"
-                     style={{marginTop: "30px", padding: "20px"}}>
-                    <h3>Treatment Recommendations</h3>
-                    {treatments.length > 0 ? (
-                        <table cellPadding="3" cellSpacing="0" className="uniq-table">
-                            <tbody>
-                            {treatments.map((treatment) => (
-                                <tr key={treatment.id}>
-                                    <td>{treatment.treatment}
-                                        <b>Name: {treatment.name}</b> {userRole === "ROLE_VET" && (
-                                            <input
-                                                type="checkbox"
-                                                checked={treatment.isCompleted}
-                                                onChange={() => handleCompleteTreatment(treatment.id)}
-                                            />)} <br/>
-                                        <b>Description</b>: {treatment.description} <br/>
-                                        <b>Prescribed Medication</b>: {treatment.prescribedMedication} <br/>
-                                        <b>Duration</b>: {treatment.duration} <br/>
-                                        <button className="button btn-no-border" onClick={() => {
-                                            setSelectedTreatment(treatment);
-                                            setIsEditTreatmentModalOpen(true);
-                                        }}>
-                                            Edit treatment recommendation
-                                        </button>
-                                    </td>
+                 style={{marginTop: "30px", padding: "20px"}}>
+                <h3>Treatment Recommendations</h3>
+                {treatments.length > 0 ? (
+                    <table cellPadding="3" cellSpacing="0" className="uniq-table">
+                        <tbody>
+                        {treatments.map((treatment) => (
+                            <tr key={treatment.id}>
+                                <td>{treatment.treatment}
+                                    <b>Name: {treatment.name}</b> {userRole === "ROLE_VET" && (
+                                        <input
+                                            type="checkbox"
+                                            checked={treatment.isCompleted}
+                                            onChange={() => handleCompleteTreatment(treatment.id)}
+                                        />)} <br/>
+                                    <b>Description</b>: {treatment.description} <br/>
+                                    <b>Prescribed Medication</b>: {treatment.prescribedMedication} <br/>
+                                    <b>Duration</b>: {treatment.duration} <br/>
+                                    <button className="button btn-no-border" onClick={() => {
+                                        setSelectedTreatment(treatment);
+                                        setIsEditTreatmentModalOpen(true);
+                                    }}>
+                                        Edit treatment recommendation
+                                    </button>
+                                </td>
 
-                                </tr>
-                            ))}
-                            </tbody>
-                        </table>
-                    ) : (
-                        <p>No treatment recommendations found.</p>
-                    )}
-                    {userRole === "ROLE_VET" && (
-                        <button className="button rounded-3 btn-no-border" onClick={() => {
-                            setSelectedTreatment(null);
-                            setIsEditTreatmentModalOpen(true);
-                        }}>
-                            Add New Treatment
-                        </button>
-                    )}
-                </div>
-
-                {isAppointmentModalOpen && (
-                    <AppointmentModal
-                        appointment={appointment}
-                        onClose={() => setIsAppointmentModalOpen(false)}
-                    />
+                            </tr>
+                        ))}
+                        </tbody>
+                    </table>
+                ) : (
+                    <p>No treatment recommendations found.</p>
                 )}
-
-                {isEditDiagnosisModalOpen && (
-                    <EditDiagnosisModal
-                        diagnosis={diagnosis}
-                        onClose={() => setIsEditDiagnosisModalOpen(false)}
-                        onSave={handleSaveDiagnosis}
-                    />
+                {userRole === "ROLE_VET" && (
+                    <button className="button rounded-3 btn-no-border" onClick={() => {
+                        setSelectedTreatment(null);
+                        setIsEditTreatmentModalOpen(true);
+                    }}>
+                        Add New Treatment
+                    </button>
                 )}
-
-                {isEditExaminationPlanModalOpen && (
-                    <EditExaminationPlanModal
-                        examinationPlan={diagnosis?.examinationPlan}
-                        onClose={() => setIsEditExaminationPlanModalOpen(false)}
-                        onSave={handleSaveExaminationPlan}
-                    />
-                )}
-
-                {isEditClinicalDiagnosisModalOpen && (
-                    <EditClinicalDiagnosisModal
-                        diagnosis={selectedClinicalDiagnosis}
-                        onClose={() => setIsEditClinicalDiagnosisModalOpen(false)}
-                        onSave={handleSaveClinicalDiagnosis}
-                    />
-                )}
-
-                {isEditTreatmentModalOpen && (
-                    <EditTreatmentModal
-                        treatment={selectedTreatment}
-                        onClose={() => setIsEditTreatmentModalOpen(false)}
-                        onSave={handleSaveTreatment}
-                        diagnosisId={diagnosis?.id}
-                        petId={petInfo?.id}
-                    />
-                )}
-
             </div>
-            );
-            };
 
-            export default AnamnesisDetailsPage;
+            {isAppointmentModalOpen && (
+                <AppointmentModal
+                    appointment={appointment}
+                    onClose={() => setIsAppointmentModalOpen(false)}
+                />
+            )}
+
+            {isEditDiagnosisModalOpen && (
+                <EditDiagnosisModal
+                    diagnosis={diagnosis}
+                    onClose={() => setIsEditDiagnosisModalOpen(false)}
+                    onSave={handleSaveDiagnosis}
+                />
+            )}
+
+            {isEditExaminationPlanModalOpen && (
+                <EditExaminationPlanModal
+                    examinationPlan={diagnosis?.examinationPlan}
+                    onClose={() => setIsEditExaminationPlanModalOpen(false)}
+                    onSave={handleSaveExaminationPlan}
+                />
+            )}
+
+            {isEditClinicalDiagnosisModalOpen && (
+                <EditClinicalDiagnosisModal
+                    diagnosis={selectedClinicalDiagnosis}
+                    onClose={() => setIsEditClinicalDiagnosisModalOpen(false)}
+                    onSave={selectedClinicalDiagnosis ? handleSaveClinicalDiagnosis : handleSavePreliminaryDiagnosis}
+                />
+            )}
+            {isEditTreatmentModalOpen && (
+                <EditTreatmentModal
+                    treatment={selectedTreatment}
+                    onClose={() => setIsEditTreatmentModalOpen(false)}
+                    onSave={handleSaveTreatment}
+                    diagnosisId={diagnosis?.id}
+                    petId={petInfo?.id}
+                />
+            )}
+
+        </div>
+    );
+};
+
+export default AnamnesisDetailsPage;
