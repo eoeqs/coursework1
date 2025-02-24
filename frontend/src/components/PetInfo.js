@@ -27,6 +27,8 @@ const PetInfo = ({ petInfo, onEdit }) => {
                 <p style={{ marginBottom: '5px' }}><strong>Weight:</strong> {petInfo.weight ? `${petInfo.weight} kg` : "not specified"}</p>
                 <p style={{ marginBottom: '5px' }}><strong>Sector:</strong> {petInfo.sector || "not specified"}</p>
             </div>
+
+            <button className="button rounded-3 btn-no-border" onClick={onEdit}>Edit pet profile</button>
         </div>
     );
 };
