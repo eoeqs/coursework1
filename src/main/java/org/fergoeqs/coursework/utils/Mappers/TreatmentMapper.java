@@ -20,12 +20,14 @@ public interface TreatmentMapper {
     List<TreatmentDTO> toDTOs(List<Treatment> treatments);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(source = "diagnosis", target = "diagnosis.id")
+    @Mapping(target = "diagnosis", ignore = true)
+//    @Mapping(source = "diagnosis", target = "diagnosis.id")
     @Mapping(source = "pet", target = "pet.id")
     Treatment fromDTO(TreatmentDTO treatmentDTO);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(source = "diagnosis", target = "diagnosis.id")
+    @Mapping(target = "diagnosis", ignore = true)
+//    @Mapping(source = "diagnosis", target = "diagnosis.id")
     @Mapping(source = "pet", target = "pet.id")
     List<Treatment> fromDTOs(List<TreatmentDTO> treatmentDTOs);
 
