@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
-import {useAuth} from "../AuthProvider";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../AuthProvider";
 import NewPetForm from "./NewPetForm";
 import useAxiosWithAuth from "../AxiosAuth";
 import DogBodyMap from "./DogBodyMap";
@@ -12,10 +12,10 @@ const AppointmentPage = () => {
     const navigate = useNavigate();
 
     const [userId, setUserId] = useState(null);
+    const [userRole, setUserRole] = useState(null);
     const [showNewPetForm, setShowNewPetForm] = useState(false);
     const [pets, setPets] = useState([]);
     const [selectedPetId, setSelectedPetId] = useState("");
-    const [selectedAnimal, setSelectedAnimal] = useState("");
     const [ownerName, setOwnerName] = useState("");
     const [petInfo, setPetInfo] = useState(null);
     const [complaintDescription, setComplaintDescription] = useState("");
@@ -31,7 +31,9 @@ const AppointmentPage = () => {
         axiosInstance.get("/users/current-user-info")
             .then(response => {
                 const fetchedUserId = response.data.id;
+                const fetchedUserRole = response.data.role;
                 setUserId(fetchedUserId);
+                setUserRole(fetchedUserRole);
 
                 return axiosInstance.get(`/users/user-info/${fetchedUserId}`);
             })
@@ -44,12 +46,21 @@ const AppointmentPage = () => {
     }, [token, axiosInstance]);
 
     useEffect(() => {
+        if (!token || !userId || !userRole) return;
+
+        if (userRole === "ROLE_OWNER") {
+            axiosInstance.get("/pets/user-pets")
+                .then(response => setPets(response.data))
+                .catch(error => console.error("Error fetching user pets:", error));
+        } else if (userRole === "ROLE_VET") {
+            axiosInstance.get(`/pets/doctor-pets/${userId}`)
+                .then(response => setPets(response.data))
+                .catch(error => console.error("Error fetching doctor pets:", error));
+        }
+    }, [token, userId, userRole, axiosInstance]);
+
+    useEffect(() => {
         if (!token) return;
-
-        axiosInstance.get("/pets/all-pets")
-            .then(response => setPets(response.data))
-
-            .catch(error => console.error("Error fetching pets:", error));
 
         axiosInstance.get("/slots/available-slots")
             .then(response => setSlots(response.data))
@@ -75,8 +86,8 @@ const AppointmentPage = () => {
 
     const handleBodyMark = (marker) => {
         setBodyMarker(marker);
-
     };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!token) {
@@ -108,32 +119,19 @@ const AppointmentPage = () => {
         }
     };
 
-    if (showNewPetForm) {
-        return <NewPetForm token={token} onPetCreated={handlePetCreated} onCancel={() => setShowNewPetForm(false)}/>;
-    }
-
     return (
         <div>
-            <div>
-                <h3>Owner: {ownerName || "Loading..."}</h3></div>
-            <div>
-                <label>Select Animal:</label>
-                <select value={selectedAnimal} onChange={(e) => setSelectedAnimal(e.target.value)}>
-                    <option value="">Select Animal Type</option>
-                    <option value="dog">Dog</option>
-                    <option value="cat">Cat</option>
-                </select>
-            </div>
+            {showNewPetForm && (
+                <NewPetForm
+                    token={token}
+                    onPetCreated={handlePetCreated}
+                    onCancel={() => setShowNewPetForm(false)}
+                />
+            )}
 
             <div>
-                <p>Interactive Map:</p>
-                {selectedAnimal === "" && (
-                    <p>Please select an animal type to display the interactive map.</p>
-                )}
-                {selectedAnimal === "dog" && <DogBodyMap onMark={handleBodyMark} />}
-                {selectedAnimal === "cat" && <CatBodyMap onMark={handleBodyMark} />}
+                <h3>Owner: {ownerName || "Loading..."}</h3>
             </div>
-
 
             <div>
                 <h2>Book an Appointment</h2>
@@ -148,7 +146,9 @@ const AppointmentPage = () => {
                     ))}
                 </select>
 
-                <button onClick={() => setShowNewPetForm(true)}>Create New Pet</button>
+                {userRole === "ROLE_OWNER" && (
+                    <button onClick={() => setShowNewPetForm(true)}>Create New Pet</button>
+                )}
 
                 {selectedPetId && petInfo && (
                     <div>
@@ -159,6 +159,14 @@ const AppointmentPage = () => {
                         <p><strong>Weight:</strong> {petInfo.weight} kg</p>
                         <p><strong>Sex:</strong> {petInfo.sex}</p>
                         <p><strong>Age:</strong> {petInfo.age} years</p>
+                    </div>
+                )}
+
+                {selectedPetId && petInfo && (
+                    <div>
+                        <p>Mark the problem area :</p>
+                        {petInfo.type === "DOG" && <DogBodyMap onMark={handleBodyMark} />}
+                        {petInfo.type === "CAT" && <CatBodyMap onMark={handleBodyMark} />}
                     </div>
                 )}
 
@@ -212,10 +220,8 @@ const AppointmentPage = () => {
                 </div>
 
                 <form onSubmit={handleSubmit}>
-
-
                     <label>It is an emergency:</label>
-                    <input type="checkbox" checked={priority} onChange={() => setPriority(!priority)}/>
+                    <input type="checkbox" checked={priority} onChange={() => setPriority(!priority)} />
 
                     <button type="submit" disabled={!selectedPetId || !selectedSlotId}>
                         Book Appointment

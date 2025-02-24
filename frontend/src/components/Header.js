@@ -1,10 +1,30 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { FaUserCircle } from "react-icons/fa";
+import { useAuth } from "../AuthProvider";
+import useAxiosWithAuth from "../AxiosAuth";
 
 export default function Header() {
     const navigate = useNavigate();
-    const isAuthenticated = false; // TODO: properly check token
+    const { token, logout } = useAuth();
+    const isAuthenticated = token !== null;
     const [menuOpen, setMenuOpen] = useState(false);
+    const [userRole, setUserRole] = useState(null);
+    const axiosInstance = useAxiosWithAuth();
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            const fetchUserRole = async () => {
+                try {
+                    const response = await axiosInstance.get("/users/current-user-info");
+                    setUserRole(response.data.role);
+                } catch (error) {
+                    console.error("Error fetching user role:", error);
+                }
+            };
+            fetchUserRole();
+        }
+    }, [isAuthenticated, axiosInstance]);
 
     const handleProfileClick = () => {
         setMenuOpen(!menuOpen);
@@ -19,22 +39,41 @@ export default function Header() {
         }
     };
 
+    const handleLogout = () => {
+        logout();
+        navigate("/login");
+    };
+
+    const handleProfile = () => {
+        if (userRole === "ROLE_VET") {
+            navigate("/vet-dashboard");
+        } else if (userRole === "ROLE_OWNER") {
+            navigate("/owner-dashboard");
+        } else {
+            navigate("/");
+        }
+    };
+
     return (
-        <header className="flex justify-between p-4 bg-gray-800 text-white">
-            <h1 className="text-xl font-bold">VetCare</h1>
-            <div className="relative">
-                <button onClick={handleProfileClick} className="bg-gray-700 px-4 py-2 rounded">
-                    My profile
+        <header>
+            <h1 onClick={() => navigate("/")}>
+                VetCare
+            </h1>
+
+            <div>
+                <button onClick={handleProfileClick}>
+                    <FaUserCircle />
                 </button>
+
                 {menuOpen && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white text-black shadow-lg rounded-lg">
-                        <button onClick={() => handleMenuItemClick("/profile")} className="block w-full text-left px-4 py-2 hover:bg-gray-200">
+                    <div>
+                        <button onClick={handleProfile}>
                             Profile
                         </button>
-                        <button onClick={() => handleMenuItemClick("/notifications")} className="block w-full text-left px-4 py-2 hover:bg-gray-200">
+                        <button onClick={() => handleMenuItemClick("/notifications")}>
                             Notifications
                         </button>
-                        <button onClick={() => handleMenuItemClick("/logout")} className="block w-full text-left px-4 py-2 hover:bg-gray-200">
+                        <button onClick={handleLogout}>
                             Logout
                         </button>
                     </div>
