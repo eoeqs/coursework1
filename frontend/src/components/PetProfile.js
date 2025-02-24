@@ -6,6 +6,7 @@ import AddAnamnesisModal from "./AddAnamnesisModal";
 import AddHealthUpdateModal from "./AddHealthUpdateModal";
 import PetInfo from "./PetInfo";
 import HealthUpdateDetailsModal from "./HealthUpdateDetailsModal";
+import Header from "./Header";
 
 const PetProfilePage = () => {
     const { petId } = useParams();
@@ -124,33 +125,36 @@ const PetProfilePage = () => {
     }
 
     return (
-        <div className="container mt-5" style={{display: "flex", gap: "100px"}}>
-            <div className="ps-3">
-                <PetInfo petInfo={petInfo} onEdit={() => setIsEditModalOpen(true)}/>
-                <div className="bg-treatment container mt-3 rounded-1 upcoming-appointments" style={{padding: "20px"}}>
-                    <h4>Upcoming Appointments</h4>
-                    {upcomingAppointments.length > 0 ? (
-                        <table cellPadding="3" cellSpacing="0">
-                            <tbody>
-                            {upcomingAppointments.map((appointment) => (
-                                <tr key={appointment.id}>
-                                    <td>{new Date(appointment.slot.date).toLocaleDateString()}</td>
-                                    <td>{appointment.slot.startTime} </td>
-                                    <td> -</td>
-                                    <td>Dr. {appointment.slot.vetId}</td>
-                                </tr>
-                            ))}
-                            </tbody>
-                        </table>
-                    ) : (
-                        <p>No upcoming appointments found.</p>
-                    )}
+        <div>
+            <Header/>
+            <div className="container mt-2" style={{display: "flex", gap: "100px"}}>
+                <div className="ps-3">
+                    <PetInfo petInfo={petInfo} onEdit={() => setIsEditModalOpen(true)}/>
+                    <div className="bg-treatment container mt-3 rounded-1 upcoming-appointments"
+                         style={{padding: "20px"}}>
+                        <h4>Upcoming Appointments</h4>
+                        {upcomingAppointments.length > 0 ? (
+                            <table cellPadding="3" cellSpacing="0">
+                                <tbody>
+                                {upcomingAppointments.map((appointment) => (
+                                    <tr key={appointment.id}>
+                                        <td>{new Date(appointment.slot.date).toLocaleDateString()}</td>
+                                        <td>{appointment.slot.startTime} </td>
+                                        <td> -</td>
+                                        <td>Dr. {appointment.slot.vetId}</td>
+                                    </tr>
+                                ))}
+                                </tbody>
+                            </table>
+                        ) : (
+                            <p>No upcoming appointments found.</p>
+                        )}
+                    </div>
                 </div>
-            </div>
 
-            <div style={{flex: 1}}>
-                <h2>Anamneses</h2>
-                <div className="bg-table element-space">
+                <div style={{flex: 1}}>
+                    <h2>Anamneses</h2>
+                    <div className="bg-table element-space">
                         {anamneses.length > 0 ? (
                             <table cellPadding="5" cellSpacing="0" className="uniq-table">
                                 <tbody>
@@ -171,92 +175,93 @@ const PetProfilePage = () => {
                         ) : (
                             <p>No anamneses found.</p>
                         )}
-                    <button className="button rounded-3 btn-no-border"
-                            onClick={() => setIsAddAnamnesisModalOpen(true)}>Add New Anamnesis
-                    </button>
+                        <button className="button rounded-3 btn-no-border"
+                                onClick={() => setIsAddAnamnesisModalOpen(true)}>Add New Anamnesis
+                        </button>
+                    </div>
+
+                    <h2>Health Updates</h2>
+                    <div className="bg-table">
+                        {healthUpdates.length > 0 ? (
+                            <table cellPadding="5" cellSpacing="0" className="uniq-table">
+                                <tbody>
+                                {healthUpdates.map((update) => (
+                                    <tr key={update.id}>
+                                        <td>{new Date(update.date).toLocaleDateString()}</td>
+                                        <td>{update.dynamics ? "positive" : "negative"} dynamic</td>
+                                        <td>
+                                            <button className="button btn-no-border"
+                                                    onClick={() => handleViewHealthUpdateDetails(update.id)}>
+                                                More info
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                                </tbody>
+                            </table>
+                        ) : (
+                            <p>No health updates found.</p>
+                        )}
+                        <button className="button rounded-3 btn-no-border"
+                                onClick={() => setIsAddHealthUpdateModalOpen(true)}>Add Health Update
+                        </button>
+                    </div>
                 </div>
 
-                <h2>Health Updates</h2>
-                <div className="bg-table">
-                    {healthUpdates.length > 0 ? (
-                        <table cellPadding="5" cellSpacing="0" className="uniq-table">
+                <div className="bg-treatment mt-1 rounded-1" style={{padding: "20px"}}>
+                    <h4>Treatment Recommendations</h4>
+                    {treatments.length > 0 ? (
+                        <table cellPadding="3" cellSpacing="0" className="uniq-table">
                             <tbody>
-                            {healthUpdates.map((update) => (
-                                <tr key={update.id}>
-                                    <td>{new Date(update.date).toLocaleDateString()}</td>
-                                    <td>{update.dynamics ? "positive" : "negative"} dynamic</td>
-                                    <td>
-                                        <button className="button btn-no-border"
-                                                onClick={() => handleViewHealthUpdateDetails(update.id)}>
-                                            More info
-                                        </button>
+                            {treatments.map((treatment) => (
+                                <tr key={treatment.id}>
+                                    <td><b>Treatment</b>: {treatment.name} <br/>
+                                        <b>Description</b>: {treatment.description} <br/>
+                                        <b>Prescribed Medication</b>: {treatment.prescribedMedication} <br/>
+                                        <b>Duration</b>: {treatment.duration} <br/>
                                     </td>
                                 </tr>
                             ))}
                             </tbody>
                         </table>
                     ) : (
-                        <p>No health updates found.</p>
+                        <p>No treatment recommendations found.</p>
                     )}
-                    <button className="button rounded-3 btn-no-border"
-                            onClick={() => setIsAddHealthUpdateModalOpen(true)}>Add Health Update
-                    </button>
                 </div>
-            </div>
 
-            <div className="bg-treatment mt-1 rounded-1" style={{padding: "20px"}}>
-                <h4>Treatment Recommendations</h4>
-                {treatments.length > 0 ? (
-                    <table cellPadding="3" cellSpacing="0" className="uniq-table">
-                        <tbody>
-                        {treatments.map((treatment) => (
-                            <tr key={treatment.id}>
-                                <td><b>Treatment</b>: {treatment.name} <br/>
-                                    <b>Description</b>: {treatment.description} <br/>
-                                    <b>Prescribed Medication</b>: {treatment.prescribedMedication} <br/>
-                                    <b>Duration</b>: {treatment.duration} <br/>
-                                </td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </table>
-                ) : (
-                    <p>No treatment recommendations found.</p>
+                {isEditModalOpen && (
+                    <EditPetModal
+                        petInfo={petInfo}
+                        onClose={() => setIsEditModalOpen(false)}
+                        onSave={handleSavePet}
+                    />
+                )}
+
+                {isAddAnamnesisModalOpen && (
+                    <AddAnamnesisModal
+                        petId={petId}
+                        onClose={() => setIsAddAnamnesisModalOpen(false)}
+                        onSave={handleSaveAnamnesis}
+                    />
+                )}
+
+                {isAddHealthUpdateModalOpen && (
+                    <AddHealthUpdateModal
+                        petId={petId}
+                        onClose={() => setIsAddHealthUpdateModalOpen(false)}
+                        onSave={handleSaveHealthUpdate}
+                    />
+                )}
+
+                {isHealthUpdateDetailsModalOpen && (
+                    <HealthUpdateDetailsModal
+                        id={selectedHealthUpdateId}
+                        onClose={() => setIsHealthUpdateDetailsModalOpen(false)}
+                    />
                 )}
             </div>
-
-            {isEditModalOpen && (
-                <EditPetModal
-                    petInfo={petInfo}
-                    onClose={() => setIsEditModalOpen(false)}
-                    onSave={handleSavePet}
-                />
-            )}
-
-            {isAddAnamnesisModalOpen && (
-                <AddAnamnesisModal
-                    petId={petId}
-                    onClose={() => setIsAddAnamnesisModalOpen(false)}
-                    onSave={handleSaveAnamnesis}
-                />
-            )}
-
-            {isAddHealthUpdateModalOpen && (
-                <AddHealthUpdateModal
-                    petId={petId}
-                    onClose={() => setIsAddHealthUpdateModalOpen(false)}
-                    onSave={handleSaveHealthUpdate}
-                />
-            )}
-
-            {isHealthUpdateDetailsModalOpen && (
-                <HealthUpdateDetailsModal
-                    id={selectedHealthUpdateId}
-                    onClose={() => setIsHealthUpdateDetailsModalOpen(false)}
-                />
-            )}
         </div>
-    );
-};
+            );
+            };
 
-export default PetProfilePage;
+            export default PetProfilePage;

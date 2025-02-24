@@ -7,6 +7,7 @@ import EditDiagnosisModal from "./EditDianosisModal";
 import EditExaminationPlanModal from "./EditExaminationPlanModal";
 import EditClinicalDiagnosisModal from "./EditClinicalDiagnosisModal";
 import EditTreatmentModal from "./EditTreatmentModal";
+import Header from "./Header";
 
 const AnamnesisDetailsPage = () => {
     const { id } = useParams();
@@ -160,6 +161,8 @@ const AnamnesisDetailsPage = () => {
     }
 
     return (
+        <div>
+        <Header />
         <div className="container mt-3" style={{display: "flex", gap: "20px"}}>
             <div>
                 <PetInfo petInfo={petInfo} onEdit={() => {
@@ -372,6 +375,7 @@ const AnamnesisDetailsPage = () => {
                 )}
 
             </div>
+        </div>
             );
             };
 
