@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import { useAuth } from "../AuthProvider";
 import useAxiosWithAuth from "../AxiosAuth";
+import myImage from '../pics/logo_min.png';
 
 export default function Header() {
     const navigate = useNavigate();
@@ -55,18 +56,26 @@ export default function Header() {
     };
 
     return (
-        <header>
-            <h1 onClick={() => navigate("/")}>
+        <header className="header">
+            <div style={{display: 'flex', alignItems: 'center'}}>
+                <img
+                    src={myImage}
+                    alt="VetCare Logo"
+                    style={{width: '50px', height: '50px', objectFit: 'contain'}}
+                />
+
+            <h1 style={{marginLeft: '10px'}} onClick={() => navigate("/")}>
                 VetCare
             </h1>
-
+            </div>
             <div>
-                <button onClick={handleProfileClick}>
-                    <FaUserCircle />
+                <button className="btn btn-pink p-2" style={{borderRadius: "100%", border: "none"}}
+                        onClick={handleProfileClick}>
+                    <FaUserCircle size={40}/>
                 </button>
 
                 {menuOpen && (
-                    <div>
+                    <div className="menu-dropdown">
                         <button onClick={handleProfile}>
                             Profile
                         </button>

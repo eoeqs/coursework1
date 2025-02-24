@@ -24,18 +24,21 @@ public interface PetMapper {
     @Mapping(target = "actualVet", ignore = true)
     @Mapping(target = "owner", ignore = true)
     @Mapping(target = "sector", ignore = true)
+    @Mapping(target = "photoUrl", ignore = true)
     Pet petDTOToPet(PetDTO petDTO);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "actualVet", ignore = true)
     @Mapping(target = "owner", ignore = true)
     @Mapping(target = "sector", ignore = true)
+    @Mapping(target = "photoUrl", ignore = true)
     List<Pet> petDTOsToPets(List<PetDTO> petDTOs);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "actualVet", ignore = true)
     @Mapping(target = "owner", ignore = true)
     @Mapping(target = "sector", ignore = true)
+    @Mapping(target = "photoUrl", ignore = true)
     void updatePetFromDTO(PetDTO petDTO, @MappingTarget Pet pet);
 }
 

@@ -7,6 +7,7 @@ import EditDiagnosisModal from "./EditDianosisModal";
 import EditExaminationPlanModal from "./EditExaminationPlanModal";
 import EditClinicalDiagnosisModal from "./EditClinicalDiagnosisModal";
 import EditTreatmentModal from "./EditTreatmentModal";
+import Header from "./Header";
 
 const AnamnesisDetailsPage = () => {
     const { id } = useParams();
@@ -171,6 +172,8 @@ const AnamnesisDetailsPage = () => {
     }
 
     return (
+        <div>
+        <Header />
         <div className="container mt-3" style={{display: "flex", gap: "20px"}}>
             <div>
                 <PetInfo petInfo={petInfo} onEdit={() => {
@@ -217,8 +220,7 @@ const AnamnesisDetailsPage = () => {
                                     <strong>Date:</strong> {new Date(diagnosis.date).toLocaleDateString()}</p>
                                 <p style={{marginBottom: '5px'}}>
                                     <strong>Contagious:</strong> {diagnosis.contagious ? "Yes" : "No"}</p>
-                                <p style={{marginBottom: '0px'}}><strong>Description:</strong> {diagnosis.description}
-                                </p>
+                                <p style={{marginBottom: '0px'}}><strong>Description:</strong> {diagnosis.description}</p>
                                 <div style={{marginTop: "auto", textAlign: "right"}}>
                                     <button className="button btn-no-border"
 
@@ -315,92 +317,94 @@ const AnamnesisDetailsPage = () => {
             </div>
 
             <div className="mt-1 rounded-1 treatment-vet element-space"
-                 style={{marginTop: "30px", padding: "20px"}}>
-                <h3>Treatment Recommendations</h3>
-                {treatments.length > 0 ? (
-                    <table cellPadding="3" cellSpacing="0" className="uniq-table">
-                        <tbody>
-                        {treatments.map((treatment) => (
-                            <tr key={treatment.id}>
-                                <td>{treatment.treatment}
-                                    <b>Name: {treatment.name}</b> {userRole === "ROLE_VET" && (
-                                        <input
-                                            type="checkbox"
-                                            checked={treatment.isCompleted}
-                                            onChange={() => handleCompleteTreatment(treatment.id)}
-                                        />)} <br/>
-                                    <b>Description</b>: {treatment.description} <br/>
-                                    <b>Prescribed Medication</b>: {treatment.prescribedMedication} <br/>
-                                    <b>Duration</b>: {treatment.duration} <br/>
-                                    {userRole === "ROLE_VET" && (
-                                        <button className="button btn-no-border" onClick={() => {
-                                            setSelectedTreatment(treatment);
-                                            setIsEditTreatmentModalOpen(true);
-                                        }}>
-                                            Edit treatment recommendation
-                                        </button>
-                                    )}
-                                </td>
+                     style={{marginTop: "30px", padding: "20px"}}>
+                    <h3>Treatment Recommendations</h3>
+                    {treatments.length > 0 ? (
+                        <table cellPadding="3" cellSpacing="0" className="uniq-table">
+                            <tbody>
+                            {treatments.map((treatment) => (
+                                <tr key={treatment.id}>
+                                    <td>{treatment.treatment}
+                                        <b>Name: {treatment.name}</b> {userRole === "ROLE_VET" && (
+                                            <input
+                                                type="checkbox"
+                                                checked={treatment.isCompleted}
+                                                onChange={() => handleCompleteTreatment(treatment.id)}
+                                            />)} <br/>
+                                        <b>Description</b>: {treatment.description} <br/>
+                                        <b>Prescribed Medication</b>: {treatment.prescribedMedication} <br/>
+                                        <b>Duration</b>: {treatment.duration} <br/>
+                                        {userRole === "ROLE_VET" && (
+                                            <button className="button btn-no-border" onClick={() => {
+                                                setSelectedTreatment(treatment);
+                                                setIsEditTreatmentModalOpen(true);
+                                            }}>
+                                                Edit treatment recommendation
+                                            </button>
+                                        )}
+                                    </td>
 
-                            </tr>
-                        ))}
-                        </tbody>
-                    </table>
-                ) : (
-                    <p>No treatment recommendations found.</p>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+                    ) : (
+                        <p>No treatment recommendations found.</p>
+                    )}
+                    {userRole === "ROLE_VET" && (
+                        <button className="button rounded-3 btn-no-border" onClick={() => {
+                            setSelectedTreatment(null);
+                            setIsEditTreatmentModalOpen(true);
+                        }}>
+                            Add New Treatment
+                        </button>
+                    )}
+                </div>
+
+                {isAppointmentModalOpen && (
+                    <AppointmentModal
+                        appointment={appointment}
+                        onClose={() => setIsAppointmentModalOpen(false)}
+                    />
                 )}
-                {userRole === "ROLE_VET" && (
-                    <button className="button rounded-3 btn-no-border" onClick={() => {
-                        setSelectedTreatment(null);
-                        setIsEditTreatmentModalOpen(true);
-                    }}>
-                        Add New Treatment
-                    </button>
+
+                {isEditDiagnosisModalOpen && (
+                    <EditDiagnosisModal
+                        diagnosis={diagnosis}
+                        onClose={() => setIsEditDiagnosisModalOpen(false)}
+                        onSave={handleSaveDiagnosis}
+                    />
                 )}
-            </div>
 
-            {isAppointmentModalOpen && (
-                <AppointmentModal
-                    appointment={appointment}
-                    onClose={() => setIsAppointmentModalOpen(false)}
-                />
-            )}
+                {isEditExaminationPlanModalOpen && (
+                    <EditExaminationPlanModal
+                        examinationPlan={diagnosis?.examinationPlan}
+                        onClose={() => setIsEditExaminationPlanModalOpen(false)}
+                        onSave={handleSaveExaminationPlan}
+                    />
+                )}
 
-            {isEditDiagnosisModalOpen && (
-                <EditDiagnosisModal
-                    diagnosis={diagnosis}
-                    onClose={() => setIsEditDiagnosisModalOpen(false)}
-                    onSave={handleSaveDiagnosis}
-                />
-            )}
+                {isEditClinicalDiagnosisModalOpen && (
+                    <EditClinicalDiagnosisModal
+                        diagnosis={selectedClinicalDiagnosis}
+                        onClose={() => setIsEditClinicalDiagnosisModalOpen(false)}
+                        onSave={handleSaveClinicalDiagnosis}
+                    />
+                )}
 
-            {isEditExaminationPlanModalOpen && (
-                <EditExaminationPlanModal
-                    examinationPlan={diagnosis?.examinationPlan}
-                    onClose={() => setIsEditExaminationPlanModalOpen(false)}
-                    onSave={handleSaveExaminationPlan}
-                />
-            )}
+                {isEditTreatmentModalOpen && (
+                    <EditTreatmentModal
+                        treatment={selectedTreatment}
+                        onClose={() => setIsEditTreatmentModalOpen(false)}
+                        onSave={handleSaveTreatment}
+                        diagnosisId={diagnosis?.id}
+                        petId={petInfo?.id}
+                    />
+                )}
 
-            {isEditClinicalDiagnosisModalOpen && (
-                <EditClinicalDiagnosisModal
-                    diagnosis={selectedClinicalDiagnosis}
-                    onClose={() => setIsEditClinicalDiagnosisModalOpen(false)}
-                    onSave={selectedClinicalDiagnosis ? handleSaveClinicalDiagnosis : handleSavePreliminaryDiagnosis}
-                />
-            )}
-            {isEditTreatmentModalOpen && (
-                <EditTreatmentModal
-                    treatment={selectedTreatment}
-                    onClose={() => setIsEditTreatmentModalOpen(false)}
-                    onSave={handleSaveTreatment}
-                    diagnosisId={diagnosis?.id}
-                    petId={petInfo?.id}
-                />
-            )}
-
+        </div>
         </div>
     );
 };
 
-export default AnamnesisDetailsPage;
+            export default AnamnesisDetailsPage;
