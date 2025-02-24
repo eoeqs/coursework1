@@ -7,7 +7,7 @@ const PetInfo = ({ petInfo, onEdit }) => {
             <div>
                 <div className="mb-4 ps-2">
                     {petInfo.photoUrl ? (
-                        <img
+                        <img className="avatar"
                             src={petInfo.photoUrl}
                             alt={`${petInfo.name}'s avatar`}
                             style={{width: '250px', height: '250px', borderRadius: '2%'}}
