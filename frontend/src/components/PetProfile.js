@@ -22,6 +22,7 @@ const PetProfilePage = () => {
     const [isHealthUpdateDetailsModalOpen, setIsHealthUpdateDetailsModalOpen] = useState(false);
     const [selectedHealthUpdateId, setSelectedHealthUpdateId] = useState(null);
     const [upcomingAppointments, setUpcomingAppointments] = useState([]);
+    const [treatments, setTreatments] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -50,6 +51,10 @@ const PetProfilePage = () => {
                     })
                 );
                 setUpcomingAppointments(appointmentsWithSlots);
+
+                const treatmentsResponse = await axiosInstance.get(`/treatments/actual-by-pet/${petId}`);
+                setTreatments(treatmentsResponse.data);
+                console.log(treatmentsResponse.data)
             } catch (error) {
                 console.error("Error fetching data:", error);
                 setError("Failed to fetch data. Please try again later.");
@@ -143,6 +148,34 @@ const PetProfilePage = () => {
                 </div>
             </div>
 
+            <div>
+                <h2>Treatment Recommendations</h2>
+                {treatments.length > 0 ? (
+                    <table border="1" cellPadding="10" cellSpacing="0">
+                        <thead>
+                        <tr>
+                            <th>Treatment</th>
+                            <th>Description</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {treatments.map((treatment) => (
+                            <tr key={treatment.id}>
+                                <td>{treatment.treatment}</td>
+                                <td>{treatment.description}</td>
+                                <td>{new Date(treatment.startDate).toLocaleDateString()}</td>
+                                <td>{new Date(treatment.endDate).toLocaleDateString()}</td>
+                            </tr>
+                        ))}
+                        </tbody>
+                    </table>
+                ) : (
+                    <p>No treatment recommendations found.</p>
+                )}
+            </div>
+
                 <div style={{flex: 1}}>
                     <h2>Anamneses</h2>
                     <div className="bg-table element-space">
@@ -193,38 +226,38 @@ const PetProfilePage = () => {
                     </div>
                 </div>
 
-                {isEditModalOpen && (
-                    <EditPetModal
-                        petInfo={petInfo}
-                        onClose={() => setIsEditModalOpen(false)}
-                        onSave={handleSavePet}
-                    />
-                )}
+            {isEditModalOpen && (
+                <EditPetModal
+                    petInfo={petInfo}
+                    onClose={() => setIsEditModalOpen(false)}
+                    onSave={handleSavePet}
+                />
+            )}
 
-                {isAddAnamnesisModalOpen && (
-                    <AddAnamnesisModal
-                        petId={petId}
-                        onClose={() => setIsAddAnamnesisModalOpen(false)}
-                        onSave={handleSaveAnamnesis}
-                    />
-                )}
+            {isAddAnamnesisModalOpen && (
+                <AddAnamnesisModal
+                    petId={petId}
+                    onClose={() => setIsAddAnamnesisModalOpen(false)}
+                    onSave={handleSaveAnamnesis}
+                />
+            )}
 
-                {isAddHealthUpdateModalOpen && (
-                    <AddHealthUpdateModal
-                        petId={petId}
-                        onClose={() => setIsAddHealthUpdateModalOpen(false)}
-                        onSave={handleSaveHealthUpdate}
-                    />
-                )}
+            {isAddHealthUpdateModalOpen && (
+                <AddHealthUpdateModal
+                    petId={petId}
+                    onClose={() => setIsAddHealthUpdateModalOpen(false)}
+                    onSave={handleSaveHealthUpdate}
+                />
+            )}
 
-                {isHealthUpdateDetailsModalOpen && (
-                    <HealthUpdateDetailsModal
-                        id={selectedHealthUpdateId}
-                        onClose={() => setIsHealthUpdateDetailsModalOpen(false)}
-                    />
-                )}
-            </div>
-            );
-            };
+            {isHealthUpdateDetailsModalOpen && (
+                <HealthUpdateDetailsModal
+                    id={selectedHealthUpdateId}
+                    onClose={() => setIsHealthUpdateDetailsModalOpen(false)}
+                />
+            )}
+        </div>
+    );
+};
 
-            export default PetProfilePage;
+export default PetProfilePage;
