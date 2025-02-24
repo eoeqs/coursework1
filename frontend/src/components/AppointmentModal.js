@@ -10,6 +10,7 @@ const AppointmentModal = ({ appointment, onClose }) => {
     const [tempMarker, setTempMarker] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [vetInfo, setVetInfo] = useState(null); // Состояние для хранения информации о ветеринаре
 
     useEffect(() => {
         const fetchData = async () => {
@@ -18,10 +19,13 @@ const AppointmentModal = ({ appointment, onClose }) => {
                 setPetType(petResponse.data.type);
 
                 const markerResponse = await axiosInstance.get(`/body-marker/appointment/${appointment.id}`);
-                console.log(markerResponse.data)
-                console.log(appointment.id)
                 setBodyMarker(markerResponse.data);
                 setTempMarker(markerResponse.data);
+
+                if (appointment.slot && appointment.slot.vetId) {
+                    const vetResponse = await axiosInstance.get(`/users/user-info/${appointment.slot.vetId}`);
+                    setVetInfo(vetResponse.data); // Сохраняем данные о ветеринаре
+                }
             } catch (error) {
                 setError("Error fetching data");
             } finally {
@@ -30,7 +34,7 @@ const AppointmentModal = ({ appointment, onClose }) => {
         };
 
         if (appointment) fetchData();
-    }, [appointment]);
+    }, [appointment, axiosInstance]);
 
     const handleBodyMark = (mark) => {
         setTempMarker({
@@ -77,7 +81,7 @@ const AppointmentModal = ({ appointment, onClose }) => {
                     <p><strong>Date:</strong> {new Date(appointment.slot.date).toLocaleDateString()}</p>
                     <p><strong>Start Time:</strong> {appointment.slot.startTime}</p>
                     <p><strong>End Time:</strong> {appointment.slot.endTime}</p>
-                    <p><strong>Vet ID:</strong> {appointment.slot.vetId}</p>
+                    <p><strong>Vet:</strong> {vetInfo ? `${vetInfo.name} ${vetInfo.surname}` : "Unknown"}</p>
                 </div>
             )}
 
