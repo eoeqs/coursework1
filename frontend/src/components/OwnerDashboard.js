@@ -3,7 +3,8 @@ import { useAuth } from "../AuthProvider";
 import useAxiosWithAuth from "../AxiosAuth";
 import PetProfile from "./PetProfile";
 import { useNavigate } from "react-router-dom";
-import NewPetForm from "./NewPetForm"; // Импортируем компонент формы
+import NewPetForm from "./NewPetForm";
+import EditOwnerModal from "./EditOwnerModal";
 
 const OwnerDashboard = () => {
     const { token } = useAuth();
@@ -13,7 +14,8 @@ const OwnerDashboard = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedPetId, setSelectedPetId] = useState(null);
-    const [isNewPetFormOpen, setIsNewPetFormOpen] = useState(false); // Состояние для отображения формы
+    const [isNewPetFormOpen, setIsNewPetFormOpen] = useState(false);
+    const [isEditOwnerModalOpen, setIsEditOwnerModalOpen] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -29,6 +31,7 @@ const OwnerDashboard = () => {
 
                 const ownerInfoResponse = await axiosInstance.get(`/users/user-info/${ownerId}`);
                 setOwnerInfo(ownerInfoResponse.data);
+                console.log(ownerInfoResponse.data)
 
                 const petsResponse = await axiosInstance.get(`/pets/user-pets`);
                 setPets(petsResponse.data);
@@ -64,6 +67,18 @@ const OwnerDashboard = () => {
         setIsNewPetFormOpen(false);
     };
 
+    const handleSaveOwner = async (updatedData) => {
+        try {
+            const response = await axiosInstance.put(`/users/update-user/${ownerInfo.id}`, updatedData);
+            setOwnerInfo(response.data);
+            setIsEditOwnerModalOpen(false);
+            alert("Profile updated successfully!");
+        } catch (error) {
+            console.error("Error updating owner profile:", error);
+            alert("Failed to update profile. Please try again later.");
+        }
+    };
+
     if (loading) {
         return <div>Loading...</div>;
     }
@@ -80,13 +95,25 @@ const OwnerDashboard = () => {
         <div>
             <div style={{ display: "flex" }}>
                 <div style={{ flex: 1 }}>
-                    <div>
-                        Owner profile pic placeholder
+                    <div className="mb-4 ps-2">
+                        {ownerInfo.photoUrl ? (
+                            <img
+                                className="avatar"
+                                src={ownerInfo.photoUrl}
+                                alt={`${ownerInfo.name}'s avatar`}
+                                style={{ width: '250px', height: '250px', borderRadius: '2%' }}
+                            />
+                        ) : (
+                            <div>Owner profile pic placeholder</div>
+                        )}
                     </div>
                     <div>
                         <h2>{ownerInfo.name} {ownerInfo.surname}</h2>
                         <p><strong>Email:</strong> {ownerInfo.email || "Not specified"}</p>
                         <p><strong>Phone:</strong> {ownerInfo.phoneNumber || "Not specified"}</p>
+                        <button onClick={() => setIsEditOwnerModalOpen(true)}>
+                            Edit Profile
+                        </button>
                     </div>
                 </div>
 
@@ -136,6 +163,14 @@ const OwnerDashboard = () => {
 
             {selectedPetId && (
                 <PetProfile petId={selectedPetId} onClose={closePetProfile} />
+            )}
+
+            {isEditOwnerModalOpen && (
+                <EditOwnerModal
+                    ownerInfo={ownerInfo}
+                    onClose={() => setIsEditOwnerModalOpen(false)}
+                    onSave={handleSaveOwner}
+                />
             )}
         </div>
     );

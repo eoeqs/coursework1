@@ -1,19 +1,16 @@
 import React, { useState } from "react";
 import useAxiosWithAuth from "../AxiosAuth";
 
-const EditPetModal = ({ petInfo, onClose, onSave }) => {
+const EditOwnerModal = ({ ownerInfo, onClose, onSave }) => {
     const axiosInstance = useAxiosWithAuth();
     const [formData, setFormData] = useState({
-        name: petInfo.name || "",
-        type: petInfo.type || "CAT",
-        age: petInfo.age || "",
-        sex: petInfo.sex || "MALE",
-        weight: petInfo.weight || "",
-        breed: petInfo.breed || "",
-        sector: petInfo.sector || "",
+        name: ownerInfo.name,
+        surname: ownerInfo.surname,
+        email: ownerInfo.email,
+        phoneNumber: ownerInfo.phoneNumber,
     });
     const [avatarFile, setAvatarFile] = useState(null);
-    const [avatarPreview, setAvatarPreview] = useState(petInfo.photoUrl);
+    const [avatarPreview, setAvatarPreview] = useState(ownerInfo.photoUrl);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -41,32 +38,22 @@ const EditPetModal = ({ petInfo, onClose, onSave }) => {
             formData.append("avatar", avatarFile);
 
             try {
-                await axiosInstance.put(`/pets/update-avatar/${petInfo.id}`, formData, {
+                await axiosInstance.put("/users/update-avatar", formData, {
                     headers: {
                         "Content-Type": "multipart/form-data",
                     },
                 });
-                alert("Pet avatar updated successfully!");
+                alert("Avatar updated successfully!");
             } catch (error) {
-                console.error("Error updating pet avatar:", error);
-                alert("Failed to update pet avatar.");
+                console.error("Error updating avatar:", error);
+                alert("Failed to update avatar.");
             }
         }
     };
 
     return (
-        <div style={{
-            position: "fixed",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            backgroundColor: "white",
-            padding: "20px",
-            borderRadius: "10px",
-            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-            zIndex: 1000,
-        }}>
-            <h3>Edit Pet Profile</h3>
+        <div style={modalStyles}>
+            <h3>Edit Profile</h3>
             <form onSubmit={handleSubmit}>
                 <div style={{ marginBottom: "20px" }}>
                     <label>Avatar:</label>
@@ -94,60 +81,29 @@ const EditPetModal = ({ petInfo, onClose, onSave }) => {
                     />
                 </div>
                 <div>
-                    <label>Type:</label>
-                    <select
-                        name="type"
-                        value={formData.type}
-                        onChange={handleChange}
-                    >
-                        <option value="CAT">Cat</option>
-                        <option value="DOG">Dog</option>
-                    </select>
-                </div>
-                <div>
-                    <label>Age:</label>
-                    <input
-                        type="number"
-                        name="age"
-                        value={formData.age}
-                        onChange={handleChange}
-                    />
-                </div>
-                <div>
-                    <label>Sex:</label>
-                    <select
-                        name="sex"
-                        value={formData.sex}
-                        onChange={handleChange}
-                    >
-                        <option value="MALE">Male</option>
-                        <option value="FEMALE">Female</option>
-                    </select>
-                </div>
-                <div>
-                    <label>Weight (kg):</label>
-                    <input
-                        type="number"
-                        name="weight"
-                        value={formData.weight}
-                        onChange={handleChange}
-                    />
-                </div>
-                <div>
-                    <label>Breed:</label>
+                    <label>Surname:</label>
                     <input
                         type="text"
-                        name="breed"
-                        value={formData.breed}
+                        name="surname"
+                        value={formData.surname}
                         onChange={handleChange}
                     />
                 </div>
                 <div>
-                    <label>Sector:</label>
+                    <label>Email:</label>
+                    <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                    />
+                </div>
+                <div>
+                    <label>Phone Number:</label>
                     <input
                         type="text"
-                        name="sector"
-                        value={formData.sector}
+                        name="phoneNumber"
+                        value={formData.phoneNumber}
                         onChange={handleChange}
                     />
                 </div>
@@ -161,4 +117,18 @@ const EditPetModal = ({ petInfo, onClose, onSave }) => {
     );
 };
 
-export default EditPetModal;
+const modalStyles = {
+    position: "fixed",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    backgroundColor: "white",
+    padding: "20px",
+    borderRadius: "10px",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+    zIndex: 1000,
+    maxWidth: "400px",
+    width: "90%",
+};
+
+export default EditOwnerModal;

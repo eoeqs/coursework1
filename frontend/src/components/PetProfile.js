@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import {useParams, useNavigate} from "react-router-dom";
 import useAxiosWithAuth from "../AxiosAuth";
 import EditPetModal from "./EditPetModal";
 import AddAnamnesisModal from "./AddAnamnesisModal";
@@ -9,7 +9,7 @@ import HealthUpdateDetailsModal from "./HealthUpdateDetailsModal";
 import Header from "./Header";
 
 const PetProfilePage = () => {
-    const { petId } = useParams();
+    const {petId} = useParams();
     const navigate = useNavigate();
     const axiosInstance = useAxiosWithAuth();
     const [petInfo, setPetInfo] = useState(null);
@@ -24,6 +24,7 @@ const PetProfilePage = () => {
     const [selectedHealthUpdateId, setSelectedHealthUpdateId] = useState(null);
     const [upcomingAppointments, setUpcomingAppointments] = useState([]);
     const [treatments, setTreatments] = useState([]);
+    const [userRole, setUserRole] = useState("");
 
     useEffect(() => {
         const fetchData = async () => {
@@ -55,7 +56,9 @@ const PetProfilePage = () => {
 
                 const treatmentsResponse = await axiosInstance.get(`/treatments/actual-by-pet/${petId}`);
                 setTreatments(treatmentsResponse.data);
-                console.log(treatmentsResponse.data)
+
+                const userResponse = await axiosInstance.get("/users/current-user-info");
+                setUserRole(userResponse.data.role);
             } catch (error) {
                 console.error("Error fetching data:", error);
                 setError("Failed to fetch data. Please try again later.");
@@ -127,9 +130,10 @@ const PetProfilePage = () => {
     return (
         <div>
             <Header/>
-            <div className="container mt-2" style={{display: "flex", gap: "100px"}}>
+            <div className="container mt-5" style={{display: "flex", gap: "100px"}}>
                 <div className="ps-3">
                     <PetInfo petInfo={petInfo} onEdit={() => setIsEditModalOpen(true)}/>
+
                     <div className="bg-treatment container mt-3 rounded-1 upcoming-appointments"
                          style={{padding: "20px"}}>
                         <h4>Upcoming Appointments</h4>
@@ -175,9 +179,12 @@ const PetProfilePage = () => {
                         ) : (
                             <p>No anamneses found.</p>
                         )}
-                        <button className="button rounded-3 btn-no-border"
-                                onClick={() => setIsAddAnamnesisModalOpen(true)}>Add New Anamnesis
-                        </button>
+                        {userRole === "ROLE_VET" && (
+                            <button className="button rounded-3 btn-no-border"
+                                    onClick={() => setIsAddAnamnesisModalOpen(true)}>
+                                Add New Anamnesis
+                            </button>
+                        )}
                     </div>
 
                     <h2>Health Updates</h2>
@@ -261,7 +268,7 @@ const PetProfilePage = () => {
                 )}
             </div>
         </div>
-            );
-            };
+    );
+};
 
-            export default PetProfilePage;
+export default PetProfilePage;
