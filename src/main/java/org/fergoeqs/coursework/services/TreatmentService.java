@@ -58,7 +58,7 @@ public class TreatmentService {
     }
 
     private Treatment setRelativeFields(Treatment treatment, TreatmentDTO treatmentDTO) {
-        treatment.setDiagnosis(diagnosisService.getDiagnosisById(treatmentDTO.diagnosis()));
+//        treatment.setDiagnosis(diagnosisService.getDiagnosisById(treatmentDTO.diagnosis()));
         treatment.setPet(petsService.findPetById(treatmentDTO.pet()));
         return treatment;
     }

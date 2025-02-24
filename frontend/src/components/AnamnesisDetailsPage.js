@@ -6,6 +6,7 @@ import AppointmentModal from "./AppointmentModal";
 import EditDiagnosisModal from "./EditDianosisModal";
 import EditExaminationPlanModal from "./EditExaminationPlanModal";
 import EditClinicalDiagnosisModal from "./EditClinicalDiagnosisModal";
+import EditTreatmentModal from "./EditTreatmentModal";
 
 const AnamnesisDetailsPage = () => {
     const { id } = useParams();
@@ -23,6 +24,10 @@ const AnamnesisDetailsPage = () => {
     const [selectedClinicalDiagnosis, setSelectedClinicalDiagnosis] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [treatments, setTreatments] = useState([]);
+    const [isEditTreatmentModalOpen, setIsEditTreatmentModalOpen] = useState(false);
+    const [selectedTreatment, setSelectedTreatment] = useState(null);
+    const [userRole, setUserRole] = useState("");
 
     useEffect(() => {
         const fetchData = async () => {
@@ -39,6 +44,7 @@ const AnamnesisDetailsPage = () => {
                 }
 
                 const diagnosisResponse = await axiosInstance.get(`/diagnosis/preliminary-diagnosis/${id}`);
+                console.log(diagnosisResponse.data)
                 setDiagnosis(diagnosisResponse.data);
 
                 const clinicalDiagnosesResponse = await axiosInstance.get(`/diagnosis/all-diagnoses/${id}`);
@@ -54,6 +60,12 @@ const AnamnesisDetailsPage = () => {
                         slot: slotResponse.data
                     }));
                 }
+
+                const treatmentsResponse = await axiosInstance.get(`/treatments/all-by-pet/${petResponse.data.id}`);
+                setTreatments(treatmentsResponse.data);
+
+                const userResponse = await axiosInstance.get("/users/current-user-info");
+                setUserRole(userResponse.data.role);
             } catch (error) {
                 console.error("Error fetching data:", error);
                 setError("Failed to fetch data. Please try again later.");
@@ -107,6 +119,34 @@ const AnamnesisDetailsPage = () => {
         }
     };
 
+    const handleSaveTreatment = async (treatmentData) => {
+        try {
+            if (selectedTreatment) {
+                const response = await axiosInstance.put(`/treatments/update/${selectedTreatment.id}`, treatmentData);
+                setTreatments(treatments.map(t => t.id === response.data.id ? response.data : t));
+            } else {
+                const response = await axiosInstance.post("/treatments/add", treatmentData);
+                setTreatments([...treatments, response.data]);
+            }
+            setIsEditTreatmentModalOpen(false);
+            alert("Treatment saved successfully!");
+        } catch (error) {
+            console.error("Error saving treatment:", error);
+            alert("Failed to save treatment. Please try again later.");
+        }
+    };
+
+    const handleCompleteTreatment = async (treatmentId) => {
+        try {
+            const response = await axiosInstance.put(`/treatments/complete/${treatmentId}`);
+            setTreatments(treatments.map(t => t.id === response.data.id ? response.data : t));
+            alert("Treatment marked as complete!");
+        } catch (error) {
+            console.error("Error completing treatment:", error);
+            alert("Failed to complete treatment. Please try again later.");
+        }
+    };
+
     if (loading) {
         return <div>Loading...</div>;
     }
@@ -120,31 +160,88 @@ const AnamnesisDetailsPage = () => {
     }
 
     return (
-        <div style={{ display: "flex", gap: "20px" }}>
-            <div style={{ flex: 1 }}>
-                <PetInfo petInfo={petInfo} onEdit={() => {}} />
-                <div style={{ marginTop: "20px" }}>
-                    <h3>Diagnosis</h3>
-                    <p>{diagnosis ? diagnosis.description : "No diagnosis provided."}</p>
+        <div style={{display: "flex", gap: "20px"}}>
+            <div style={{flex: 1}}>
+                <PetInfo petInfo={petInfo} onEdit={() => {
+                }}/>
+
+                <div style={{marginTop: "20px"}}>
+                    <h3>Treatment Recommendations</h3>
+                    {treatments.length > 0 ? (
+                        <table border="1" cellPadding="10" cellSpacing="0">
+                            <thead>
+                            <tr>
+                                <th>Treatment</th>
+                                <th>Description</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                {userRole === "ROLE_VET" && <th>Complete</th>}
+                                <th>Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {treatments.map((treatment) => (
+                                <tr key={treatment.id}>
+                                    <td>{treatment.treatment}</td>
+                                    <td>{treatment.description}</td>
+                                    <td>{new Date(treatment.startDate).toLocaleDateString()}</td>
+                                    <td>{new Date(treatment.endDate).toLocaleDateString()}</td>
+                                    {userRole === "ROLE_VET" && (
+                                        <td>
+                                            <input
+                                                type="checkbox"
+                                                checked={treatment.isCompleted}
+                                                onChange={() => handleCompleteTreatment(treatment.id)}
+                                            />
+                                        </td>
+                                    )}
+                                    <td>
+                                        <button onClick={() => {
+                                            setSelectedTreatment(treatment);
+                                            setIsEditTreatmentModalOpen(true);
+                                        }}>
+                                            Edit
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+                    ) : (
+                        <p>No treatment recommendations found.</p>
+                    )}
+                    {userRole === "ROLE_VET" && (
+                        <button onClick={() => {
+                            setSelectedTreatment(null);
+                            setIsEditTreatmentModalOpen(true);
+                        }}>
+                            Add New Treatment
+                        </button>
+                    )}
                 </div>
-                <div style={{ marginTop: "20px" }}>
+
+                <div style={{marginTop: "20px"}}>
+                    <h3>Diagnosis</h3>
+                    <p>{diagnosis ? diagnosis.name : "No diagnosis provided."}</p>
+                </div>
+                <div style={{marginTop: "20px"}}>
                     <h3>Doctor</h3>
                     <p>{doctorName || "No doctor assigned."}</p>
                 </div>
             </div>
 
-            <div style={{ flex: 1 }}>
+            <div style={{flex: 1}}>
                 <h2>Anamnesis Details</h2>
                 <div>
                     <p><strong>Date:</strong> {new Date(anamnesis.date).toLocaleDateString()}</p>
-                    <div style={{ marginTop: "20px" }}>
+                    <div style={{marginTop: "20px"}}>
                         <h3>Complaints</h3>
                         <p>{anamnesis.description || "No complaints provided."}</p>
                         <button onClick={() => setIsAppointmentModalOpen(true)}>Show an appointment</button>
                     </div>
                 </div>
 
-                <div style={{ marginTop: "20px" }}>
+                <div style={{marginTop: "20px"}}>
                     <h3>Preliminary Diagnosis</h3>
                     {diagnosis ? (
                         <div>
@@ -159,7 +256,7 @@ const AnamnesisDetailsPage = () => {
                     )}
                 </div>
 
-                <div style={{ marginTop: "20px" }}>
+                <div style={{marginTop: "20px"}}>
                     <h3>Examination Plan</h3>
                     {diagnosis && diagnosis.examinationPlan ? (
                         <div>
@@ -171,7 +268,7 @@ const AnamnesisDetailsPage = () => {
                     )}
                 </div>
 
-                <div style={{ marginTop: "20px" }}>
+                <div style={{marginTop: "20px"}}>
                     <h3>Clinical Diagnosis</h3>
                     {clinicalDiagnoses.length > 0 ? (
                         <table border="1" cellPadding="10" cellSpacing="0">
@@ -247,6 +344,17 @@ const AnamnesisDetailsPage = () => {
                     onSave={handleSaveClinicalDiagnosis}
                 />
             )}
+
+            {isEditTreatmentModalOpen && (
+                <EditTreatmentModal
+                    treatment={selectedTreatment}
+                    onClose={() => setIsEditTreatmentModalOpen(false)}
+                    onSave={handleSaveTreatment}
+                    diagnosisId={diagnosis?.id}
+                    petId={petInfo?.id}
+                />
+            )}
+
         </div>
     );
 };

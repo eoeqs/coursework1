@@ -22,6 +22,7 @@ const PetProfilePage = () => {
     const [isHealthUpdateDetailsModalOpen, setIsHealthUpdateDetailsModalOpen] = useState(false);
     const [selectedHealthUpdateId, setSelectedHealthUpdateId] = useState(null);
     const [upcomingAppointments, setUpcomingAppointments] = useState([]);
+    const [treatments, setTreatments] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -50,6 +51,10 @@ const PetProfilePage = () => {
                     })
                 );
                 setUpcomingAppointments(appointmentsWithSlots);
+
+                const treatmentsResponse = await axiosInstance.get(`/treatments/actual-by-pet/${petId}`);
+                setTreatments(treatmentsResponse.data);
+                console.log(treatmentsResponse.data)
             } catch (error) {
                 console.error("Error fetching data:", error);
                 setError("Failed to fetch data. Please try again later.");
@@ -119,9 +124,9 @@ const PetProfilePage = () => {
     }
 
     return (
-        <div style={{ display: "flex", gap: "20px" }}>
-            <div style={{ flex: 1 }}>
-                <PetInfo petInfo={petInfo} onEdit={() => setIsEditModalOpen(true)} />
+        <div style={{display: "flex", gap: "20px"}}>
+            <div style={{flex: 1}}>
+                <PetInfo petInfo={petInfo} onEdit={() => setIsEditModalOpen(true)}/>
 
                 <h2>Upcoming Appointments</h2>
                 {upcomingAppointments.length > 0 ? (
@@ -148,9 +153,36 @@ const PetProfilePage = () => {
                 ) : (
                     <p>No upcoming appointments found.</p>
                 )}
+
+
+                <h2>Treatment Recommendations</h2>
+                {treatments.length > 0 ? (
+                    <table border="1" cellPadding="10" cellSpacing="0">
+                        <thead>
+                        <tr>
+                            <th>Treatment</th>
+                            <th>Description</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {treatments.map((treatment) => (
+                            <tr key={treatment.id}>
+                                <td>{treatment.treatment}</td>
+                                <td>{treatment.description}</td>
+                                <td>{new Date(treatment.startDate).toLocaleDateString()}</td>
+                                <td>{new Date(treatment.endDate).toLocaleDateString()}</td>
+                            </tr>
+                        ))}
+                        </tbody>
+                    </table>
+                ) : (
+                    <p>No treatment recommendations found.</p>
+                )}
             </div>
 
-            <div style={{ flex: 1 }}>
+            <div style={{flex: 1}}>
                 <h2>Anamneses</h2>
                 {anamneses.length > 0 ? (
                     <table border="1" cellPadding="10" cellSpacing="0">
