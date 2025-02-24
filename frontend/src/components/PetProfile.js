@@ -130,7 +130,7 @@ const PetProfilePage = () => {
     return (
         <div>
             <Header/>
-            <div className="container mt-5" style={{display: "flex", gap: "100px"}}>
+            <div className="container mt-2" style={{display: "flex", gap: "100px"}}>
                 <div className="ps-3">
                     <PetInfo petInfo={petInfo} onEdit={() => setIsEditModalOpen(true)}/>
 

@@ -10,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 @RestController
 @RequestMapping("/api/procedures")
@@ -65,7 +66,7 @@ public class MedicalProcedureController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_VET')")
     @PostMapping("/add")
-    public ResponseEntity<?> addProcedure(@RequestBody MedicalProcedureDTO medicalProcedureDTO) throws IOException {
+    public ResponseEntity<?> addProcedure(@RequestBody MedicalProcedureDTO medicalProcedureDTO) throws IOException, URISyntaxException {
         try {
             return ResponseEntity.ok(medicalProcedureMapper.toDTO(medicalProcedureService.save(medicalProcedureDTO)));
         } catch (Exception e) {
