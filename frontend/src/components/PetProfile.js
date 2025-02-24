@@ -210,12 +210,12 @@ const PetProfilePage = () => {
                     ) : (
                         <p>No health updates found.</p>
                     )}
-                    {userRole === "ROLE_VET" && (
-                        <button className="button rounded-3 btn-no-border"
-                                onClick={() => setIsAddHealthUpdateModalOpen(true)}>
-                            Add Health Update
-                        </button>
-                    )}
+
+                    <button className="button rounded-3 btn-no-border"
+                            onClick={() => setIsAddHealthUpdateModalOpen(true)}>
+                        Add Health Update
+                    </button>
+
                 </div>
             </div>
 
