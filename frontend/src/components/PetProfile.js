@@ -23,6 +23,7 @@ const PetProfilePage = () => {
     const [selectedHealthUpdateId, setSelectedHealthUpdateId] = useState(null);
     const [upcomingAppointments, setUpcomingAppointments] = useState([]);
     const [treatments, setTreatments] = useState([]);
+    const [userRole, setUserRole] = useState("");
 
     useEffect(() => {
         const fetchData = async () => {
@@ -54,7 +55,10 @@ const PetProfilePage = () => {
 
                 const treatmentsResponse = await axiosInstance.get(`/treatments/actual-by-pet/${petId}`);
                 setTreatments(treatmentsResponse.data);
-                console.log(treatmentsResponse.data)
+                console.log(treatmentsResponse.data);
+
+                const userResponse = await axiosInstance.get("/users/current-user-info");
+                setUserRole(userResponse.data.role);
             } catch (error) {
                 console.error("Error fetching data:", error);
                 setError("Failed to fetch data. Please try again later.");
@@ -151,29 +155,32 @@ const PetProfilePage = () => {
             <div style={{flex: 1}}>
                 <h2>Anamneses</h2>
                 <div className="bg-table element-space">
-                        {anamneses.length > 0 ? (
-                            <table cellPadding="5" cellSpacing="0" className="uniq-table">
-                                <tbody>
-                                {anamneses.map((anamnesis) => (
-                                    <tr key={anamnesis.id}>
-                                        <td>{new Date(anamnesis.date).toLocaleDateString()}</td>
-                                        <td>{anamnesis.description}</td>
-                                        <td>
-                                            <button className="button btn-no-border"
-                                                    onClick={() => navigate(`/anamnesis/${anamnesis.id}`)}>
-                                                More info
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                                </tbody>
-                            </table>
-                        ) : (
-                            <p>No anamneses found.</p>
-                        )}
-                    <button className="button rounded-3 btn-no-border"
-                            onClick={() => setIsAddAnamnesisModalOpen(true)}>Add New Anamnesis
-                    </button>
+                    {anamneses.length > 0 ? (
+                        <table cellPadding="5" cellSpacing="0" className="uniq-table">
+                            <tbody>
+                            {anamneses.map((anamnesis) => (
+                                <tr key={anamnesis.id}>
+                                    <td>{new Date(anamnesis.date).toLocaleDateString()}</td>
+                                    <td>{anamnesis.description}</td>
+                                    <td>
+                                        <button className="button btn-no-border"
+                                                onClick={() => navigate(`/anamnesis/${anamnesis.id}`)}>
+                                            More info
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+                    ) : (
+                        <p>No anamneses found.</p>
+                    )}
+                    {userRole === "ROLE_VET" && (
+                        <button className="button rounded-3 btn-no-border"
+                                onClick={() => setIsAddAnamnesisModalOpen(true)}>
+                            Add New Anamnesis
+                        </button>
+                    )}
                 </div>
 
                 <h2>Health Updates</h2>
@@ -198,9 +205,12 @@ const PetProfilePage = () => {
                     ) : (
                         <p>No health updates found.</p>
                     )}
-                    <button className="button rounded-3 btn-no-border"
-                            onClick={() => setIsAddHealthUpdateModalOpen(true)}>Add Health Update
-                    </button>
+                    {userRole === "ROLE_VET" && (
+                        <button className="button rounded-3 btn-no-border"
+                                onClick={() => setIsAddHealthUpdateModalOpen(true)}>
+                            Add Health Update
+                        </button>
+                    )}
                 </div>
             </div>
 

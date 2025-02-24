@@ -229,7 +229,7 @@ const AnamnesisDetailsPage = () => {
                         ) : (
                             <p>No preliminary diagnosis provided.</p>
                         )}
-                        {!diagnosis && (
+                        {!diagnosis && userRole === "ROLE_VET" && (
                             <button className="button rounded-3 btn-no-border" onClick={() => {
                                 setSelectedClinicalDiagnosis(null);
                                 setIsEditClinicalDiagnosisModalOpen(true);
@@ -250,9 +250,12 @@ const AnamnesisDetailsPage = () => {
                                 alignItems: "center"
                             }}>
                                 <p>{diagnosis.examinationPlan}</p>
-                                <button className="button btn-no-border"
-                                        onClick={() => setIsEditExaminationPlanModalOpen(true)}>Edit
-                                </button>
+                                {userRole === "ROLE_VET" && (
+                                    <button className="button btn-no-border"
+                                            onClick={() => setIsEditExaminationPlanModalOpen(true)}>
+                                        Edit
+                                    </button>
+                                )}
                             </div>
                         ) : (
                             <p>No examination plan provided.</p>
@@ -282,12 +285,14 @@ const AnamnesisDetailsPage = () => {
                                         <td>{new Date(diagnosis.date).toLocaleDateString()}</td>
                                         <td>{diagnosis.contagious ? "Yes" : "No"}</td>
                                         <td>
-                                            <button className="button btn-no-border" onClick={() => {
-                                                setSelectedClinicalDiagnosis(diagnosis);
-                                                setIsEditClinicalDiagnosisModalOpen(true);
-                                            }}>
-                                                Edit
-                                            </button>
+                                            {userRole === "ROLE_VET" && (
+                                                <button className="button btn-no-border" onClick={() => {
+                                                    setSelectedClinicalDiagnosis(diagnosis);
+                                                    setIsEditClinicalDiagnosisModalOpen(true);
+                                                }}>
+                                                    Edit
+                                                </button>
+                                            )}
                                         </td>
                                     </tr>
                                 ))}
@@ -296,12 +301,14 @@ const AnamnesisDetailsPage = () => {
                         ) : (
                             <p>No clinical diagnoses found.</p>
                         )}
-                        <button className="button rounded-3 btn-no-border" onClick={() => {
-                            setSelectedClinicalDiagnosis(null);
-                            setIsEditClinicalDiagnosisModalOpen(true);
-                        }}>
-                            Add Clinical Diagnosis
-                        </button>
+                        {userRole === "ROLE_VET" && (
+                            <button className="button rounded-3 btn-no-border" onClick={() => {
+                                setSelectedClinicalDiagnosis(null);
+                                setIsEditClinicalDiagnosisModalOpen(true);
+                            }}>
+                                Add Clinical Diagnosis
+                            </button>
+                        )}
                     </div>
 
                 </div>
@@ -325,12 +332,14 @@ const AnamnesisDetailsPage = () => {
                                     <b>Description</b>: {treatment.description} <br/>
                                     <b>Prescribed Medication</b>: {treatment.prescribedMedication} <br/>
                                     <b>Duration</b>: {treatment.duration} <br/>
-                                    <button className="button btn-no-border" onClick={() => {
-                                        setSelectedTreatment(treatment);
-                                        setIsEditTreatmentModalOpen(true);
-                                    }}>
-                                        Edit treatment recommendation
-                                    </button>
+                                    {userRole === "ROLE_VET" && (
+                                        <button className="button btn-no-border" onClick={() => {
+                                            setSelectedTreatment(treatment);
+                                            setIsEditTreatmentModalOpen(true);
+                                        }}>
+                                            Edit treatment recommendation
+                                        </button>
+                                    )}
                                 </td>
 
                             </tr>
