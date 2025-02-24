@@ -171,158 +171,159 @@ const AnamnesisDetailsPage = () => {
         return <div>No data found.</div>;
     }
 
+    // Фильтруем treatments, чтобы исключить завершенные
+    const activeTreatments = treatments.filter(treatment => !treatment.isCompleted);
+
     return (
         <div>
-        <Header />
-        <div className="container mt-3" style={{display: "flex", gap: "20px"}}>
-            <div>
-                <PetInfo petInfo={petInfo} onEdit={() => {
-                }}/>
+            <Header />
+            <div className="container mt-3" style={{ display: "flex", gap: "20px" }}>
+                <div>
+                    <PetInfo petInfo={petInfo} onEdit={() => { }} />
 
-                <div style={{marginTop: "20px"}}>
-                    <h4 style={{marginBottom: '5px'}}>Diagnosis</h4>
-                    <p >{diagnosis ? diagnosis.name : "No diagnosis provided."}</p>
-                </div>
-                <div style={{marginTop: "10px"}}>
-                    <h4 style={{marginBottom: '5px'}}>Doctor</h4>
-                    <p>{doctorName || "No doctor assigned."}</p>
-                </div>
-                <button className="button rounded-3 btn-no-border" onClick={() => window.history.back()}>Back to pet profile</button>
-            </div>
-
-            <div style={{flex: 1}}>
-
-                <h2><strong>Anamnesis details </strong> (appeal
-                    from {new Date(anamnesis.date).toLocaleDateString()}: {diagnosis.name} )</h2>
-                <h3 className="py-1">Complaints</h3>
-                <div className="bg-table element-space" style={{flex: 1}}>
-                    <div>
-                        <div style={{
-                            marginTop: "14px",
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center"
-                        }}>
-                            <p>{anamnesis.description || "No complaints provided."}</p>
-                            <button className="button rounded-3 btn-no-border"
-                                    onClick={() => setIsAppointmentModalOpen(true)}>Show an appointment
-                            </button>
-                        </div>
+                    <div style={{ marginTop: "20px" }}>
+                        <h4 style={{ marginBottom: '5px' }}>Diagnosis</h4>
+                        <p>{diagnosis ? diagnosis.name : "No diagnosis provided."}</p>
                     </div>
-                </div>
-                <h3>Preliminary Diagnosis</h3>
-                <div className="bg-table element-space prem_diagnsosis" style={{flex: 1}}>
-                    <div style={{marginTop: "15px"}}>
-                        {diagnosis ? (
-                            <div style={{marginTop: "15px", display: "flex", flexDirection: "column", height: "100%"}}>
-                                <p style={{marginBottom: '5px'}}><strong>Name:</strong> {diagnosis.name}</p>
-                                <p style={{marginBottom: '5px'}}>
-                                    <strong>Date:</strong> {new Date(diagnosis.date).toLocaleDateString()}</p>
-                                <p style={{marginBottom: '5px'}}>
-                                    <strong>Contagious:</strong> {diagnosis.contagious ? "Yes" : "No"}</p>
-                                <p style={{marginBottom: '0px'}}><strong>Description:</strong> {diagnosis.description}</p>
-                                <div style={{marginTop: "auto", textAlign: "right"}}>
-                                    <button className="button btn-no-border"
-
-                                            onClick={() => setIsEditDiagnosisModalOpen(true)}>Edit
-                                    </button>
-                                </div>
-                            </div>
-                        ) : (
-                            <p>No preliminary diagnosis provided.</p>
-                        )}
-                        {!diagnosis && userRole === "ROLE_VET" && (
-                            <button className="button rounded-3 btn-no-border" onClick={() => {
-                                setSelectedClinicalDiagnosis(null);
-                                setIsEditClinicalDiagnosisModalOpen(true);
-                            }}>
-                                Add Preliminary Diagnosis
-                            </button>
-                        )}
+                    <div style={{ marginTop: "10px" }}>
+                        <h4 style={{ marginBottom: '5px' }}>Doctor</h4>
+                        <p>{doctorName || "No doctor assigned."}</p>
                     </div>
+                    <button className="button rounded-3 btn-no-border" onClick={() => window.history.back()}>Back to pet profile</button>
                 </div>
-                <h3>Examination Plan</h3>
-                <div className="bg-table element-space" style={{flex: 1}}>
-                    <div style={{marginTop: "20px"}}>
-                        {diagnosis && diagnosis.examinationPlan ? (
+
+                <div style={{ flex: 1 }}>
+                    <h2><strong>Anamnesis details </strong> (appeal
+                        from {new Date(anamnesis.date).toLocaleDateString()}: {diagnosis.name} )</h2>
+                    <h3 className="py-1">Complaints</h3>
+                    <div className="bg-table element-space" style={{ flex: 1 }}>
+                        <div>
                             <div style={{
-                                marginTop: "20px",
+                                marginTop: "14px",
                                 display: "flex",
                                 justifyContent: "space-between",
                                 alignItems: "center"
                             }}>
-                                <p>{diagnosis.examinationPlan}</p>
-                                {userRole === "ROLE_VET" && (
-                                    <button className="button btn-no-border"
-                                            onClick={() => setIsEditExaminationPlanModalOpen(true)}>
-                                        Edit
-                                    </button>
-                                )}
+                                <p>{anamnesis.description || "No complaints provided."}</p>
+                                <button className="button rounded-3 btn-no-border"
+                                        onClick={() => setIsAppointmentModalOpen(true)}>Show an appointment
+                                </button>
                             </div>
-                        ) : (
-                            <p>No examination plan provided.</p>
-                        )}
+                        </div>
                     </div>
-                </div>
-                <h3>Clinical Diagnosis</h3>
-                <div className="bg-table element-space prem_diagnsosis" style={{flex: 1}}>
+                    <h3>Preliminary Diagnosis</h3>
+                    <div className="bg-table element-space prem_diagnsosis" style={{ flex: 1 }}>
+                        <div style={{ marginTop: "15px" }}>
+                            {diagnosis ? (
+                                <div style={{ marginTop: "15px", display: "flex", flexDirection: "column", height: "100%" }}>
+                                    <p style={{ marginBottom: '5px' }}><strong>Name:</strong> {diagnosis.name}</p>
+                                    <p style={{ marginBottom: '5px' }}>
+                                        <strong>Date:</strong> {new Date(diagnosis.date).toLocaleDateString()}</p>
+                                    <p style={{ marginBottom: '5px' }}>
+                                        <strong>Contagious:</strong> {diagnosis.contagious ? "Yes" : "No"}</p>
+                                    <p style={{ marginBottom: '0px' }}><strong>Description:</strong> {diagnosis.description}</p>
+                                    <div style={{ marginTop: "auto", textAlign: "right" }}>
+                                        <button className="button btn-no-border"
 
-                    <div style={{marginTop: "20px"}}>
-                        {clinicalDiagnoses.length > 0 ? (
-                            <table cellPadding="3" cellSpacing="0" className="uniq-table" >
-                                <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Description</th>
-                                    <th>Date</th>
-                                    <th>Contagious</th>
-                                    <th>Action</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {clinicalDiagnoses.map((diagnosis) => (
-                                    <tr key={diagnosis.id}>
-                                        <td>{diagnosis.name}</td>
-                                        <td>{diagnosis.description}</td>
-                                        <td>{new Date(diagnosis.date).toLocaleDateString()}</td>
-                                        <td>{diagnosis.contagious ? "Yes" : "No"}</td>
-                                        <td>
-                                            {userRole === "ROLE_VET" && (
-                                                <button className="button btn-no-border" onClick={() => {
-                                                    setSelectedClinicalDiagnosis(diagnosis);
-                                                    setIsEditClinicalDiagnosisModalOpen(true);
-                                                }}>
-                                                    Edit
-                                                </button>
-                                            )}
-                                        </td>
+                                                onClick={() => setIsEditDiagnosisModalOpen(true)}>Edit
+                                        </button>
+                                    </div>
+                                </div>
+                            ) : (
+                                <p>No preliminary diagnosis provided.</p>
+                            )}
+                            {!diagnosis && userRole === "ROLE_VET" && (
+                                <button className="button rounded-3 btn-no-border" onClick={() => {
+                                    setSelectedClinicalDiagnosis(null);
+                                    setIsEditClinicalDiagnosisModalOpen(true);
+                                }}>
+                                    Add Preliminary Diagnosis
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                    <h3>Examination Plan</h3>
+                    <div className="bg-table element-space" style={{ flex: 1 }}>
+                        <div style={{ marginTop: "20px" }}>
+                            {diagnosis && diagnosis.examinationPlan ? (
+                                <div style={{
+                                    marginTop: "20px",
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    alignItems: "center"
+                                }}>
+                                    <p>{diagnosis.examinationPlan}</p>
+                                    {userRole === "ROLE_VET" && (
+                                        <button className="button btn-no-border"
+                                                onClick={() => setIsEditExaminationPlanModalOpen(true)}>
+                                            Edit
+                                        </button>
+                                    )}
+                                </div>
+                            ) : (
+                                <p>No examination plan provided.</p>
+                            )}
+                        </div>
+                    </div>
+                    <h3>Clinical Diagnosis</h3>
+                    <div className="bg-table element-space prem_diagnsosis" style={{ flex: 1 }}>
+
+                        <div style={{ marginTop: "20px" }}>
+                            {clinicalDiagnoses.length > 0 ? (
+                                <table cellPadding="3" cellSpacing="0" className="uniq-table" >
+                                    <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Description</th>
+                                        <th>Date</th>
+                                        <th>Contagious</th>
+                                        <th>Action</th>
                                     </tr>
-                                ))}
-                                </tbody>
-                            </table>
-                        ) : (
-                            <p>No clinical diagnoses found.</p>
-                        )}
-                        {userRole === "ROLE_VET" && (
-                            <button className="button rounded-3 btn-no-border" onClick={() => {
-                                setSelectedClinicalDiagnosis(null);
-                                setIsEditClinicalDiagnosisModalOpen(true);
-                            }}>
-                                Add Clinical Diagnosis
-                            </button>
-                        )}
+                                    </thead>
+                                    <tbody>
+                                    {clinicalDiagnoses.map((diagnosis) => (
+                                        <tr key={diagnosis.id}>
+                                            <td>{diagnosis.name}</td>
+                                            <td>{diagnosis.description}</td>
+                                            <td>{new Date(diagnosis.date).toLocaleDateString()}</td>
+                                            <td>{diagnosis.contagious ? "Yes" : "No"}</td>
+                                            <td>
+                                                {userRole === "ROLE_VET" && (
+                                                    <button className="button btn-no-border" onClick={() => {
+                                                        setSelectedClinicalDiagnosis(diagnosis);
+                                                        setIsEditClinicalDiagnosisModalOpen(true);
+                                                    }}>
+                                                        Edit
+                                                    </button>
+                                                )}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                    </tbody>
+                                </table>
+                            ) : (
+                                <p>No clinical diagnoses found.</p>
+                            )}
+                            {userRole === "ROLE_VET" && (
+                                <button className="button rounded-3 btn-no-border" onClick={() => {
+                                    setSelectedClinicalDiagnosis(null);
+                                    setIsEditClinicalDiagnosisModalOpen(true);
+                                }}>
+                                    Add Clinical Diagnosis
+                                </button>
+                            )}
+                        </div>
+
                     </div>
-
                 </div>
-            </div>
 
-            <div className="mt-1 rounded-1 treatment-vet element-space"
-                     style={{marginTop: "30px", padding: "20px"}}>
+                <div className="mt-1 rounded-1 treatment-vet element-space"
+                     style={{ marginTop: "30px", padding: "20px" }}>
                     <h3>Treatment Recommendations</h3>
-                    {treatments.length > 0 ? (
+                    {activeTreatments.length > 0 ? (
                         <table cellPadding="3" cellSpacing="0" className="uniq-table">
                             <tbody>
-                            {treatments.map((treatment) => (
+                            {activeTreatments.map((treatment) => (
                                 <tr key={treatment.id}>
                                     <td>{treatment.treatment}
                                         <b>Name: {treatment.name}</b> {userRole === "ROLE_VET" && (
@@ -330,10 +331,10 @@ const AnamnesisDetailsPage = () => {
                                                 type="checkbox"
                                                 checked={treatment.isCompleted}
                                                 onChange={() => handleCompleteTreatment(treatment.id)}
-                                            />)} <br/>
-                                        <b>Description</b>: {treatment.description} <br/>
-                                        <b>Prescribed Medication</b>: {treatment.prescribedMedication} <br/>
-                                        <b>Duration</b>: {treatment.duration} <br/>
+                                            />)} <br />
+                                        <b>Description</b>: {treatment.description} <br />
+                                        <b>Prescribed Medication</b>: {treatment.prescribedMedication} <br />
+                                        <b>Duration</b>: {treatment.duration} <br />
                                         {userRole === "ROLE_VET" && (
                                             <button className="button btn-no-border" onClick={() => {
                                                 setSelectedTreatment(treatment);
@@ -349,7 +350,7 @@ const AnamnesisDetailsPage = () => {
                             </tbody>
                         </table>
                     ) : (
-                        <p>No treatment recommendations found.</p>
+                        <p>No active treatment recommendations found.</p>
                     )}
                     {userRole === "ROLE_VET" && (
                         <button className="button rounded-3 btn-no-border" onClick={() => {
@@ -402,9 +403,9 @@ const AnamnesisDetailsPage = () => {
                     />
                 )}
 
-        </div>
+            </div>
         </div>
     );
 };
 
-            export default AnamnesisDetailsPage;
+export default AnamnesisDetailsPage;
