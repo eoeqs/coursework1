@@ -46,6 +46,10 @@
   box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
+.avatar {
+  box-shadow: 2px 4px 10px rgba(131, 15, 36, 0.15);
+}
+
 .bg-treatment {
   box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.3);
   background-color: #FFDDDD5E;
@@ -53,10 +57,25 @@
   overflow-y: auto;
 }
 
+.treatment-vet {
+    background-color: #FFDDDD5E;
+    box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.3);
+    max-height: 794px;
+    max-width: 40%;
+    overflow-y: auto;
+}
+
 .upcoming-appointments {
   box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.3);
   max-height: 150px;
   overflow-y: auto;
+}
+.hidden_scrolling {
+  overflow-y: hidden !important;
+}
+
+.prem_diagnsosis {
+  max-height: 200px !important;
 }
 
 .button {
@@ -70,7 +89,7 @@
   background-color: #FFDDDD5E;
   box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.1);
   overflow-y: auto;
-  max-height: 300px;
+  max-height: 315px;
 }
 
 ::-webkit-scrollbar {
@@ -85,6 +104,10 @@
 ::-webkit-scrollbar-thumb {
   background: #9e6e6e;
   border-radius: 10px;
+}
+
+input[type="checkbox"] {
+  accent-color: #bf3963;
 }
 
 .pet-card {
@@ -127,4 +150,9 @@
 
 .element-space {
   margin-bottom: 20px;
+}
+
+.scrolling {
+  overflow-y: auto;
+  max-height: 800px;
 }
