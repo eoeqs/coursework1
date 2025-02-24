@@ -38,7 +38,7 @@ const VetDashboard = () => {
                 const vetInfoResponse = await axiosInstance.get(`/users/user-info/${fetchedVetId}`);
                 setVetInfo(vetInfoResponse.data);
 
-                if (fetchedUserRole === "VET") {
+                if (fetchedUserRole === "ROLE_VET") {
                     const doctorPetsResponse = await axiosInstance.get(`/pets/doctor-pets/${vetInfoResponse.data.id}`);
                     setDoctorPets(doctorPetsResponse.data);
                 }
@@ -108,18 +108,16 @@ const VetDashboard = () => {
         if (!selectedAppointment) return;
 
         try {
-            // Привязка питомца к ветеринару
             await axiosInstance.put(`/pets/bind/${selectedAppointment.pet.id}`);
             alert("Pet successfully bound to the vet!");
 
-            // Создание анамнеза, если выбрана опция
             if (createAnamnesis) {
                 const anamnesisDTO = {
                     pet: selectedAppointment.pet.id,
                     name: selectedAppointment.pet.name,
                     description: selectedAppointment.description,
                     date: new Date().toISOString(),
-                    appointment: selectedAppointment.id // Передаем appointmentId
+                    appointment: selectedAppointment.id
                 };
                 await axiosInstance.post("/anamnesis/save", anamnesisDTO);
                 alert("Anamnesis successfully created!");
@@ -181,7 +179,7 @@ const VetDashboard = () => {
                     </div>
                 </div>
 
-                {userRole === "VET" && (
+                {userRole === "ROLE_VET" && (
                     <div style={{ flex: 1, marginLeft: "20px" }}>
                         <h2>My Pets</h2>
                         {doctorPets.length > 0 ? (
