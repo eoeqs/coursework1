@@ -124,55 +124,98 @@ const PetProfilePage = () => {
     }
 
     return (
-        <div style={{display: "flex", gap: "20px"}}>
-            <div style={{flex: 1}}>
+        <div className="container mt-5" style={{display: "flex", gap: "100px"}}>
+            <div className="ps-3">
                 <PetInfo petInfo={petInfo} onEdit={() => setIsEditModalOpen(true)}/>
+                <div className="bg-treatment container mt-3 rounded-1 upcoming-appointments" style={{padding: "20px"}}>
+                    <h4>Upcoming Appointments</h4>
+                    {upcomingAppointments.length > 0 ? (
+                        <table cellPadding="3" cellSpacing="0">
+                            <tbody>
+                            {upcomingAppointments.map((appointment) => (
+                                <tr key={appointment.id}>
+                                    <td>{new Date(appointment.slot.date).toLocaleDateString()}</td>
+                                    <td>{appointment.slot.startTime} </td>
+                                    <td> -</td>
+                                    <td>Dr. {appointment.slot.vetId}</td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+                    ) : (
+                        <p>No upcoming appointments found.</p>
+                    )}
+                </div>
+            </div>
 
-                <h2>Upcoming Appointments</h2>
-                {upcomingAppointments.length > 0 ? (
-                    <table border="1" cellPadding="10" cellSpacing="0">
-                        <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Time</th>
-                            <th>Doctor</th>
-                            <th>Description</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {upcomingAppointments.map((appointment) => (
-                            <tr key={appointment.id}>
-                                <td>{new Date(appointment.slot.date).toLocaleDateString()}</td>
-                                <td>{appointment.slot.startTime} - {appointment.slot.endTime}</td>
-                                <td>{appointment.slot.vetId}</td>
-                                <td>{appointment.description}</td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </table>
-                ) : (
-                    <p>No upcoming appointments found.</p>
-                )}
+            <div style={{flex: 1}}>
+                <h2>Anamneses</h2>
+                <div className="bg-table element-space">
+                        {anamneses.length > 0 ? (
+                            <table cellPadding="5" cellSpacing="0" className="uniq-table">
+                                <tbody>
+                                {anamneses.map((anamnesis) => (
+                                    <tr key={anamnesis.id}>
+                                        <td>{new Date(anamnesis.date).toLocaleDateString()}</td>
+                                        <td>{anamnesis.description}</td>
+                                        <td>
+                                            <button className="button btn-no-border"
+                                                    onClick={() => navigate(`/anamnesis/${anamnesis.id}`)}>
+                                                More info
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                                </tbody>
+                            </table>
+                        ) : (
+                            <p>No anamneses found.</p>
+                        )}
+                    <button className="button rounded-3 btn-no-border"
+                            onClick={() => setIsAddAnamnesisModalOpen(true)}>Add New Anamnesis
+                    </button>
+                </div>
 
+                <h2>Health Updates</h2>
+                <div className="bg-table">
+                    {healthUpdates.length > 0 ? (
+                        <table cellPadding="5" cellSpacing="0" className="uniq-table">
+                            <tbody>
+                            {healthUpdates.map((update) => (
+                                <tr key={update.id}>
+                                    <td>{new Date(update.date).toLocaleDateString()}</td>
+                                    <td>{update.dynamics ? "positive" : "negative"} dynamic</td>
+                                    <td>
+                                        <button className="button btn-no-border"
+                                                onClick={() => handleViewHealthUpdateDetails(update.id)}>
+                                            More info
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+                    ) : (
+                        <p>No health updates found.</p>
+                    )}
+                    <button className="button rounded-3 btn-no-border"
+                            onClick={() => setIsAddHealthUpdateModalOpen(true)}>Add Health Update
+                    </button>
+                </div>
+            </div>
 
-                <h2>Treatment Recommendations</h2>
+            <div className="bg-treatment mt-1 rounded-1" style={{padding: "20px"}}>
+                <h4>Treatment Recommendations</h4>
                 {treatments.length > 0 ? (
-                    <table border="1" cellPadding="10" cellSpacing="0">
-                        <thead>
-                        <tr>
-                            <th>Treatment</th>
-                            <th>Description</th>
-                            <th>Start Date</th>
-                            <th>End Date</th>
-                        </tr>
-                        </thead>
+                    <table cellPadding="3" cellSpacing="0" className="uniq-table">
                         <tbody>
                         {treatments.map((treatment) => (
                             <tr key={treatment.id}>
-                                <td>{treatment.treatment}</td>
-                                <td>{treatment.description}</td>
-                                <td>{new Date(treatment.startDate).toLocaleDateString()}</td>
-                                <td>{new Date(treatment.endDate).toLocaleDateString()}</td>
+                                <td><b>Treatment</b>: {treatment.name} <br/>
+                                    <b>Description</b>: {treatment.description} <br/>
+                                    <b>Prescribed Medication</b>: {treatment.prescribedMedication} <br/>
+                                    <b>Duration</b>: {treatment.duration} <br/>
+                                </td>
                             </tr>
                         ))}
                         </tbody>
@@ -180,66 +223,6 @@ const PetProfilePage = () => {
                 ) : (
                     <p>No treatment recommendations found.</p>
                 )}
-            </div>
-
-            <div style={{flex: 1}}>
-                <h2>Anamneses</h2>
-                {anamneses.length > 0 ? (
-                    <table border="1" cellPadding="10" cellSpacing="0">
-                        <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Description</th>
-                            <th></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {anamneses.map((anamnesis) => (
-                            <tr key={anamnesis.id}>
-                                <td>{new Date(anamnesis.date).toLocaleDateString()}</td>
-                                <td>{anamnesis.description}</td>
-                                <td>
-                                    <button onClick={() => navigate(`/anamnesis/${anamnesis.id}`)}>
-                                        More info
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </table>
-                ) : (
-                    <p>No anamneses found.</p>
-                )}
-                <button onClick={() => setIsAddAnamnesisModalOpen(true)}>Add New Anamnesis</button>
-
-                <h2>Health Updates</h2>
-                {healthUpdates.length > 0 ? (
-                    <table border="1" cellPadding="10" cellSpacing="0">
-                        <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Dynamics</th>
-                            <th></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {healthUpdates.map((update) => (
-                            <tr key={update.id}>
-                                <td>{new Date(update.date).toLocaleDateString()}</td>
-                                <td>{update.dynamics ? "Positive" : "Negative"}</td>
-                                <td>
-                                    <button onClick={() => handleViewHealthUpdateDetails(update.id)}>
-                                        More info
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </table>
-                ) : (
-                    <p>No health updates found.</p>
-                )}
-                <button onClick={() => setIsAddHealthUpdateModalOpen(true)}>Add Health Update</button>
             </div>
 
             {isEditModalOpen && (

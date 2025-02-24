@@ -12,6 +12,7 @@ import VetDashboard from "./components/VetDashboard";
 import PetProfile from "./components/PetProfile";
 import AnamnesisDetailsPage from "./components/AnamnesisDetailsPage";
 import HealthUpdateDetailsModal from "./components/HealthUpdateDetailsModal";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 const App = () => {
