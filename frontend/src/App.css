@@ -47,11 +47,16 @@
 }
 
 .bg-treatment {
-  background-color: #FFDCDC;
+  box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.3);
+  background-color: #FFDDDD5E;
+  max-height: 725px;
+  overflow-y: auto;
 }
 
 .upcoming-appointments {
   box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.3);
+  max-height: 150px;
+  overflow-y: auto;
 }
 
 .button {
@@ -61,9 +66,25 @@
 
 .bg-table {
   padding: 8px 12px;
-  width: 60%;
+  width: 100%;
   background-color: #FFDDDD5E;
   box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+  max-height: 300px;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #c6a6a6;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #9e6e6e;
+  border-radius: 10px;
 }
 
 .pet-card {
@@ -102,6 +123,7 @@
 .btn-no-border {
   border: none !important;
 }
+
 
 .element-space {
   margin-bottom: 20px;

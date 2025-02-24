@@ -124,7 +124,7 @@ const PetProfilePage = () => {
     }
 
     return (
-        <div className="container mt-3" style={{ display: "flex", gap: "100px" }}>
+        <div className="container mt-5" style={{display: "flex", gap: "100px"}}>
             <div className="ps-3">
                 <PetInfo petInfo={petInfo} onEdit={() => setIsEditModalOpen(true)}/>
                 <div className="bg-treatment container mt-3 rounded-1 upcoming-appointments" style={{padding: "20px"}}>
@@ -136,7 +136,7 @@ const PetProfilePage = () => {
                                 <tr key={appointment.id}>
                                     <td>{new Date(appointment.slot.date).toLocaleDateString()}</td>
                                     <td>{appointment.slot.startTime} </td>
-                                    <td> - </td>
+                                    <td> -</td>
                                     <td>Dr. {appointment.slot.vetId}</td>
                                 </tr>
                             ))}
@@ -148,37 +148,9 @@ const PetProfilePage = () => {
                 </div>
             </div>
 
-            <div>
-                <h2>Treatment Recommendations</h2>
-                {treatments.length > 0 ? (
-                    <table border="1" cellPadding="10" cellSpacing="0">
-                        <thead>
-                        <tr>
-                            <th>Treatment</th>
-                            <th>Description</th>
-                            <th>Start Date</th>
-                            <th>End Date</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {treatments.map((treatment) => (
-                            <tr key={treatment.id}>
-                                <td>{treatment.treatment}</td>
-                                <td>{treatment.description}</td>
-                                <td>{new Date(treatment.startDate).toLocaleDateString()}</td>
-                                <td>{new Date(treatment.endDate).toLocaleDateString()}</td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </table>
-                ) : (
-                    <p>No treatment recommendations found.</p>
-                )}
-            </div>
-
-                <div style={{flex: 1}}>
-                    <h2>Anamneses</h2>
-                    <div className="bg-table element-space">
+            <div style={{flex: 1}}>
+                <h2>Anamneses</h2>
+                <div className="bg-table element-space">
                         {anamneses.length > 0 ? (
                             <table cellPadding="5" cellSpacing="0" className="uniq-table">
                                 <tbody>
@@ -187,7 +159,8 @@ const PetProfilePage = () => {
                                         <td>{new Date(anamnesis.date).toLocaleDateString()}</td>
                                         <td>{anamnesis.description}</td>
                                         <td>
-                                            <button className="button btn-no-border"  onClick={() => navigate(`/anamnesis/${anamnesis.id}`)}>
+                                            <button className="button btn-no-border"
+                                                    onClick={() => navigate(`/anamnesis/${anamnesis.id}`)}>
                                                 More info
                                             </button>
                                         </td>
@@ -198,33 +171,59 @@ const PetProfilePage = () => {
                         ) : (
                             <p>No anamneses found.</p>
                         )}
-                        <button className="button rounded-3 btn-no-border" onClick={() => setIsAddAnamnesisModalOpen(true)}>Add New Anamnesis</button>
-                    </div>
-
-                    <h2>Health Updates</h2>
-                    <div className="bg-table">
-                        {healthUpdates.length > 0 ? (
-                            <table cellPadding="5" cellSpacing="0" className="uniq-table">
-                                <tbody>
-                                {healthUpdates.map((update) => (
-                                    <tr key={update.id}>
-                                        <td>{new Date(update.date).toLocaleDateString()}</td>
-                                        <td>{update.dynamics ? "positive" : "negative"} dynamic</td>
-                                        <td>
-                                            <button className="button btn-no-border"  onClick={() => handleViewHealthUpdateDetails(update.id)}>
-                                                More info
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                                </tbody>
-                            </table>
-                        ) : (
-                            <p>No health updates found.</p>
-                        )}
-                        <button className="button rounded-3 btn-no-border"  onClick={() => setIsAddHealthUpdateModalOpen(true)}>Add Health Update</button>
-                    </div>
+                    <button className="button rounded-3 btn-no-border"
+                            onClick={() => setIsAddAnamnesisModalOpen(true)}>Add New Anamnesis
+                    </button>
                 </div>
+
+                <h2>Health Updates</h2>
+                <div className="bg-table">
+                    {healthUpdates.length > 0 ? (
+                        <table cellPadding="5" cellSpacing="0" className="uniq-table">
+                            <tbody>
+                            {healthUpdates.map((update) => (
+                                <tr key={update.id}>
+                                    <td>{new Date(update.date).toLocaleDateString()}</td>
+                                    <td>{update.dynamics ? "positive" : "negative"} dynamic</td>
+                                    <td>
+                                        <button className="button btn-no-border"
+                                                onClick={() => handleViewHealthUpdateDetails(update.id)}>
+                                            More info
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+                    ) : (
+                        <p>No health updates found.</p>
+                    )}
+                    <button className="button rounded-3 btn-no-border"
+                            onClick={() => setIsAddHealthUpdateModalOpen(true)}>Add Health Update
+                    </button>
+                </div>
+            </div>
+
+            <div className="bg-treatment mt-1 rounded-1" style={{padding: "20px"}}>
+                <h4>Treatment Recommendations</h4>
+                {treatments.length > 0 ? (
+                    <table cellPadding="3" cellSpacing="0" className="uniq-table">
+                        <tbody>
+                        {treatments.map((treatment) => (
+                            <tr key={treatment.id}>
+                                <td><b>Treatment</b>: {treatment.name} <br/>
+                                    <b>Description</b>: {treatment.description} <br/>
+                                    <b>Prescribed Medication</b>: {treatment.prescribedMedication} <br/>
+                                    <b>Duration</b>: {treatment.duration} <br/>
+                                </td>
+                            </tr>
+                        ))}
+                        </tbody>
+                    </table>
+                ) : (
+                    <p>No treatment recommendations found.</p>
+                )}
+            </div>
 
             {isEditModalOpen && (
                 <EditPetModal
