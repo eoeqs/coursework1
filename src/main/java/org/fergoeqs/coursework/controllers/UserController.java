@@ -2,20 +2,19 @@ package org.fergoeqs.coursework.controllers;
 
 import jakarta.validation.ValidationException;
 import org.apache.coyote.BadRequestException;
-import org.fergoeqs.coursework.dto.AuthenticationSucceedDto;
-import org.fergoeqs.coursework.dto.LoginUserDTO;
-import org.fergoeqs.coursework.dto.RegisterUserDTO;
-import org.fergoeqs.coursework.dto.UserInfoDTO;
+import org.fergoeqs.coursework.dto.*;
 import org.fergoeqs.coursework.exception.InternalServerErrorException;
 import org.fergoeqs.coursework.exception.UnauthorizedAccessException;
 import org.fergoeqs.coursework.jwt.JwtService;
 import org.fergoeqs.coursework.models.AppUser;
+import org.fergoeqs.coursework.models.enums.RoleType;
 import org.fergoeqs.coursework.services.AuthenticationService;
 import org.fergoeqs.coursework.services.UserService;
 import org.fergoeqs.coursework.utils.Mappers.AppUserMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -86,6 +85,41 @@ public class UserController {
         } catch (Exception e) {
             logger.error("Error updating avatar: {}", e.getMessage());
             throw new InternalServerErrorException("Error updating avatar");
+        }
+    }
+
+    @PutMapping("/update-user/")
+    public ResponseEntity<?> updateUser(@RequestBody AppUserDTO userDTO) {
+        try {
+            AppUser updatedUser = userService.updateUser(userService.getAuthenticatedUser(), userDTO);
+            return ResponseEntity.ok(appUserMapper.toDTO(updatedUser));
+        } catch (Exception e) {
+            logger.error("Error updating personal info: {}", e.getMessage());
+            throw new InternalServerErrorException("Error updating user");
+        }
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PutMapping("/update-user-admin/{id}")
+    public ResponseEntity<?> updateUserForAdmin(@PathVariable Long id, @RequestBody AppUserDTO userDTO) {
+        try {
+            AppUser updatedUser = userService.updateUserForAdmin(id, userDTO);
+            return ResponseEntity.ok(appUserMapper.toDTO(updatedUser));
+        } catch (Exception e) {
+            logger.error("Error updating user: {}", e.getMessage());
+            throw new InternalServerErrorException("Error updating user");
+        }
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PutMapping("/update-roles/{id}")
+    public ResponseEntity<?> updateRoles(@PathVariable Long id, @RequestBody RoleType userDTO) {
+        try {
+            AppUser updatedUser = userService.updateUserRoles(id, userDTO);
+            return ResponseEntity.ok(appUserMapper.toDTO(updatedUser));
+        } catch (Exception e) {
+            logger.error("Error updating roles: {}", e.getMessage());
+            throw new InternalServerErrorException("Error updating roles");
         }
     }
 
