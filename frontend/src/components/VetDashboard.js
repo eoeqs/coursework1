@@ -22,7 +22,8 @@ const VetDashboard = () => {
     const [selectedPetId, setSelectedPetId] = useState(null);
     const navigate = useNavigate();
     const [bodyMarker, setBodyMarker] = useState(null);
-
+    const [cancelReason, setCancelReason] = useState("");
+    const [showCancelModal, setShowCancelModal] = useState(false);
 
     useEffect(() => {
         if (!token) return;
@@ -136,13 +137,27 @@ const VetDashboard = () => {
         if (!selectedAppointment) return;
 
         try {
-            await axiosInstance.delete(`/appointments/cancel-appointment/${selectedAppointment.id}`);
+            await axiosInstance.delete(
+                `/appointments/cancel-appointment/${selectedAppointment.id}`,
+                { data: cancelReason }
+            );
             alert("Appointment successfully canceled!");
             closeModal();
+            setCancelReason("");
+            setShowCancelModal(false);
         } catch (error) {
             console.error("Error canceling appointment:", error);
             alert("Failed to cancel appointment.");
         }
+    };
+
+    const openCancelModal = () => {
+        setShowCancelModal(true);
+    };
+
+    const closeCancelModal = () => {
+        setShowCancelModal(false);
+        setCancelReason("");
     };
 
     const handleViewPetProfile = (petId) => {
@@ -344,7 +359,7 @@ const VetDashboard = () => {
                     </label>
                     <button onClick={handleApprove}>Approve</button>
                     {selectedAppointment.priority && (
-                        <button onClick={handleCancel}>Cancel</button>
+                        <button onClick={openCancelModal}>Cancel</button>
                     )}
                     <button onClick={closeModal}>Close</button>
                 </div>
@@ -353,8 +368,45 @@ const VetDashboard = () => {
             {selectedPetId && (
                 <PetProfile petId={selectedPetId} onClose={closePetProfile}/>
             )}
+
+
+            {showCancelModal && (
+                <div style={modalStyles}>
+                    <h3>Cancel Appointment</h3>
+                    <textarea
+                        value={cancelReason}
+                        onChange={(e) => setCancelReason(e.target.value)}
+                        placeholder="Enter cancellation reason"
+                        rows={4}
+                        style={{ width: '100%', margin: '10px 0' }}
+                    />
+                    <div style={{ display: 'flex', gap: '10px' }}>
+                        <button onClick={handleCancel} disabled={!cancelReason}>
+                            Confirm Cancel
+                        </button>
+                        <button onClick={closeCancelModal}>
+                            Close
+                        </button>
+                    </div>
+                </div>
+            )}
+
         </div>
     );
+};
+
+const modalStyles = {
+    position: "fixed",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    backgroundColor: "white",
+    padding: "20px",
+    borderRadius: "10px",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+    zIndex: 1000,
+    width: "400px",
+    maxWidth: "90%",
 };
 
 export default VetDashboard;
