@@ -23,8 +23,7 @@ const AnamnesisDetailsPage = () => {
     const [isEditDiagnosisModalOpen, setIsEditDiagnosisModalOpen] = useState(false);
     const [isEditExaminationPlanModalOpen, setIsEditExaminationPlanModalOpen] = useState(false);
     const [isEditClinicalDiagnosisModalOpen, setIsEditClinicalDiagnosisModalOpen] = useState(false);
-    const [selectedClinicalDiagnosis, setSelectedClinicalDiagnosis] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [selectedClinicalDiagnosisId, setSelectedClinicalDiagnosisId] = useState(null);    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [treatments, setTreatments] = useState([]);
     const [isEditTreatmentModalOpen, setIsEditTreatmentModalOpen] = useState(false);
@@ -124,11 +123,11 @@ const AnamnesisDetailsPage = () => {
 
     const handleSaveClinicalDiagnosis = async (clinicalDiagnosisData) => {
         try {
-            if (selectedClinicalDiagnosis) {
-                const response = await axiosInstance.put(`/diagnosis/update/${selectedClinicalDiagnosis.id}`, clinicalDiagnosisData);
-                setClinicalDiagnoses(clinicalDiagnoses.map(d => d.id === response.data.id ? response.data : d));
+            if (selectedClinicalDiagnosisId) {
+                const response = await axiosInstance.put(`/diagnosis/update/${selectedClinicalDiagnosisId}`, clinicalDiagnosisData);
+                setClinicalDiagnoses(clinicalDiagnoses.map((d) => (d.id === response.data.id ? response.data : d)));
             } else {
-                const response = await axiosInstance.post("/diagnosis/save", {...clinicalDiagnosisData, anamnesis: id});
+                const response = await axiosInstance.post("/diagnosis/save", { ...clinicalDiagnosisData, anamnesis: id });
                 setClinicalDiagnoses([...clinicalDiagnoses, response.data]);
             }
             setIsEditClinicalDiagnosisModalOpen(false);
@@ -277,7 +276,7 @@ const AnamnesisDetailsPage = () => {
                             )}
                             {!diagnosis && userRole === "ROLE_VET" && (
                                 <button className="button rounded-3 btn-no-border" onClick={() => {
-                                    setSelectedClinicalDiagnosis(null);
+                                    setSelectedClinicalDiagnosisId(null);
                                     setIsEditClinicalDiagnosisModalOpen(true);
                                 }}>
                                     Add Preliminary Diagnosis
@@ -310,7 +309,6 @@ const AnamnesisDetailsPage = () => {
                     </div>
                     <h3>Clinical Diagnosis</h3>
                     <div className="bg-table element-space prem_diagnsosis" style={{flex: 1}}>
-
                         <div style={{marginTop: "20px"}}>
                             {clinicalDiagnoses.length > 0 ? (
                                 <table cellPadding="3" cellSpacing="0" className="uniq-table">
@@ -323,10 +321,13 @@ const AnamnesisDetailsPage = () => {
                                             <td>{diagnosis.contagious ? "contagious" : "non-contagious"}</td>
                                             <td>
                                                 {userRole === "ROLE_VET" && (
-                                                    <button className="button btn-no-border" onClick={() => {
-                                                        setSelectedClinicalDiagnosis(diagnosis);
-                                                        setIsEditClinicalDiagnosisModalOpen(true);
-                                                    }}>
+                                                    <button
+                                                        className="button btn-no-border"
+                                                        onClick={() => {
+                                                            setSelectedClinicalDiagnosisId(diagnosis.id);
+                                                            setIsEditClinicalDiagnosisModalOpen(true);
+                                                        }}
+                                                    >
                                                         Edit
                                                     </button>
                                                 )}
@@ -339,10 +340,13 @@ const AnamnesisDetailsPage = () => {
                                 <p>No clinical diagnoses found.</p>
                             )}
                             {userRole === "ROLE_VET" && (
-                                <button className="button rounded-3 btn-no-border" onClick={() => {
-                                    setSelectedClinicalDiagnosis(null);
-                                    setIsEditClinicalDiagnosisModalOpen(true);
-                                }}>
+                                <button
+                                    className="button rounded-3 btn-no-border"
+                                    onClick={() => {
+                                        setSelectedClinicalDiagnosisId(null);
+                                        setIsEditClinicalDiagnosisModalOpen(true);
+                                    }}
+                                >
                                     Add Clinical Diagnosis
                                 </button>
                             )}
@@ -457,7 +461,10 @@ const AnamnesisDetailsPage = () => {
 
                 {isEditClinicalDiagnosisModalOpen && (
                     <EditClinicalDiagnosisModal
-                        diagnosis={selectedClinicalDiagnosis || {petId: petInfo?.id, appointmentId: appointment?.id}}
+                        diagnosisId={selectedClinicalDiagnosisId}
+                        petId={petInfo?.id}
+                        appointmentId={appointment?.id}
+                        anamnesisId={id}
                         onClose={() => setIsEditClinicalDiagnosisModalOpen(false)}
                         onSave={handleSaveClinicalDiagnosis}
                         onSaveRecommended={handleSaveRecommendedDiagnosis}
