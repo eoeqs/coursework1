@@ -3,7 +3,7 @@ import useAxiosWithAuth from "../AxiosAuth";
 import DogBodyMap from "./DogBodyMap";
 import CatBodyMap from "./CatBodyMap";
 
-const EditClinicalDiagnosisModal = ({ diagnosis, onClose, onSave }) => {
+const EditClinicalDiagnosisModal = ({ diagnosis, onClose, onSave, onSaveRecommended }) => {
     const axiosInstance = useAxiosWithAuth();
     const [petType, setPetType] = useState(null);
     const [bodyMarker, setBodyMarker] = useState(null);
@@ -69,7 +69,14 @@ const EditClinicalDiagnosisModal = ({ diagnosis, onClose, onSave }) => {
             pet: diagnosis.petId,
         });
     };
-
+    const handleSaveRecommendedDiagnosis = () => {
+        if (selectedDiagnosis) {
+            onSaveRecommended(selectedDiagnosis.id);
+            setSelectedDiagnosis(null);
+        } else {
+            alert("Please select a recommended diagnosis first.");
+        }
+    };
     const handleSymptomChange = (symptomId) => {
         setSelectedSymptoms((prev) =>
             prev.includes(symptomId)
@@ -235,11 +242,12 @@ const EditClinicalDiagnosisModal = ({ diagnosis, onClose, onSave }) => {
                                 </label>
                             </div>
                         ))}
+                        <button onClick={handleSaveRecommendedDiagnosis}>Save Selected Recommended Diagnosis</button>
                     </div>
                 )}
             </div>
 
-            <div style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
+            <div style={{display: "flex", gap: "10px", marginTop: "20px" }}>
                 <button onClick={handleSave}>Save</button>
                 <button onClick={onClose}>Cancel</button>
             </div>

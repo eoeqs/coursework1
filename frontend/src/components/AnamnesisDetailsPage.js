@@ -179,6 +179,20 @@ const AnamnesisDetailsPage = () => {
         }
     };
 
+    const handleSaveRecommendedDiagnosis = async (diagnosisId) => {
+        try {
+            const response = await axiosInstance.post(`/diagnosis/save-recomended/${id}`, diagnosisId, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            setClinicalDiagnoses([...clinicalDiagnoses, response.data]);
+            alert("Recommended diagnosis saved successfully!");
+        } catch (error) {
+            console.error("Error saving recommended diagnosis:", error);
+            alert("Failed to save recommended diagnosis. Please try again later.");
+        }
+    };
     if (loading) {
         return <div>Loading...</div>;
     }
@@ -437,6 +451,7 @@ const AnamnesisDetailsPage = () => {
                         diagnosis={selectedClinicalDiagnosis || { petId: petInfo?.id, appointmentId: appointment?.id }}
                         onClose={() => setIsEditClinicalDiagnosisModalOpen(false)}
                         onSave={handleSaveClinicalDiagnosis}
+                        onSaveRecommended={handleSaveRecommendedDiagnosis}
                     />
                 )}
 
