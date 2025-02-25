@@ -292,22 +292,13 @@ const AnamnesisDetailsPage = () => {
                     <div style={{marginTop: "20px"}}>
                         {clinicalDiagnoses.length > 0 ? (
                             <table cellPadding="3" cellSpacing="0" className="uniq-table" >
-                                <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Description</th>
-                                    <th>Date</th>
-                                    <th>Contagious</th>
-                                    <th>Action</th>
-                                </tr>
-                                </thead>
                                 <tbody>
                                 {clinicalDiagnoses.map((diagnosis) => (
                                     <tr key={diagnosis.id}>
-                                        <td>{diagnosis.name}</td>
+                                        <td><strong>{diagnosis.name}</strong></td>
                                         <td>{diagnosis.description}</td>
                                         <td>{new Date(diagnosis.date).toLocaleDateString()}</td>
-                                        <td>{diagnosis.contagious ? "Yes" : "No"}</td>
+                                        <td>{diagnosis.contagious ? "contagious" : "non-contagious"}</td>
                                         <td>
                                             {userRole === "ROLE_VET" && (
                                                 <button className="button btn-no-border" onClick={() => {
@@ -334,8 +325,43 @@ const AnamnesisDetailsPage = () => {
                             </button>
                         )}
                     </div>
-
                 </div>
+                <h3>Procedures Performed</h3>
+            <div>
+                <div className="bg-table element-space prem_diagnsosis" style={{flex: 1}}>
+                    {procedures.length > 0 ? (
+                        <table  cellPadding="3" cellSpacing="0" className="uniq-table">
+                            <tbody>
+                            {procedures.map((procedure) => (
+                                <tr key={procedure.id}>
+                                    <td>{new Date(procedure.date).toLocaleDateString()}</td>
+                                    <td>{procedure.type}</td>
+                                    <td>{procedure.name}</td>
+                                    <td>
+                                        <button className="button btn-no-border"
+
+                                            onClick={() => {
+                                                setSelectedProcedure(procedure);
+                                                setIsProcedureModalOpen(true);
+                                            }}
+                                        >
+                                            More
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+                    ) : (
+                        <p>No procedures found.</p>
+                    )}
+                    {(userRole === "ROLE_ADMIN" || userRole === "ROLE_VET") && (
+                        <button className="button rounded-3 btn-no-border" onClick={() => setIsAddProcedureModalOpen(true)}>
+                            Add New Procedure
+                        </button>
+                    )}
+                </div>
+            </div>
             </div>
 
             <div className="mt-1 rounded-1 treatment-vet element-space"
@@ -435,8 +461,7 @@ const AnamnesisDetailsPage = () => {
                 )}
 
                 {isProcedureModalOpen && (
-                    <div style={modalStyles}>
-                        <h3>Procedure Details</h3>
+                    <div>
                         <div>
                             <p><strong>Date:</strong> {new Date(selectedProcedure.date).toLocaleDateString()}</p>
                             <p><strong>Type:</strong> {selectedProcedure.type}</p>
@@ -452,50 +477,8 @@ const AnamnesisDetailsPage = () => {
                         </button>
                     </div>
                 )}
-            </div>
-            <h3>Procedures Performed</h3>
-            <div>
-                <div>
-                    {procedures.length > 0 ? (
-                        <table>
-                            <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Type</th>
-                                <th>Name</th>
-                                <th></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {procedures.map((procedure) => (
-                                <tr key={procedure.id}>
-                                    <td>{new Date(procedure.date).toLocaleDateString()}</td>
-                                    <td>{procedure.type}</td>
-                                    <td>{procedure.name}</td>
-                                    <td>
-                                        <button
 
-                                            onClick={() => {
-                                                setSelectedProcedure(procedure);
-                                                setIsProcedureModalOpen(true);
-                                            }}
-                                        >
-                                            More Info
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                            </tbody>
-                        </table>
-                    ) : (
-                        <p>No procedures found.</p>
-                    )}
-                    {(userRole === "ROLE_ADMIN" || userRole === "ROLE_VET") && (
-                        <button className="button rounded-3 btn-no-border" onClick={() => setIsAddProcedureModalOpen(true)}>
-                            Add New Procedure
-                        </button>
-                    )}
-                </div>
+
             </div>
         </div>
     );

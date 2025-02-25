@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import DogBodyMap from "./DogBodyMap";
 import CatBodyMap from "./CatBodyMap";
 import Header from "./Header";
+import VetImage from '../pics/vet_bg.png';
 
 const VetDashboard = () => {
     const { token } = useAuth();
@@ -167,7 +168,7 @@ const VetDashboard = () => {
     return (
         <div>
             <Header/>
-            <div className="container mt-0" style={{display: "flex", gap: "170px"}}>
+            <div className="container mt-0" style={{display: "flex", gap: "100px"}}>
                 <div style={{flex: 0}}>
                     <div className="container rounded-3 vet-card" style={{maxWidth: '450px', padding: "10px"}}>
                         <div className="mb-3 ps-2" style={{
@@ -190,36 +191,43 @@ const VetDashboard = () => {
                         <div>
                             <h2>Dr. {vetInfo.name} {vetInfo.surname}</h2>
                             <h3> {vetInfo.qualification || "Not specified"}</h3>
-                            <p style={{marginBottom: '5px'}}><strong>Email:</strong> {vetInfo.email || "Not specified"}</p>
-                            <p style={{marginBottom: '5px'}}><strong>Phone:</strong> {vetInfo.phoneNumber || "Not specified"}</p>
-                            <p style={{marginBottom: '5px'}}><strong>Schedule:</strong> {vetInfo.schedule || "Not specified"}</p>
-                            <p style={{marginBottom: '5px'}}><strong>Working hours:</strong> {vetInfo.workingHours || "Not specified"}</p>
-                            <p style={{marginBottom: '5px'}}><strong>Clinic:</strong> {vetInfo.clinic || "Not specified"} </p>
+                            <p style={{marginBottom: '5px'}}><strong>Email:</strong> {vetInfo.email || "Not specified"}
+                            </p>
+                            <p style={{marginBottom: '5px'}}>
+                                <strong>Phone:</strong> {vetInfo.phoneNumber || "Not specified"}</p>
+                            <p style={{marginBottom: '5px'}}>
+                                <strong>Schedule:</strong> {vetInfo.schedule || "Not specified"}</p>
+                            <p style={{marginBottom: '5px'}}><strong>Working
+                                hours:</strong> {vetInfo.workingHours || "Not specified"}</p>
+                            <p style={{marginBottom: '5px'}}>
+                                <strong>Clinic:</strong> {vetInfo.clinic || "Not specified"} </p>
                         </div>
                     </div>
 
-                <div className="vet-appointments bg-treatment container mt-3 rounded-1"
-                     style={{padding: "15px"}}>
-                    <h4 className="table-name">Upcoming Appointments</h4>
-                    {appointments.length > 0 ? (
-                        <table cellPadding="2" cellSpacing="0" className="uniq-table">
-                            <tbody>
-                            {appointments.map((appointment) => (
-                                <tr key={appointment.id}>
-                                    <td>{new Date(appointment.slot.date).toLocaleDateString()}</td>
-                                    <td>{appointment.slot.startTime.slice(0, 5)}</td>
-                                    <td>{appointment.pet.name}</td>
-                                    <td>
-                                        <button className="button btn-no-border" onClick={() => handleView(appointment.id)}>View</button>
-                                    </td>
-                                </tr>
-                            ))}
-                            </tbody>
-                        </table>
-                    ) : (
-                        <p>No upcoming appointments.</p>
-                    )}
-                </div>
+                    <div className="vet-appointments bg-treatment container mt-3 rounded-1"
+                         style={{padding: "15px"}}>
+                        <h4 className="table-name">Upcoming Appointments</h4>
+                        {appointments.length > 0 ? (
+                            <table cellPadding="2" cellSpacing="0" className="uniq-table">
+                                <tbody>
+                                {appointments.map((appointment) => (
+                                    <tr key={appointment.id}>
+                                        <td>{new Date(appointment.slot.date).toLocaleDateString()}</td>
+                                        <td>{appointment.slot.startTime.slice(0, 5)}</td>
+                                        <td>{appointment.pet.name}</td>
+                                        <td>
+                                            <button className="button btn-no-border"
+                                                    onClick={() => handleView(appointment.id)}>View
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                                </tbody>
+                            </table>
+                        ) : (
+                            <p>No upcoming appointments.</p>
+                        )}
+                    </div>
                 </div>
                 {userRole === "ROLE_VET" && (
                     <div className="bg-table element-space wards " style={{flex: 1}}>
@@ -230,16 +238,21 @@ const VetDashboard = () => {
                                 <tbody>
                                 {doctorPets.map((pet) => (
                                     <tr key={pet.id}>
-                                        <td style={{ padding: '20px' }}>
-                                                {vetInfo.photoUrl ? (
-                                                    <img className="avatar"
-                                                         src={pet.photoUrl}
-                                                         alt={`${pet.name}'s avatar`}
-                                                         style={{width: '50px', height: '50px', borderRadius: '50%', marginRight: '20px'}}
-                                                    />
-                                                ) : (
-                                                    <p>(anonymous)</p>
-                                                )} {"\t"}
+                                        <td style={{padding: '20px'}}>
+                                            {vetInfo.photoUrl ? (
+                                                <img className="avatar"
+                                                     src={pet.photoUrl}
+                                                     alt={`${pet.name}'s avatar`}
+                                                     style={{
+                                                         width: '50px',
+                                                         height: '50px',
+                                                         borderRadius: '50%',
+                                                         marginRight: '20px'
+                                                     }}
+                                                />
+                                            ) : (
+                                                <p>(anonymous)</p>
+                                            )} {"\t"}
 
                                             <strong>{pet.name}</strong>{" "} {"\t"}
                                             ({pet.type}, {" "}
@@ -247,8 +260,9 @@ const VetDashboard = () => {
                                             {pet.sex})
                                         </td>
 
-                                        <td style={{ textAlign: 'right' }}>
-                                            <button className="button btn-no-border rounded-3" onClick={() => handleViewPetProfile(pet.id)}>
+                                        <td style={{textAlign: 'right'}}>
+                                            <button className="button btn-no-border rounded-3"
+                                                    onClick={() => handleViewPetProfile(pet.id)}>
                                                 View Pet Profile
                                             </button>
                                         </td>
@@ -262,6 +276,21 @@ const VetDashboard = () => {
                     </div>
                 )}
             </div>
+            <div
+                style={{
+                    position: "absolute",
+                    top: "275px",
+                    bottom: "10px",
+                    right: "0px",
+                    width: "500px",
+                    height: "600px",
+                    backgroundImage: `url(${VetImage})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    backgroundRepeat: "no-repeat",
+                    opacity: "0.4",
+                }}
+            />
 
             {selectedAppointment && (
                 <div style={{
@@ -290,20 +319,20 @@ const VetDashboard = () => {
 
                     <div style={{margin: "20px 0"}}>
                         <h4>Body Marker</h4>
-                    {selectedAppointment.pet.type === "DOG" ? (
-                        <DogBodyMap
-                            initialMarker={bodyMarker}
-                            readOnly={true}
-                        />
-                    ) : selectedAppointment.pet.type === "CAT" ? (
-                        <CatBodyMap
-                            initialMarker={bodyMarker}
-                            readOnly={true}
-                        />
-                    ) : (
-                        <p>Unknown animal type</p>
-                    )}
-                </div>
+                        {selectedAppointment.pet.type === "DOG" ? (
+                            <DogBodyMap
+                                initialMarker={bodyMarker}
+                                readOnly={true}
+                            />
+                        ) : selectedAppointment.pet.type === "CAT" ? (
+                            <CatBodyMap
+                                initialMarker={bodyMarker}
+                                readOnly={true}
+                            />
+                        ) : (
+                            <p>Unknown animal type</p>
+                        )}
+                    </div>
 
                     <label>
                         <input
@@ -319,9 +348,10 @@ const VetDashboard = () => {
                     )}
                     <button onClick={closeModal}>Close</button>
                 </div>
+
             )}
             {selectedPetId && (
-                <PetProfile petId={selectedPetId} onClose={closePetProfile} />
+                <PetProfile petId={selectedPetId} onClose={closePetProfile}/>
             )}
         </div>
     );
