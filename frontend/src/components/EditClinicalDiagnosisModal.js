@@ -3,7 +3,7 @@ import useAxiosWithAuth from "../AxiosAuth";
 import DogBodyMap from "./DogBodyMap";
 import CatBodyMap from "./CatBodyMap";
 
-const EditClinicalDiagnosisModal = ({ diagnosis, onClose, onSave }) => {
+const EditClinicalDiagnosisModal = ({ diagnosisId, petId, appointmentId, anamnesisId, onClose, onSave, onSaveRecommended }) => {
     const axiosInstance = useAxiosWithAuth();
     const [petType, setPetType] = useState(null);
     const [bodyMarker, setBodyMarker] = useState(null);
@@ -19,16 +19,17 @@ const EditClinicalDiagnosisModal = ({ diagnosis, onClose, onSave }) => {
     const [selectedDiagnosis, setSelectedDiagnosis] = useState(null);
     const [appointment, setAppointment] = useState(null);
     const [formData, setFormData] = useState({
-        name: diagnosis ? diagnosis.name : "",
-        description: diagnosis ? diagnosis.description : "",
-        contagious: diagnosis ? diagnosis.contagious : false,
-        examinationPlan: diagnosis ? diagnosis.examinationPlan : "",
+        name: "",
+        description: "",
+        contagious: false,
+        examinationPlan: "",
     });
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const petResponse = await axiosInstance.get(`/pets/pet/${diagnosis.petId}`);
+                // Загрузка информации о питомце
+                const petResponse = await axiosInstance.get(`/pets/pet/${petId}`);
                 setPetType(petResponse.data.type);
                 setPetInfo(petResponse.data);
 
@@ -37,44 +38,67 @@ const EditClinicalDiagnosisModal = ({ diagnosis, onClose, onSave }) => {
                     setOwnerInfo(ownerResponse.data);
                 }
 
-                const markerResponse = await axiosInstance.get(`/body-marker/appointment/${diagnosis.appointmentId}`);
+                // Загрузка маркера тела
+                const markerResponse = await axiosInstance.get(`/body-marker/appointment/${appointmentId}`);
                 setBodyMarker(markerResponse.data);
                 setTempMarker(markerResponse.data);
 
+                // Загрузка симптомов
                 const symptomsResponse = await axiosInstance.get("/symptoms/all");
                 setSymptoms(symptomsResponse.data);
 
-                const appointmentResponse = await axiosInstance.get(`/appointments/appointment/${diagnosis.appointmentId}`);
+                // Загрузка данных о приеме
+                const appointmentResponse = await axiosInstance.get(`/appointments/appointment/${appointmentId}`);
                 setAppointment(appointmentResponse.data);
 
-                if (diagnosis.symptoms) {
-                    setSelectedSymptoms(diagnosis.symptoms);
+                // Если редактирование, загрузка данных диагноза
+                if (diagnosisId) {
+                    const diagnosisResponse = await axiosInstance.get(`/diagnosis/${diagnosisId}`);
+                    const diagnosis = diagnosisResponse.data;
+                    setFormData({
+                        name: diagnosis.name || "",
+                        description: diagnosis.description || "",
+                        contagious: diagnosis.contagious || false,
+                        examinationPlan: diagnosis.examinationPlan || "",
+                    });
+                    setSelectedSymptoms(diagnosis.symptoms || []);
+                    if (diagnosis.bodyPart) {
+                        setTempMarker((prev) => ({ ...prev, bodyPart: diagnosis.bodyPart }));
+                    }
                 }
             } catch (error) {
                 setError("Error fetching data");
+                console.error("Fetch error:", error);
             } finally {
                 setLoading(false);
             }
         };
 
-        if (diagnosis) fetchData();
-    }, [diagnosis, axiosInstance]);
+        fetchData();
+    }, [diagnosisId, petId, appointmentId, axiosInstance]);
 
     const handleBodyMark = (mark) => {
         setTempMarker({
             bodyPart: mark.part,
             positionX: mark.x,
             positionY: mark.y,
-            appointment: diagnosis.appointmentId,
-            pet: diagnosis.petId,
+            appointment: appointmentId,
+            pet: petId,
         });
+    };
+
+    const handleSaveRecommendedDiagnosis = () => {
+        if (selectedDiagnosis) {
+            onSaveRecommended(selectedDiagnosis.id);
+            setSelectedDiagnosis(null);
+        } else {
+            alert("Please select a recommended diagnosis first.");
+        }
     };
 
     const handleSymptomChange = (symptomId) => {
         setSelectedSymptoms((prev) =>
-            prev.includes(symptomId)
-                ? prev.filter((id) => id !== symptomId)
-                : [...prev, symptomId]
+            prev.includes(symptomId) ? prev.filter((id) => id !== symptomId) : [...prev, symptomId]
         );
     };
 
@@ -118,32 +142,36 @@ const EditClinicalDiagnosisModal = ({ diagnosis, onClose, onSave }) => {
             ...formData,
             symptoms: selectedSymptoms,
             bodyPart: tempMarker?.bodyPart,
+            anamnesis: anamnesisId,
+            date: diagnosisId ? undefined : new Date().toISOString(), // Добавляем дату только для нового диагноза
         };
-        onSave(diagnosisData); // Передаем данные в родительский компонент
+        onSave(diagnosisData);
     };
 
-    if (!diagnosis || loading) return <div>Loading...</div>;
+    if (loading) return <div>Loading...</div>;
     if (error) return <div>{error}</div>;
 
     return (
         <div style={modalStyles}>
-            <h3>{diagnosis.id ? "Edit Clinical Diagnosis" : "Add Clinical Diagnosis"}</h3>
-            <p><strong>Owner Name:</strong> {ownerInfo ? `${ownerInfo.name} ${ownerInfo.surname}` : "Unknown"}</p>
-            <p><strong>Pet Name:</strong> {petInfo?.name}</p>
-            <p><strong>Pet Type:</strong> {petInfo?.type}</p>
-            <p><strong>Complaints:</strong> {appointment?.description || "No complaints provided."}</p>
+            <h3>{diagnosisId ? "Edit Clinical Diagnosis" : "Add Clinical Diagnosis"}</h3>
+            <p>
+                <strong>Owner Name:</strong> {ownerInfo ? `${ownerInfo.name} ${ownerInfo.surname}` : "Unknown"}
+            </p>
+            <p>
+                <strong>Pet Name:</strong> {petInfo?.name}
+            </p>
+            <p>
+                <strong>Pet Type:</strong> {petInfo?.type}
+            </p>
+            <p>
+                <strong>Complaints:</strong> {appointment?.description || "No complaints provided."}
+            </p>
 
             <div style={{ margin: "20px 0" }}>
                 {petType === "DOG" ? (
-                    <DogBodyMap
-                        onMark={handleBodyMark}
-                        initialMarker={tempMarker}
-                    />
+                    <DogBodyMap onMark={handleBodyMark} initialMarker={tempMarker} />
                 ) : petType === "CAT" ? (
-                    <CatBodyMap
-                        onMark={handleBodyMark}
-                        initialMarker={tempMarker}
-                    />
+                    <CatBodyMap onMark={handleBodyMark} initialMarker={tempMarker} />
                 ) : (
                     <p>Unknown animal type</p>
                 )}
@@ -235,6 +263,7 @@ const EditClinicalDiagnosisModal = ({ diagnosis, onClose, onSave }) => {
                                 </label>
                             </div>
                         ))}
+                        <button onClick={handleSaveRecommendedDiagnosis}>Save Selected Recommended Diagnosis</button>
                     </div>
                 )}
             </div>

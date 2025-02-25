@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../AuthProvider";
 import NewPetForm from "./NewPetForm";
 import useAxiosWithAuth from "../AxiosAuth";
 import DogBodyMap from "./DogBodyMap";
 import CatBodyMap from "./CatBodyMap";
 
-const AppointmentPage = () => {
+const AppointmentPage = ({ onClose }) => {
     const { token } = useAuth();
     const axiosInstance = useAxiosWithAuth();
-    const navigate = useNavigate();
 
     const [userId, setUserId] = useState(null);
     const [userRole, setUserRole] = useState(null);
@@ -19,7 +17,6 @@ const AppointmentPage = () => {
     const [ownerName, setOwnerName] = useState("");
     const [petInfo, setPetInfo] = useState(null);
     const [complaintDescription, setComplaintDescription] = useState("");
-
     const [slots, setSlots] = useState([]);
     const [selectedSlotId, setSelectedSlotId] = useState("");
     const [priority, setPriority] = useState(false);
@@ -112,7 +109,7 @@ const AppointmentPage = () => {
                 });
             }
             alert("Appointment successfully booked!");
-            navigate("/");
+            onClose();
         } catch (error) {
             console.error("Error booking appointment:", error);
             alert("Failed to book appointment.");
@@ -164,7 +161,7 @@ const AppointmentPage = () => {
 
                 {selectedPetId && petInfo && (
                     <div>
-                        <p>Mark the problem area :</p>
+                        <p>Mark the problem area:</p>
                         {petInfo.type === "DOG" && <DogBodyMap onMark={handleBodyMark} />}
                         {petInfo.type === "CAT" && <CatBodyMap onMark={handleBodyMark} />}
                     </div>
