@@ -8,6 +8,7 @@ import EditExaminationPlanModal from "./EditExaminationPlanModal";
 import EditClinicalDiagnosisModal from "./EditClinicalDiagnosisModal";
 import EditTreatmentModal from "./EditTreatmentModal";
 import Header from "./Header";
+import AddProcedureModal from "./AddProcedureModal";
 
 const AnamnesisDetailsPage = () => {
     const { id } = useParams();
@@ -29,6 +30,10 @@ const AnamnesisDetailsPage = () => {
     const [isEditTreatmentModalOpen, setIsEditTreatmentModalOpen] = useState(false);
     const [selectedTreatment, setSelectedTreatment] = useState(null);
     const [userRole, setUserRole] = useState("");
+    const [procedures, setProcedures] = useState([]);
+    const [selectedProcedure, setSelectedProcedure] = useState(null);
+    const [isProcedureModalOpen, setIsProcedureModalOpen] = useState(false);
+    const [isAddProcedureModalOpen, setIsAddProcedureModalOpen] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -64,6 +69,9 @@ const AnamnesisDetailsPage = () => {
                 const treatmentsResponse = await axiosInstance.get(`/treatments/all-by-pet/${petResponse.data.id}`);
                 setTreatments(treatmentsResponse.data);
 
+                const proceduresResponse = await axiosInstance.get(`/procedures/by-anamnesis/${id}`);
+                setProcedures(proceduresResponse.data);
+
                 const userResponse = await axiosInstance.get("/users/current-user-info");
                 setUserRole(userResponse.data.role);
             } catch (error) {
@@ -91,7 +99,7 @@ const AnamnesisDetailsPage = () => {
 
     const handleSaveExaminationPlan = async (updatedPlan) => {
         try {
-            const updatedDiagnosis = { ...diagnosis, examinationPlan: updatedPlan };
+            const updatedDiagnosis = {...diagnosis, examinationPlan: updatedPlan};
             const response = await axiosInstance.put(`/diagnosis/update/${diagnosis.id}`, updatedDiagnosis);
             setDiagnosis(response.data);
             setIsEditExaminationPlanModalOpen(false);
@@ -104,7 +112,7 @@ const AnamnesisDetailsPage = () => {
 
     const handleSavePreliminaryDiagnosis = async (diagnosisData) => {
         try {
-            const response = await axiosInstance.post("/diagnosis/save", { ...diagnosisData, anamnesis: id });
+            const response = await axiosInstance.post("/diagnosis/save", {...diagnosisData, anamnesis: id});
             setDiagnosis(response.data);
             setIsEditClinicalDiagnosisModalOpen(false);
             alert("Preliminary Diagnosis saved successfully!");
@@ -120,7 +128,7 @@ const AnamnesisDetailsPage = () => {
                 const response = await axiosInstance.put(`/diagnosis/update/${selectedClinicalDiagnosis.id}`, clinicalDiagnosisData);
                 setClinicalDiagnoses(clinicalDiagnoses.map(d => d.id === response.data.id ? response.data : d));
             } else {
-                const response = await axiosInstance.post("/diagnosis/save", { ...clinicalDiagnosisData, anamnesis: id });
+                const response = await axiosInstance.post("/diagnosis/save", {...clinicalDiagnosisData, anamnesis: id});
                 setClinicalDiagnoses([...clinicalDiagnoses, response.data]);
             }
             setIsEditClinicalDiagnosisModalOpen(false);
@@ -148,6 +156,18 @@ const AnamnesisDetailsPage = () => {
         }
     };
 
+    const handleSaveProcedure = async (procedureData) => {
+        try {
+            const response = await axiosInstance.post("/procedures/add", procedureData);
+            setProcedures([...procedures, response.data]);
+            setIsAddProcedureModalOpen(false);
+            alert("Procedure added successfully!");
+        } catch (error) {
+            console.error("Error adding procedure:", error);
+            alert("Failed to add procedure. Please try again later.");
+        }
+    };
+
     const handleCompleteTreatment = async (treatmentId) => {
         try {
             const response = await axiosInstance.put(`/treatments/complete/${treatmentId}`);
@@ -170,6 +190,8 @@ const AnamnesisDetailsPage = () => {
     if (!anamnesis || !petInfo) {
         return <div>No data found.</div>;
     }
+
+    const activeTreatments = treatments.filter(treatment => !treatment.isCompleted);
 
     return (
         <div>
@@ -386,7 +408,7 @@ const AnamnesisDetailsPage = () => {
 
                 {isEditClinicalDiagnosisModalOpen && (
                     <EditClinicalDiagnosisModal
-                        diagnosis={selectedClinicalDiagnosis}
+                        diagnosis={selectedClinicalDiagnosis || { petId: petInfo?.id, appointmentId: appointment?.id }}
                         onClose={() => setIsEditClinicalDiagnosisModalOpen(false)}
                         onSave={handleSaveClinicalDiagnosis}
                     />
@@ -402,9 +424,93 @@ const AnamnesisDetailsPage = () => {
                     />
                 )}
 
-        </div>
+                {isAddProcedureModalOpen && (
+                    <AddProcedureModal
+                        onClose={() => setIsAddProcedureModalOpen(false)}
+                        onSave={handleSaveProcedure}
+                        petId={petInfo?.id}
+                        anamnesisId={id}
+                        vetId={petInfo?.actualVet}
+                    />
+                )}
+
+                {isProcedureModalOpen && (
+                    <div style={modalStyles}>
+                        <h3>Procedure Details</h3>
+                        <div>
+                            <p><strong>Date:</strong> {new Date(selectedProcedure.date).toLocaleDateString()}</p>
+                            <p><strong>Type:</strong> {selectedProcedure.type}</p>
+                            <p><strong>Name:</strong> {selectedProcedure.name}</p>
+                            <p><strong>Description:</strong> {selectedProcedure.description}</p>
+                            <p><strong>Notes:</strong> {selectedProcedure.notes}</p>
+                        </div>
+                        <button
+                            className="button btn-no-border"
+                            onClick={() => setIsProcedureModalOpen(false)}
+                        >
+                            Close
+                        </button>
+                    </div>
+                )}
+            </div>
+            <h3>Procedures Performed</h3>
+            <div>
+                <div>
+                    {procedures.length > 0 ? (
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Name</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {procedures.map((procedure) => (
+                                <tr key={procedure.id}>
+                                    <td>{new Date(procedure.date).toLocaleDateString()}</td>
+                                    <td>{procedure.type}</td>
+                                    <td>{procedure.name}</td>
+                                    <td>
+                                        <button
+
+                                            onClick={() => {
+                                                setSelectedProcedure(procedure);
+                                                setIsProcedureModalOpen(true);
+                                            }}
+                                        >
+                                            More Info
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+                    ) : (
+                        <p>No procedures found.</p>
+                    )}
+                    {(userRole === "ROLE_ADMIN" || userRole === "ROLE_VET") && (
+                        <button className="button rounded-3 btn-no-border" onClick={() => setIsAddProcedureModalOpen(true)}>
+                            Add New Procedure
+                        </button>
+                    )}
+                </div>
+            </div>
         </div>
     );
 };
-
-            export default AnamnesisDetailsPage;
+const modalStyles = {
+    position: "fixed",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    backgroundColor: "white",
+    padding: "20px",
+    borderRadius: "10px",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+    zIndex: 1000,
+    maxWidth: "500px",
+    width: "90%",
+};
+export default AnamnesisDetailsPage;
