@@ -416,7 +416,7 @@ const AnamnesisDetailsPage = () => {
 
                 {isEditClinicalDiagnosisModalOpen && (
                     <EditClinicalDiagnosisModal
-                        diagnosis={selectedClinicalDiagnosis}
+                        diagnosis={selectedClinicalDiagnosis || { petId: petInfo?.id, appointmentId: appointment?.id }}
                         onClose={() => setIsEditClinicalDiagnosisModalOpen(false)}
                         onSave={handleSaveClinicalDiagnosis}
                     />
@@ -451,7 +451,6 @@ const AnamnesisDetailsPage = () => {
                             <p><strong>Name:</strong> {selectedProcedure.name}</p>
                             <p><strong>Description:</strong> {selectedProcedure.description}</p>
                             <p><strong>Notes:</strong> {selectedProcedure.notes}</p>
-                            <p><strong>Report URL:</strong> {selectedProcedure.reportUrl}</p>
                         </div>
                         <button
                             className="button btn-no-border"
