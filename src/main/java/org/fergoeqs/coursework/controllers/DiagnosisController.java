@@ -63,6 +63,17 @@ public class DiagnosisController {
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_VET')")
+    @PostMapping("save-recomended/{anamnesisId}")
+    public ResponseEntity<?> saveRecomendedDiagnosis(@PathVariable Long anamnesisId, @RequestBody Long diagnosisId) {
+        try {
+            return ResponseEntity.ok(diagnosisMapper.toDTO(diagnosisService.RecommendedToClinical(diagnosisId, anamnesisId)));
+        } catch (Exception e) {
+            logger.error("Error occurred while saving recomended diagnosis for anamnesis with id: {}", anamnesisId, e);
+            throw e;
+        }
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_VET')")
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateDiagnosis(@PathVariable Long id, @RequestBody DiagnosisDTO diagnosisDTO) {
         try {

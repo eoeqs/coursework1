@@ -16,6 +16,7 @@ export default function HomePage() {
             navigate("/login", { state: { redirectTo: "/appointment" } });
         }
     };
+
     return (
         <div>
             <Header/>
@@ -65,29 +66,29 @@ export default function HomePage() {
                             <div>
                                 <h3>Dr. Ferg</h3>
                                 <p>Expert in exotic animals and surgery.</p>
-                                    <p>⭐⭐⭐⭐⭐</p>
-                                    <p>"Very professional and kind. Highly recommend!"</p>
-                                </div>
-                                <div>
-                                    <h3>Dr. Eoqe</h3>
-                                    <p>Expert in sabakababaka.</p>
-                                    <p>⭐⭐⭐⭐⭐</p>
-                                    <p>"Helped my cat recover quickly. Thank you!"</p>
-                                </div>
+                                <p>⭐⭐⭐⭐⭐</p>
+                                <p>"Very professional and kind. Highly recommend!"</p>
                             </div>
-                        </div>
-
-                        <div className="bg-table element-space prem_diagnsosis" style={{flex: 1}}>
-                            <h2>Contact Information</h2>
-                            <p>Address: 10 Veterinary Street, Moscow</p>
-                            <p>Phone: +7 (123) 456-78-90</p>
-                            <p>Email: contact@vetcare.ru</p>
+                            <div>
+                                <h3>Dr. Eoqe</h3>
+                                <p>Expert in sabakababaka.</p>
+                                <p>⭐⭐⭐⭐⭐</p>
+                                <p>"Helped my cat recover quickly. Thank you!"</p>
+                            </div>
                         </div>
                     </div>
 
+                    <div className="bg-table element-space prem_diagnsosis" style={{flex: 1}}>
+                        <h2>Contact Information</h2>
+                        <p>Address: 10 Veterinary Street, Moscow</p>
+                        <p>Phone: +8 (800) 555-35-35</p>
+                        <p>Email: contact@vetcare.ru</p>
+                    </div>
                 </div>
-
             </div>
+        </div>
 
-            );
-            }
+
+
+    );
+}
