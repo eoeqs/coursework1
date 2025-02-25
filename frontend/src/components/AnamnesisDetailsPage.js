@@ -174,7 +174,7 @@ const AnamnesisDetailsPage = () => {
     return (
         <div>
         <Header />
-        <div className="container mt-3" style={{display: "flex", gap: "20px"}}>
+        <div className="container mt-3" style={{display: "flex", gap: "50px"}}>
             <div>
                 <PetInfo petInfo={petInfo} onEdit={() => {
                 }}/>

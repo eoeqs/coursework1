@@ -143,7 +143,7 @@ const PetProfilePage = () => {
                                 {upcomingAppointments.map((appointment) => (
                                     <tr key={appointment.id}>
                                         <td>{new Date(appointment.slot.date).toLocaleDateString()}</td>
-                                        <td>{appointment.slot.startTime} </td>
+                                        <td>{appointment.slot.startTime.slice(0, 5)} </td>
                                         <td> -</td>
                                         <td>Dr. {appointment.slot.vetId}</td>
                                     </tr>
@@ -161,7 +161,9 @@ const PetProfilePage = () => {
                     <div className="bg-table element-space">
                         {anamneses.length > 0 ? (
                             <table cellPadding="5" cellSpacing="0" className="uniq-table">
+
                                 <tbody>
+
                                 {anamneses.map((anamnesis) => (
                                     <tr key={anamnesis.id}>
                                         <td>{new Date(anamnesis.date).toLocaleDateString()}</td>

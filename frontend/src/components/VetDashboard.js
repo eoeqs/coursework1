@@ -5,6 +5,7 @@ import PetProfile from "./PetProfile";
 import { useNavigate } from "react-router-dom";
 import DogBodyMap from "./DogBodyMap";
 import CatBodyMap from "./CatBodyMap";
+import Header from "./Header";
 
 const VetDashboard = () => {
     const { token } = useAuth();
@@ -165,41 +166,89 @@ const VetDashboard = () => {
 
     return (
         <div>
-            <div style={{ display: "flex" }}>
-                <div style={{ flex: 1 }}>
-                    <div>
-                        Vet profile pic placeholder
+            <Header/>
+            <div className="container mt-0" style={{display: "flex", gap: "170px"}}>
+                <div style={{flex: 0}}>
+                    <div className="container rounded-3 vet-card" style={{maxWidth: '450px', padding: "10px"}}>
+                        <div className="mb-3 ps-2" style={{
+                            maxWidth: '400px',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            height: '250px'
+                        }}>
+                            {vetInfo.photoUrl ? (
+                                <img className="avatar"
+                                     src={vetInfo.photoUrl}
+                                     alt={`${vetInfo.name}'s avatar`}
+                                     style={{width: '250px', height: '250px', borderRadius: '50%'}}
+                                />
+                            ) : (
+                                <div>pic placeholder</div>
+                            )}
+                        </div>
+                        <div>
+                            <h2>Dr. {vetInfo.name} {vetInfo.surname}</h2>
+                            <h3> {vetInfo.qualification || "Not specified"}</h3>
+                            <p style={{marginBottom: '5px'}}><strong>Email:</strong> {vetInfo.email || "Not specified"}</p>
+                            <p style={{marginBottom: '5px'}}><strong>Phone:</strong> {vetInfo.phoneNumber || "Not specified"}</p>
+                            <p style={{marginBottom: '5px'}}><strong>Schedule:</strong> {vetInfo.schedule || "Not specified"}</p>
+                            <p style={{marginBottom: '5px'}}><strong>Working hours:</strong> {vetInfo.workingHours || "Not specified"}</p>
+                            <p style={{marginBottom: '5px'}}><strong>Clinic:</strong> {vetInfo.clinic || "Not specified"} </p>
+                        </div>
                     </div>
-                    <div>
-                        <h2>{vetInfo.name} {vetInfo.surname}</h2>
-                        <p><strong>Qualification:</strong> {vetInfo.qualification || "Not specified"}</p>
-                        <p><strong>Email:</strong> {vetInfo.email || "Not specified"}</p>
-                        <p><strong>Phone:</strong> {vetInfo.phoneNumber || "Not specified"}</p>
-                        <p><strong>Working hours:</strong> {vetInfo.workingHours || "Not specified"}</p>
-                    </div>
-                </div>
 
+                <div className="vet-appointments bg-treatment container mt-3 rounded-1"
+                     style={{padding: "15px"}}>
+                    <h4 className="table-name">Upcoming Appointments</h4>
+                    {appointments.length > 0 ? (
+                        <table cellPadding="2" cellSpacing="0" className="uniq-table">
+                            <tbody>
+                            {appointments.map((appointment) => (
+                                <tr key={appointment.id}>
+                                    <td>{new Date(appointment.slot.date).toLocaleDateString()}</td>
+                                    <td>{appointment.slot.startTime.slice(0, 5)}</td>
+                                    <td>{appointment.pet.name}</td>
+                                    <td>
+                                        <button className="button btn-no-border" onClick={() => handleView(appointment.id)}>View</button>
+                                    </td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+                    ) : (
+                        <p>No upcoming appointments.</p>
+                    )}
+                </div>
+                </div>
                 {userRole === "ROLE_VET" && (
-                    <div style={{ flex: 1, marginLeft: "20px" }}>
+                    <div className="bg-table element-space wards " style={{flex: 1}}>
                         <h2>My Pets</h2>
                         {doctorPets.length > 0 ? (
-                            <table border="1" cellPadding="10" cellSpacing="0">
-                                <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Age</th>
-                                    <th>Sex</th>
-                                    <th>Action</th>
-                                </tr>
-                                </thead>
+                            <table cellPadding="0" cellSpacing="0" className="uniq-table">
+
                                 <tbody>
                                 {doctorPets.map((pet) => (
                                     <tr key={pet.id}>
-                                        <td>{pet.name}</td>
-                                        <td>{pet.age}</td>
-                                        <td>{pet.sex}</td>
-                                        <td>
-                                            <button onClick={() => handleViewPetProfile(pet.id)}>
+                                        <td style={{ padding: '20px' }}>
+                                                {vetInfo.photoUrl ? (
+                                                    <img className="avatar"
+                                                         src={pet.photoUrl}
+                                                         alt={`${pet.name}'s avatar`}
+                                                         style={{width: '50px', height: '50px', borderRadius: '50%', marginRight: '20px'}}
+                                                    />
+                                                ) : (
+                                                    <p>(anonymous)</p>
+                                                )} {"\t"}
+
+                                            <strong>{pet.name}</strong>{" "} {"\t"}
+                                            ({pet.type}, {" "}
+                                            {pet.age} y.o. {" "}
+                                            {pet.sex})
+                                        </td>
+
+                                        <td style={{ textAlign: 'right' }}>
+                                            <button className="button btn-no-border rounded-3" onClick={() => handleViewPetProfile(pet.id)}>
                                                 View Pet Profile
                                             </button>
                                         </td>
@@ -211,36 +260,6 @@ const VetDashboard = () => {
                             <p>No pets assigned to this vet.</p>
                         )}
                     </div>
-                )}
-            </div>
-
-            <div>
-                <h2>Upcoming Appointments</h2>
-                {appointments.length > 0 ? (
-                    <table border="1" cellPadding="10" cellSpacing="0">
-                        <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Time</th>
-                            <th>Pet Name</th>
-                            <th>Action</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {appointments.map((appointment) => (
-                            <tr key={appointment.id}>
-                                <td>{appointment.slot.date}</td>
-                                <td>{appointment.slot.startTime} - {appointment.slot.endTime}</td>
-                                <td>{appointment.pet.name}</td>
-                                <td>
-                                    <button onClick={() => handleView(appointment.id)}>View</button>
-                                </td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </table>
-                ) : (
-                    <p>No upcoming appointments.</p>
                 )}
             </div>
 
@@ -264,12 +283,13 @@ const VetDashboard = () => {
                     <p><strong>Owner:</strong> {selectedAppointment.ownerName}</p>
                     <p><strong>Complaint:</strong> {selectedAppointment.description}</p>
                     <p><strong>Date:</strong> {selectedAppointment.slot.date}</p>
-                    <p><strong>Time:</strong> {selectedAppointment.slot.startTime} - {selectedAppointment.slot.endTime}</p>
+                    <p><strong>Time:</strong> {selectedAppointment.slot.startTime} - {selectedAppointment.slot.endTime}
+                    </p>
                     <p><strong>Priority:</strong> {selectedAppointment.priority ? "Yes" : "No"}</p>
 
 
-                    <div style={{ margin: "20px 0" }}>
-                    <h4>Body Marker</h4>
+                    <div style={{margin: "20px 0"}}>
+                        <h4>Body Marker</h4>
                     {selectedAppointment.pet.type === "DOG" ? (
                         <DogBodyMap
                             initialMarker={bodyMarker}
