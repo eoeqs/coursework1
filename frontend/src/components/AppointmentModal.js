@@ -34,31 +34,38 @@ const AppointmentModal = ({ appointment, onClose }) => {
         if (appointment) fetchData();
     }, [appointment, axiosInstance]);
 
-    if (!appointment || loading) return <div>Loading...</div>;
-    if (error) return <div>{error}</div>;
+    if (!appointment || loading) return <div className="loading-overlay">Loading...</div>;
+    if (error) return <div className="error-overlay">{error}</div>;
 
     return (
-        <div style={modalStyles}>
-            <h3>Appointment Details</h3>
-            <p><strong>Priority:</strong> {appointment.priority ? "Yes" : "No"}</p>
-            <p><strong>Owner Name:</strong> {ownerInfo ? `${ownerInfo.name} ${ownerInfo.surname}` : "Unknown"}</p>
-            <p><strong>Pet Name:</strong> {petInfo?.name}</p>
-            <p><strong>Pet Type:</strong> {petInfo?.type}</p>
-            <p><strong>Complaints:</strong> {appointment.description}</p>
-            <p><strong>Date:</strong> {new Date(appointment.slot.date).toLocaleDateString()}</p>
-
-            <div style={{ margin: "20px 0" }}>
-                {petType === "DOG" ? (
-                    <DogBodyMap initialMarker={bodyMarker} readOnly={true} />
-                ) : petType === "CAT" ? (
-                    <CatBodyMap initialMarker={bodyMarker} readOnly={true}/>
-                ) : (
-                    <p>Unknown animal type</p>
-                )}
-            </div>
-
-            <div style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
-                <button onClick={onClose}>Close</button>
+        <div className="modal-overlay" onClick={onClose}>
+            <div className="modal-container" style={modalStyles}>
+                <div className="modal-header">
+                    <h3>Appointment Details</h3>
+                </div>
+                <div className="modal-body">
+                    <div className="modal-body-info">
+                        <h5 style={{marginTop: '20px', marginBottom: '10px'}}>Appeal №{appointment.id}</h5>
+                        <p style={{marginBottom: '10px'}}><strong>Owner
+                            :</strong> {ownerInfo ? `${ownerInfo.name} ${ownerInfo.surname}` : "Unknown"}
+                        </p>
+                        <p style={{marginBottom: '10px'}}><strong>Patient:</strong> {petInfo?.type}, {petInfo?.name}</p>
+                        <p style={{marginBottom: '10px'}}>
+                            <strong>Priority:</strong> {appointment.priority ? "Yes" : "No"}</p>
+                        <p style={{marginBottom: '0px'}}><strong>Complaints:</strong></p>
+                        <p style={{marginBottom: '60px'}} className="form-info">{appointment.description}</p>
+                        <p><strong>Date:</strong> {new Date(appointment.slot.date).toLocaleDateString()} {(appointment.slot.startTime).slice(0, 5)} - {(appointment.slot.endTime).slice(0, 5)}</p>
+                    </div>
+                    <div className="body-map" style={{margin: "20px 0"}}>
+                        {petType === "DOG" ? (
+                            <DogBodyMap initialMarker={bodyMarker} readOnly={true}/>
+                        ) : petType === "CAT" ? (
+                            <CatBodyMap initialMarker={bodyMarker} readOnly={true}/>
+                        ) : (
+                            <p>Unknown animal type</p>
+                        )}
+                    </div>
+                </div>
             </div>
         </div>
     );

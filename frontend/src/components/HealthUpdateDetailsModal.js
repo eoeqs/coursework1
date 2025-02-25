@@ -24,11 +24,11 @@ const HealthUpdateDetailsModal = ({ id, onClose }) => {
     }, [id, axiosInstance]);
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <div className="loading-overlay">Loading...</div>;
     }
 
     if (error) {
-        return <div>{error}</div>;
+        return <div className="error-overlay">{error}</div>;
     }
 
     if (!healthUpdate) {

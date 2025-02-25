@@ -119,11 +119,11 @@ const EditClinicalDiagnosisModal = ({ diagnosis, onClose, onSave }) => {
             symptoms: selectedSymptoms,
             bodyPart: tempMarker?.bodyPart,
         };
-        onSave(diagnosisData); // Передаем данные в родительский компонент
+        onSave(diagnosisData);
     };
 
-    if (!diagnosis || loading) return <div>Loading...</div>;
-    if (error) return <div>{error}</div>;
+    if (!diagnosis || loading) return <div className="loading-overlay">Loading...</div>;
+    if (error) return <div className="error-overlay">{error}</div>;
 
     return (
         <div style={modalStyles}>

@@ -116,11 +116,11 @@ const PetProfilePage = () => {
     };
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <div className="loading-overlay">Loading...</div>;
     }
 
     if (error) {
-        return <div>{error}</div>;
+        return <div className="error-overlay">{error}</div>;
     }
 
     if (!petInfo) {
