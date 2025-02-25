@@ -89,12 +89,15 @@ const AnamnesisDetailsPage = () => {
             if (diagnosis?.id) {
                 const response = await axiosInstance.put(`/diagnosis/update/${diagnosis.id}`, updatedData);
                 setDiagnosis(response.data);
+                setIsEditDiagnosisModalOpen(false);
+                alert("Diagnosis updated successfully!");
             } else {
                 const response = await axiosInstance.post("/diagnosis/save", { ...updatedData, anamnesis: id });
                 setDiagnosis(response.data);
+                setIsEditDiagnosisModalOpen(false);
+                alert("Diagnosis added successfully! Page will reload.");
+                window.location.reload();
             }
-            setIsEditDiagnosisModalOpen(false);
-            alert("Diagnosis updated successfully!");
         } catch (error) {
             console.error("Error updating diagnosis:", error);
             alert("Failed to update diagnosis. Please try again later.");
