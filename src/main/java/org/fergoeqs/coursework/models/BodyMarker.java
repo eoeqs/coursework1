@@ -29,7 +29,7 @@ public class BodyMarker {
     private Pet pet;
 
     @NotNull
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "appointment_id")
     private Appointment appointment;
 }

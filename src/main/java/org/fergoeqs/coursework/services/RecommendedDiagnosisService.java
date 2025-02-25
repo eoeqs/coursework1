@@ -25,6 +25,10 @@ public class RecommendedDiagnosisService {
 
     }
 
+    public RecommendedDiagnosis findById(Long id) {
+        return recommendedDiagnosisRepository.findById(id).orElse(null);
+    }
+
     public List<RecommendedDiagnosis> findAll() {
         return recommendedDiagnosisRepository.findAll();
     }
