@@ -86,8 +86,13 @@ const AnamnesisDetailsPage = () => {
 
     const handleSaveDiagnosis = async (updatedData) => {
         try {
-            const response = await axiosInstance.put(`/diagnosis/update/${diagnosis.id}`, updatedData);
-            setDiagnosis(response.data);
+            if (diagnosis?.id) {
+                const response = await axiosInstance.put(`/diagnosis/update/${diagnosis.id}`, updatedData);
+                setDiagnosis(response.data);
+            } else {
+                const response = await axiosInstance.post("/diagnosis/save", { ...updatedData, anamnesis: id });
+                setDiagnosis(response.data);
+            }
             setIsEditDiagnosisModalOpen(false);
             alert("Diagnosis updated successfully!");
         } catch (error) {
@@ -109,17 +114,6 @@ const AnamnesisDetailsPage = () => {
         }
     };
 
-    const handleSavePreliminaryDiagnosis = async (diagnosisData) => {
-        try {
-            const response = await axiosInstance.post("/diagnosis/save", {...diagnosisData, anamnesis: id});
-            setDiagnosis(response.data);
-            setIsEditClinicalDiagnosisModalOpen(false);
-            alert("Preliminary Diagnosis saved successfully!");
-        } catch (error) {
-            console.error("Error saving preliminary diagnosis:", error);
-            alert("Failed to save preliminary diagnosis. Please try again later.");
-        }
-    };
 
     const handleSaveClinicalDiagnosis = async (clinicalDiagnosisData) => {
         try {
@@ -445,7 +439,10 @@ const AnamnesisDetailsPage = () => {
 
                 {isEditDiagnosisModalOpen && (
                     <EditDiagnosisModal
-                        diagnosis={diagnosis}
+                        diagnosisId={diagnosis?.id}
+                        petId={petInfo?.id}
+                        appointmentId={appointment?.id}
+                        anamnesisId={id}
                         onClose={() => setIsEditDiagnosisModalOpen(false)}
                         onSave={handleSaveDiagnosis}
                     />
