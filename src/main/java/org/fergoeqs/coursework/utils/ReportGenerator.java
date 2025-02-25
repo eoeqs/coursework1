@@ -10,6 +10,8 @@ import org.fergoeqs.coursework.services.StorageService;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
+import java.net.URISyntaxException;
+import java.util.Objects;
 
 @Component
 public class ReportGenerator {
@@ -19,7 +21,7 @@ public class ReportGenerator {
         this.storageService = storageService;
     }
 
-    public String generateProcedureReport(MedicalProcedure procedure) throws IOException {
+    public String generateProcedureReport(MedicalProcedure procedure) throws IOException, URISyntaxException {
         PDDocument document = new PDDocument();
 
         PDPage page = new PDPage();
@@ -28,11 +30,11 @@ public class ReportGenerator {
         PDPageContentStream contentStream = new PDPageContentStream(document, page);
         float maxWidth = page.getMediaBox().getWidth() - 60;
 
-        File fontFile = new File("K:/git/coursework/vetcare/src/main/resources/fonts/times_new_roman.ttf");
+        File fontFile = new File(Objects.requireNonNull(getClass().getClassLoader().getResource("fonts/times_new_roman.ttf")).toURI());
         PDType0Font font = PDType0Font.load(document, fontFile);
 
-        File logoFile = new File("K:/git/coursework/vetcare/src/main/resources/images/logo_min.png");
-        File stampoFile = new File("K:/git/coursework/vetcare/src/main/resources/images/stamp.png");
+        File logoFile = new File(Objects.requireNonNull(getClass().getClassLoader().getResource("images/logo_min.png")).toURI());
+        File stampoFile = new File(Objects.requireNonNull(getClass().getClassLoader().getResource("images/stamp.png")).toURI());
 
         PDImageXObject logo = PDImageXObject.createFromFile(logoFile.getAbsolutePath(), document);
         PDImageXObject stamp = PDImageXObject.createFromFile(stampoFile.getAbsolutePath(), document);

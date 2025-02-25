@@ -1,11 +1,14 @@
 package org.fergoeqs.coursework.services;
 
 import org.apache.coyote.BadRequestException;
+import org.checkerframework.checker.units.qual.C;
+import org.fergoeqs.coursework.dto.AppUserDTO;
 import org.fergoeqs.coursework.exception.UnauthorizedAccessException;
 import org.fergoeqs.coursework.models.AppUser;
 import org.fergoeqs.coursework.models.Pet;
 import org.fergoeqs.coursework.models.enums.RoleType;
 import org.fergoeqs.coursework.repositories.UserRepository;
+import org.fergoeqs.coursework.utils.Mappers.AppUserMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,11 +26,16 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final StorageService storageService;
+    private final AppUserMapper appUserMapper;
+    private final ClinicsService clinicsService;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, StorageService storageService) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, StorageService storageService,
+                       AppUserMapper appUserMapper, ClinicsService clinicsService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.storageService = storageService;
+        this.appUserMapper = appUserMapper;
+        this.clinicsService = clinicsService;
     }
 
     public AppUser registerUser(String username, String password) {
@@ -85,6 +93,28 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public  AppUser updateUser(AppUser appUser, AppUserDTO userDTO) {
+        appUserMapper.updateUserFromDTO(userDTO, appUser);
+        return userRepository.save(appUser);
+    }
+
+    public  AppUser updateUserForAdmin(Long id, AppUserDTO userDTO) {
+        AppUser user = userRepository.findById(id).orElseThrow();
+        appUserMapper.updateUserForAdminFromDTO(userDTO, user);
+        if (userDTO.clinic() == null) {
+            user.setClinic(null);
+        } else {
+            user.setClinic(clinicsService.findById(userDTO.clinic()));}
+        return userRepository.save(user);
+    }
+
+    public AppUser updateUserRoles(Long id, RoleType newRole) {
+        AppUser user = userRepository.findById(id).orElseThrow();
+        user.getRoles().clear();
+        user.getRoles().add(newRole);
+        userRepository.save(user);
+        return userRepository.save(user);
+    }
 
     public List<AppUser> findAllUsers() {
         return userRepository.findAll();

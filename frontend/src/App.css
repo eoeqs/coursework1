@@ -235,3 +235,39 @@ header h1 {
 * {
   font-family: 'Arial', sans-serif;
 }
+
+.vet-appointments {
+  max-height: 235px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.wards {
+  max-width: 40%;
+  max-height: 100%;
+}
+
+.vet-card {
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.vet-card h2 {
+  padding-left: 30px !important;
+  font-weight: bold;
+}
+
+.vet-card h3 {
+  padding-left: 30px !important;
+  font-weight: bold;
+  font-style: italic;
+}
+
+.vet-card p {
+  padding-left: 30px !important;
+}
+
+.table-name {
+  font-size: 20px;
+  font-weight: bold;
+  padding-left: 60px !important;
+}

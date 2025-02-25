@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -51,7 +52,7 @@ public class MedicalProcedureService {
     }
 
 
-    public MedicalProcedure save(MedicalProcedureDTO mpDTO) throws IOException {
+    public MedicalProcedure save(MedicalProcedureDTO mpDTO) throws IOException, URISyntaxException {
         MedicalProcedure mp = setRelativeFields(mpMapper.fromDTO(mpDTO), mpDTO);
         mp.setDate(LocalDateTime.now());
         mp.setReportUrl(reportGenerator.generateProcedureReport(medicalProcedureRepository.save(mp)));
