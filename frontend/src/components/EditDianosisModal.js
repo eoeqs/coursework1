@@ -153,8 +153,8 @@ const EditDiagnosisModal = ({ diagnosisId, petId, appointmentId, anamnesisId, on
         onSave(diagnosisData);
     };
 
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>{error}</div>;
+    if (loading) return <div className="loading-overlay">Loading...</div>;
+    if (error) return <div className="error-overlay">{error}</div>;
 
     return (
         <div style={modalStyles}>

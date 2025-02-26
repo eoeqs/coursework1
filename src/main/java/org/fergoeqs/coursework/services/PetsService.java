@@ -71,14 +71,14 @@ public class PetsService {
     }
 
     @Transactional
-    public void placeInSector(Long petId, Long sectorId) { //TODO: триггер на занятие слота в секторе
+    public void placeInSector(Long petId, Long sectorId) {
         Pet pet = petsRepository.findById(petId).orElseThrow();
         pet.setSector(sectorsService.findSectorById(sectorId));
         petsRepository.save(pet);
     }
 
     @Transactional
-    public void removeFromSector(Long petId) { //TODO: триггер на освобождение слота в секторе
+    public void removeFromSector(Long petId) {
         Pet pet = petsRepository.findById(petId).orElseThrow();
         pet.setSector(null);
         petsRepository.save(pet);

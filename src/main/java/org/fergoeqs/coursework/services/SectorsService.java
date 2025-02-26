@@ -12,7 +12,7 @@ import java.util.List;
 
 @Transactional(readOnly = true)
 @Service
-public class SectorsService { //TODO: триггер на обновление occupancy и проверку isAvailable
+public class SectorsService {
     private final SectorsRepository sectorsRepository;
     private final SectorMapper sectorMapper;
 
@@ -51,11 +51,3 @@ public class SectorsService { //TODO: триггер на обновление o
     }
 
 }
-
-//    public List<Sector> findAllAvailableByDangerous() {
-//        return sectorsRepository.findAllByIsAvailableAndCategory(true, CategoryType.DANGEROUS);
-//    }
-
-//    public List<Sector> findAllSectorsByDangerous() {
-//        return sectorsRepository.findAllByCategory(CategoryType.DANGEROUS);
-//    }

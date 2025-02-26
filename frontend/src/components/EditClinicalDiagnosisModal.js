@@ -28,7 +28,6 @@ const EditClinicalDiagnosisModal = ({ diagnosisId, petId, appointmentId, anamnes
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // Загрузка информации о питомце
                 const petResponse = await axiosInstance.get(`/pets/pet/${petId}`);
                 setPetType(petResponse.data.type);
                 setPetInfo(petResponse.data);
@@ -38,20 +37,16 @@ const EditClinicalDiagnosisModal = ({ diagnosisId, petId, appointmentId, anamnes
                     setOwnerInfo(ownerResponse.data);
                 }
 
-                // Загрузка маркера тела
                 const markerResponse = await axiosInstance.get(`/body-marker/appointment/${appointmentId}`);
                 setBodyMarker(markerResponse.data);
                 setTempMarker(markerResponse.data);
 
-                // Загрузка симптомов
                 const symptomsResponse = await axiosInstance.get("/symptoms/all");
                 setSymptoms(symptomsResponse.data);
 
-                // Загрузка данных о приеме
                 const appointmentResponse = await axiosInstance.get(`/appointments/appointment/${appointmentId}`);
                 setAppointment(appointmentResponse.data);
 
-                // Если редактирование, загрузка данных диагноза
                 if (diagnosisId) {
                     const diagnosisResponse = await axiosInstance.get(`/diagnosis/${diagnosisId}`);
                     const diagnosis = diagnosisResponse.data;
@@ -143,29 +138,21 @@ const EditClinicalDiagnosisModal = ({ diagnosisId, petId, appointmentId, anamnes
             symptoms: selectedSymptoms,
             bodyPart: tempMarker?.bodyPart,
             anamnesis: anamnesisId,
-            date: diagnosisId ? undefined : new Date().toISOString(), // Добавляем дату только для нового диагноза
+            date: diagnosisId ? undefined : new Date().toISOString(), 
         };
         onSave(diagnosisData);
     };
 
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>{error}</div>;
+    if (!diagnosisId || loading) return <div className="loading-overlay">Loading...</div>;
+    if (error) return <div className="error-overlay">{error}</div>;
 
     return (
         <div style={modalStyles}>
             <h3>{diagnosisId ? "Edit Clinical Diagnosis" : "Add Clinical Diagnosis"}</h3>
-            <p>
-                <strong>Owner Name:</strong> {ownerInfo ? `${ownerInfo.name} ${ownerInfo.surname}` : "Unknown"}
-            </p>
-            <p>
-                <strong>Pet Name:</strong> {petInfo?.name}
-            </p>
-            <p>
-                <strong>Pet Type:</strong> {petInfo?.type}
-            </p>
-            <p>
-                <strong>Complaints:</strong> {appointment?.description || "No complaints provided."}
-            </p>
+            <p><strong>Owner Name:</strong> {ownerInfo ? `${ownerInfo.name} ${ownerInfo.surname}` : "Unknown"}</p>
+            <p><strong>Pet Name:</strong> {petInfo?.name}</p>
+            <p><strong>Pet Type:</strong> {petInfo?.type}</p>
+            <p><strong>Complaints:</strong> {appointment?.description || "No complaints provided."}</p>
 
             <div style={{ margin: "20px 0" }}>
                 {petType === "DOG" ? (
