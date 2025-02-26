@@ -50,7 +50,9 @@ const EditTreatmentModal = ({ treatment, onClose, onSave, diagnosisId, petId }) 
                 borderRadius: "8px",
                 width: "400px",
             }}>
-                <h2>{treatment ? "Edit Treatment" : "Add New Treatment"}</h2>
+                <div className="modal-header">
+                <h3>{treatment ? "Edit Treatment" : "Add New Treatment"}</h3>
+                </div>
                 <form onSubmit={handleSubmit}>
                     <div style={{ marginBottom: "10px" }}>
                         <label>Name:</label>
@@ -61,6 +63,7 @@ const EditTreatmentModal = ({ treatment, onClose, onSave, diagnosisId, petId }) 
                             onChange={handleChange}
                             required
                             style={{ width: "100%", padding: "8px" }}
+                            className="form-info"
                         />
                     </div>
 
@@ -71,6 +74,7 @@ const EditTreatmentModal = ({ treatment, onClose, onSave, diagnosisId, petId }) 
                             value={formData.description}
                             onChange={handleChange}
                             style={{ width: "100%", padding: "8px" }}
+                            className="form-info"
                         />
                     </div>
 
@@ -82,6 +86,7 @@ const EditTreatmentModal = ({ treatment, onClose, onSave, diagnosisId, petId }) 
                             value={formData.prescribedMedication}
                             onChange={handleChange}
                             style={{ width: "100%", padding: "8px" }}
+                            className="form-info"
                         />
                     </div>
 
@@ -93,6 +98,7 @@ const EditTreatmentModal = ({ treatment, onClose, onSave, diagnosisId, petId }) 
                             value={formData.duration}
                             onChange={handleChange}
                             style={{ width: "100%", padding: "8px" }}
+                            className="form-info"
                         />
                     </div>
 
@@ -104,18 +110,18 @@ const EditTreatmentModal = ({ treatment, onClose, onSave, diagnosisId, petId }) 
                                     name="isCompleted"
                                     checked={formData.isCompleted}
                                     onChange={handleChange}
-                                />
-                                Is Completed
+                                /><span> </span>
+                                is Completed
                             </label>
                         </div>
                     )}
 
-                    <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
-                        <button type="button" onClick={onClose} style={{ padding: "8px 16px" }}>
-                            Cancel
-                        </button>
-                        <button type="submit" style={{ padding: "8px 16px", backgroundColor: "#4CAF50", color: "white" }}>
+                    <div style={{display: "flex", justifyContent: "space-evenly", marginTop: "20px"}}>
+                        <button className="form-button" type="submit" style={{padding: "8px 20px", color: "white"}}>
                             Save
+                        </button>
+                        <button className="rounded-2" type="button" onClick={onClose} style={{padding: "8px 16px", backgroundColor: "#ffffff", border: "1"}}>
+                            Cancel
                         </button>
                     </div>
                 </form>

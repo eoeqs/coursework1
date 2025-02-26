@@ -227,7 +227,7 @@ const AnamnesisDetailsPage = () => {
                 <div style={{flex: 1}}>
 
                     <h2><strong>Anamnesis details </strong> (appeal
-                        from {new Date(anamnesis.date).toLocaleDateString()}: {diagnosis.name} )</h2>
+                        from {new Date(anamnesis.date).toLocaleDateString()}: {diagnosis.name})</h2>
                     <h3 className="py-1">Complaints</h3>
                     <div className="bg-table element-space" style={{flex: 1}}>
                         <div>
@@ -394,7 +394,7 @@ const AnamnesisDetailsPage = () => {
                         <table cellPadding="3" cellSpacing="0" className="uniq-table">
                             <tbody>
                             {treatments
-                                .filter((treatment) => !treatment.isCompleted) // Фильтруем только незавершенные
+                                .filter((treatment) => !treatment.isCompleted)
                                 .map((treatment) => (
                                     <tr key={treatment.id}>
                                         <td>
@@ -499,21 +499,17 @@ const AnamnesisDetailsPage = () => {
                 )}
 
                 {isProcedureModalOpen && (
-                    <div style={overlayStyles}>
-                        <div style={modalStyles}>
-                            <h3>Procedure Details</h3>
-                            <p><strong>Date:</strong> {new Date(selectedProcedure.date).toLocaleDateString()}</p>
+                    <div className="modal-overlay" onClick={() => setIsProcedureModalOpen(false)}>
+                        <div className="modal-form" style={modalStyles}>
+                            <div className="modal-header">
+                                <h3>Procedure Details</h3>
+                            </div>
+                            <div className='rounded-3' style={{backgroundColor: 'rgba(179, 35, 35, 0.06)', padding: '10px'}}>
                             <p><strong>Type:</strong> {selectedProcedure.type}</p>
                             <p><strong>Name:</strong> {selectedProcedure.name}</p>
                             <p><strong>Description:</strong> {selectedProcedure.description}</p>
                             <p><strong>Notes:</strong> {selectedProcedure.notes}</p>
-                            <div style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
-                                <button
-                                    className="button btn-no-border"
-                                    onClick={() => setIsProcedureModalOpen(false)}
-                                >
-                                    Close
-                                </button>
+                            <p><strong>Date:</strong> {new Date(selectedProcedure.date).toLocaleDateString()}</p>
                             </div>
                         </div>
                     </div>
