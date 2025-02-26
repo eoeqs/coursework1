@@ -25,8 +25,9 @@ const AppointmentPage = ({ onClose }) => {
     useEffect(() => {
         if (!token) return;
 
-        axiosInstance.get("/users/current-user-info")
-            .then(response => {
+        axiosInstance
+            .get("/users/current-user-info")
+            .then((response) => {
                 const fetchedUserId = response.data.id;
                 const fetchedUserRole = response.data.role;
                 setUserId(fetchedUserId);
@@ -34,10 +35,10 @@ const AppointmentPage = ({ onClose }) => {
 
                 return axiosInstance.get(`/users/user-info/${fetchedUserId}`);
             })
-            .then(response => {
+            .then((response) => {
                 setOwnerName(response.data.name);
             })
-            .catch(error => {
+            .catch((error) => {
                 console.error("Error fetching user info:", error);
             });
     }, [token, axiosInstance]);
@@ -46,30 +47,59 @@ const AppointmentPage = ({ onClose }) => {
         if (!token || !userId || !userRole) return;
 
         if (userRole === "ROLE_OWNER") {
-            axiosInstance.get("/pets/user-pets")
-                .then(response => setPets(response.data))
-                .catch(error => console.error("Error fetching user pets:", error));
+            axiosInstance
+                .get("/pets/user-pets")
+                .then((response) => setPets(response.data))
+                .catch((error) => console.error("Error fetching user pets:", error));
         } else if (userRole === "ROLE_VET") {
-            axiosInstance.get(`/pets/doctor-pets/${userId}`)
-                .then(response => setPets(response.data))
-                .catch(error => console.error("Error fetching doctor pets:", error));
+            axiosInstance
+                .get(`/pets/doctor-pets/${userId}`)
+                .then((response) => setPets(response.data))
+                .catch((error) => console.error("Error fetching doctor pets:", error));
         }
     }, [token, userId, userRole, axiosInstance]);
 
     useEffect(() => {
         if (!token) return;
 
-        axiosInstance.get("/slots/available-slots")
-            .then(response => setSlots(response.data))
-            .catch(error => console.error("Error fetching slots:", error));
+        const fetchSlotsWithVetInfo = async () => {
+            try {
+                const slotsResponse = await axiosInstance.get("/slots/available-slots");
+                const slotsData = slotsResponse.data;
+
+                const vetIds = [...new Set(slotsData.map((slot) => slot.vetId))];
+                const vetPromises = vetIds.map((vetId) =>
+                    axiosInstance.get(`/users/user-info/${vetId}`)
+                );
+                const vetResponses = await Promise.all(vetPromises);
+
+                const vetMap = vetResponses.reduce((acc, response) => {
+                    const vet = response.data;
+                    acc[vet.id] = `${vet.name} ${vet.surname}`;
+                    return acc;
+                }, {});
+
+                const updatedSlots = slotsData.map((slot) => ({
+                    ...slot,
+                    vetName: vetMap[slot.vetId] || "Unknown Vet",
+                }));
+
+                setSlots(updatedSlots);
+            } catch (error) {
+                console.error("Error fetching slots or vet info:", error);
+            }
+        };
+
+        fetchSlotsWithVetInfo();
     }, [token, axiosInstance]);
 
     useEffect(() => {
         if (!selectedPetId) return;
 
-        axiosInstance.get(`/pets/pet/${selectedPetId}`)
-            .then(response => setPetInfo(response.data))
-            .catch(error => {
+        axiosInstance
+            .get(`/pets/pet/${selectedPetId}`)
+            .then((response) => setPetInfo(response.data))
+            .catch((error) => {
                 console.error("Error fetching pet info:", error);
                 setPetInfo(null);
             });
@@ -97,7 +127,7 @@ const AppointmentPage = ({ onClose }) => {
                 priority,
                 slotId: parseInt(selectedSlotId),
                 petId: parseInt(selectedPetId),
-                description: complaintDescription
+                description: complaintDescription,
             });
             if (bodyMarker) {
                 await axiosInstance.post("/body-marker/save", {
@@ -105,7 +135,7 @@ const AppointmentPage = ({ onClose }) => {
                     positionY: bodyMarker.y,
                     bodyPart: bodyMarker.part,
                     pet: selectedPetId,
-                    appointment: appointmentResponse.data.id
+                    appointment: appointmentResponse.data.id,
                 });
             }
             alert("Appointment successfully booked!");
@@ -150,12 +180,24 @@ const AppointmentPage = ({ onClose }) => {
                 {selectedPetId && petInfo && (
                     <div>
                         <h3>Pet Info:</h3>
-                        <p><strong>Name:</strong> {petInfo.name}</p>
-                        <p><strong>Breed:</strong> {petInfo.breed}</p>
-                        <p><strong>Type:</strong> {petInfo.type}</p>
-                        <p><strong>Weight:</strong> {petInfo.weight} kg</p>
-                        <p><strong>Sex:</strong> {petInfo.sex}</p>
-                        <p><strong>Age:</strong> {petInfo.age} years</p>
+                        <p>
+                            <strong>Name:</strong> {petInfo.name}
+                        </p>
+                        <p>
+                            <strong>Breed:</strong> {petInfo.breed}
+                        </p>
+                        <p>
+                            <strong>Type:</strong> {petInfo.type}
+                        </p>
+                        <p>
+                            <strong>Weight:</strong> {petInfo.weight} kg
+                        </p>
+                        <p>
+                            <strong>Sex:</strong> {petInfo.sex}
+                        </p>
+                        <p>
+                            <strong>Age:</strong> {petInfo.age} years
+                        </p>
                     </div>
                 )}
 
@@ -194,13 +236,15 @@ const AppointmentPage = ({ onClose }) => {
                                 key={slot.id}
                                 onClick={() => setSelectedSlotId(slot.id)}
                                 style={{
-                                    backgroundColor: selectedSlotId === slot.id ? '#D3E4CD' : 'white',
-                                    cursor: 'pointer'
+                                    backgroundColor: selectedSlotId === slot.id ? "#D3E4CD" : "white",
+                                    cursor: "pointer",
                                 }}
                             >
                                 <td>{slot.date}</td>
-                                <td>{slot.startTime} - {slot.endTime}</td>
-                                <td>{slot.vetId}</td>
+                                <td>
+                                    {slot.startTime} - {slot.endTime}
+                                </td>
+                                <td>{slot.vetName}</td> {/* Отображаем имя и фамилию вместо vetId */}
                             </tr>
                         ))}
                         </tbody>
@@ -209,9 +253,16 @@ const AppointmentPage = ({ onClose }) => {
                     {selectedSlotId && (
                         <div>
                             <h3>Slot Information:</h3>
-                            <p><strong>Date:</strong> {slots.find(slot => slot.id === selectedSlotId)?.date}</p>
-                            <p><strong>Time:</strong> {slots.find(slot => slot.id === selectedSlotId)?.startTime} - {slots.find(slot => slot.id === selectedSlotId)?.endTime}</p>
-                            <p><strong>Doctor:</strong> {slots.find(slot => slot.id === selectedSlotId)?.vetId}</p>
+                            <p>
+                                <strong>Date:</strong> {slots.find((slot) => slot.id === selectedSlotId)?.date}
+                            </p>
+                            <p>
+                                <strong>Time:</strong> {slots.find((slot) => slot.id === selectedSlotId)?.startTime} -{" "}
+                                {slots.find((slot) => slot.id === selectedSlotId)?.endTime}
+                            </p>
+                            <p>
+                                <strong>Doctor:</strong> {slots.find((slot) => slot.id === selectedSlotId)?.vetName}
+                            </p>
                         </div>
                     )}
                 </div>

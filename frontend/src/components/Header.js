@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import { useAuth } from "../AuthProvider";
 import useAxiosWithAuth from "../AxiosAuth";
-import myImage from '../pics/logo_min.png';
+import myImage from "../pics/logo_min.png";
 
 export default function Header() {
     const navigate = useNavigate();
@@ -28,16 +28,16 @@ export default function Header() {
     }, [isAuthenticated, axiosInstance]);
 
     const handleProfileClick = () => {
-        setMenuOpen(!menuOpen);
+        if (isAuthenticated) {
+            setMenuOpen(!menuOpen);
+        } else {
+            navigate("/login");
+        }
     };
 
     const handleMenuItemClick = (path) => {
         setMenuOpen(false);
-        if (path === "/profile" && !isAuthenticated) {
-            navigate("/login");
-        } else {
-            navigate(path);
-        }
+        navigate(path);
     };
 
     const handleLogout = () => {
@@ -57,34 +57,30 @@ export default function Header() {
 
     return (
         <header className="header">
-            <div style={{display: 'flex', alignItems: 'center'}}>
+            <div style={{ display: "flex", alignItems: "center" }}>
                 <img
                     src={myImage}
                     alt="VetCare Logo"
-                    style={{width: '50px', height: '50px', objectFit: 'contain'}}
+                    style={{ width: "50px", height: "50px", objectFit: "contain" }}
                 />
-
-            <h1 style={{marginLeft: '10px'}} onClick={() => navigate("/")}>
-                VetCare
-            </h1>
+                <h1 style={{ marginLeft: "10px" }} onClick={() => navigate("/")}>
+                    VetCare
+                </h1>
             </div>
             <div>
-                <button className="btn btn-pink p-2" style={{borderRadius: "100%", border: "none"}}
-                        onClick={handleProfileClick}>
-                    <FaUserCircle size={40}/>
+                <button
+                    className="btn btn-pink p-2"
+                    style={{ borderRadius: "100%", border: "none" }}
+                    onClick={handleProfileClick}
+                >
+                    <FaUserCircle size={40} />
                 </button>
 
-                {menuOpen && (
+                {menuOpen && isAuthenticated && (
                     <div className="menu-dropdown">
-                        <button onClick={handleProfile}>
-                            Profile
-                        </button>
-                        <button onClick={() => handleMenuItemClick("/notifications")}>
-                            Notifications
-                        </button>
-                        <button onClick={handleLogout}>
-                            Logout
-                        </button>
+                        <button onClick={handleProfile}>Profile</button>
+                        <button onClick={() => handleMenuItemClick("/notifications")}>Notifications</button>
+                        <button onClick={handleLogout}>Logout</button>
                     </div>
                 )}
             </div>
