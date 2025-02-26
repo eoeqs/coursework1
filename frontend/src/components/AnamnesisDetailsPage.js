@@ -394,7 +394,7 @@ const AnamnesisDetailsPage = () => {
                         <table cellPadding="3" cellSpacing="0" className="uniq-table">
                             <tbody>
                             {treatments
-                                .filter((treatment) => !treatment.isCompleted) // Фильтруем только незавершенные
+                                .filter((treatment) => !treatment.isCompleted)
                                 .map((treatment) => (
                                     <tr key={treatment.id}>
                                         <td>
