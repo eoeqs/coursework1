@@ -24,22 +24,28 @@ const EditExaminationPlanModal = ({ examinationPlan, onClose, onSave }) => {
             boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
             zIndex: 1000,
         }}>
-            <h3>Edit Examination Plan</h3>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Examination Plan:</label>
-                    <textarea
-                        value={plan}
-                        onChange={handleChange}
-                        rows={4}
-                        cols={40}
-                    />
-                </div>
-                <button type="submit">Save</button>
-                <button type="button" onClick={onClose}>Cancel</button>
-            </form>
+            <div className="modal-header">
+                <h3>Edit Examination Plan</h3>
+            </div>
+                <form onSubmit={handleSubmit}>
+                    <div>
+                        <label style={{ display: "block", fontSize: "14px", marginBottom: "8px", color: "#555555" }}>Examination Plan:</label>
+                        <textarea
+                            value={plan}
+                            onChange={handleChange}
+                            rows={4}
+                            cols={40}
+                            className="form-info"
+                            style={{ width: "100%", padding: "8px",backgroundColor: "#fbf7f7" }}
+                        />
+                    </div>
+                    <div style={{display: "flex", justifyContent: "space-evenly", marginTop: "20px"}}>
+                        <button className="form-button" type="submit" style={{padding: "8px 23px"}}>Save</button>
+                        <button className="rounded-1 border-1" type="button" style={{padding: "8px 16px", backgroundColor: "white"}} onClick={onClose}>Cancel</button>
+                    </div>
+                </form>
         </div>
-    );
+);
 };
 
 export default EditExaminationPlanModal;

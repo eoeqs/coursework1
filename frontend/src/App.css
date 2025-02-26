@@ -234,6 +234,7 @@ header h1 {
 
 * {
   font-family: 'Arial', sans-serif;
+  color: #682020;
 }
 
 .vet-appointments {
@@ -256,11 +257,12 @@ header h1 {
   font-weight: bold;
 }
 
-.vet-card h3 {
-  padding-left: 30px !important;
+.vet-card h5 {
+    padding-left: 30px !important;
   font-weight: bold;
   font-style: italic;
 }
+
 
 .vet-card p {
   padding-left: 30px !important;
@@ -274,7 +276,8 @@ header h1 {
 
 
 .modal-header {
-  padding-left: 35%;
+  justify-content: center;
+  align-items: center;
   text-align: center;
   border-bottom: 2px solid #f0f0f0;
   padding-bottom: 10px;
@@ -396,4 +399,17 @@ header h1 {
   font-size: 2rem;
 }
 
+.form-button {
+  padding: 12px 30px;
+  font-size: 17px;
+  border-radius: 4px;
+  background-color: #a13f3f;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
 
+.form-button:hover {
+  background-color: rgba(67,13,13,0.5);
+}

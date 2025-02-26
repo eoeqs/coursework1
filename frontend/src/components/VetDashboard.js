@@ -183,9 +183,9 @@ const VetDashboard = () => {
     return (
         <div>
             <Header/>
-            <div className="container mt-0" style={{display: "flex", gap: "100px"}}>
+            <div className="container mt-1" style={{display: "flex", gap: "100px"}}>
                 <div style={{flex: 0}}>
-                    <div className="container rounded-3 vet-card" style={{maxWidth: '450px', padding: "10px"}}>
+                    <div className="container rounded-3 vet-card" style={{maxWidth: '450px', padding: "40px 50px"}}>
                         <div className="mb-3 ps-2" style={{
                             maxWidth: '400px',
                             display: 'flex',
@@ -204,8 +204,8 @@ const VetDashboard = () => {
                             )}
                         </div>
                         <div>
-                            <h2>Dr. {vetInfo.name} {vetInfo.surname}</h2>
-                            <h3> {vetInfo.qualification || "Not specified"}</h3>
+                            <h4><strong>Dr. {vetInfo.name} {vetInfo.surname}</strong></h4>
+                            <h5> {vetInfo.qualification || "Not specified"}</h5>
                             <p style={{marginBottom: '5px'}}><strong>Email:</strong> {vetInfo.email || "Not specified"}
                             </p>
                             <p style={{marginBottom: '5px'}}>
@@ -240,7 +240,7 @@ const VetDashboard = () => {
                                 </tbody>
                             </table>
                         ) : (
-                            <p>No upcoming appointments.</p>
+                            <p style={{paddingLeft: "70px", paddingTop: "10px"}}>No upcoming appointments.</p>
                         )}
                     </div>
                 </div>
