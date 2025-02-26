@@ -70,8 +70,9 @@ const EditPetModal = ({ petInfo, onClose, onSave }) => {
             fontFamily: "'Arial', sans-serif",
             color: "#333"
         }}>
-            <h3 style={{textAlign: "center", marginBottom: "20px", fontSize: "24px", color: "#555"}}>Edit Pet
-                Profile</h3>
+            <div className="modal-header">
+            <h3 style={{textAlign: "center"}}>Edit Pet
+                Profile</h3></div>
             <form style={{ display: "flex", flexDirection: "column" }} onSubmit={handleSubmit}>
                 <div style={{marginBottom: "20px"}}>
                     {avatarPreview && (
@@ -172,7 +173,7 @@ const EditPetModal = ({ petInfo, onClose, onSave }) => {
 
                 <div style={{ display: "flex", justifyContent: "space-evenly", marginTop: "20px" }}>
                     <button style={buttonStyles} type="submit">Save</button>
-                    <button style={buttonStyles} type="button" onClick={onClose}>Cancel</button>
+                    <button className="rounded-1" style={{padding: "8px 20px", backgroundColor: "white", border: "1"}} type="button" onClick={onClose}>Cancel</button>
                 </div>
             </form>
         </div>

@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import useAxiosWithAuth from "../AxiosAuth";
 
-const EditVetModal = ({ vetInfo, onClose, onSave }) => {
+const EditVetModal = ({vetInfo, onClose, onSave}) => {
     const axiosInstance = useAxiosWithAuth();
     const [formData, setFormData] = useState({
         name: vetInfo?.name || "",
@@ -16,7 +16,7 @@ const EditVetModal = ({ vetInfo, onClose, onSave }) => {
     const [error, setError] = useState(null);
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
+        const {name, value} = e.target;
         setFormData((prev) => ({
             ...prev,
             [name]: value,
@@ -55,109 +55,175 @@ const EditVetModal = ({ vetInfo, onClose, onSave }) => {
                 maxWidth: "90%",
             }}
         >
-            <h3>Edit Vet Profile</h3>
-            {error && <p style={{ color: "red" }}>{error}</p>}
-            <div style={{ marginBottom: "10px" }}>
-                <label>
+            <div className="modal-header">
+                <h3>Edit Vet Profile</h3>
+            </div>
+            {error && <p style={{color: "red"}}>{error}</p>}
+            <div style={{marginBottom: "10px"}}>
+                <label style={{display: "block", fontSize: "14px", marginBottom: "8px", color: "#777"}}>
                     Name:
                     <input
                         type="text"
                         name="name"
                         value={formData.name}
                         onChange={handleChange}
-                        style={{ width: "100%", marginTop: "5px" }}
+                        style={{
+                            width: "100%",
+                            marginTop: "5px",
+                            padding: "8px",
+                            borderRadius: "4px",
+                            border: "1px solid #ddd",
+                            backgroundColor: "#f9f9f9",
+                            cursor: "pointer",
+                        }}
                     />
                 </label>
             </div>
-            <div style={{ marginBottom: "10px" }}>
-                <label>
+            <div style={{marginBottom: "10px"}}>
+                <label style={{display: "block", fontSize: "14px", marginBottom: "8px", color: "#777"}}>
                     Surname:
                     <input
                         type="text"
                         name="surname"
                         value={formData.surname}
                         onChange={handleChange}
-                        style={{ width: "100%", marginTop: "5px" }}
+                        style={{
+                            width: "100%",
+                            marginTop: "5px",
+                            padding: "8px",
+                            borderRadius: "4px",
+                            border: "1px solid #ddd",
+                            backgroundColor: "#f9f9f9",
+                            cursor: "pointer",
+                        }}
                     />
                 </label>
             </div>
-            <div style={{ marginBottom: "10px" }}>
-                <label>
+            <div style={{marginBottom: "10px"}}>
+                <label style={{display: "block", fontSize: "14px", marginBottom: "8px", color: "#777"}}>
                     Qualification:
                     <input
                         type="text"
                         name="qualification"
                         value={formData.qualification}
                         onChange={handleChange}
-                        style={{ width: "100%", marginTop: "5px" }}
+                        style={{
+                            width: "100%",
+                            marginTop: "5px",
+                            padding: "8px",
+                            borderRadius: "4px",
+                            border: "1px solid #ddd",
+                            backgroundColor: "#f9f9f9",
+                            cursor: "pointer",
+                        }}
                     />
                 </label>
             </div>
-            <div style={{ marginBottom: "10px" }}>
-                <label>
+            <div style={{marginBottom: "10px"}}>
+                <label style={{display: "block", fontSize: "14px", marginBottom: "8px", color: "#777"}}>
                     Email:
                     <input
                         type="email"
                         name="email"
                         value={formData.email}
                         onChange={handleChange}
-                        style={{ width: "100%", marginTop: "5px" }}
+                        style={{
+                            width: "100%",
+                            marginTop: "5px",
+                            padding: "8px",
+                            borderRadius: "4px",
+                            border: "1px solid #ddd",
+                            backgroundColor: "#f9f9f9",
+                            cursor: "pointer",
+                        }}
                     />
                 </label>
             </div>
-            <div style={{ marginBottom: "10px" }}>
-                <label>
+            <div style={{marginBottom: "10px"}}>
+                <label style={{display: "block", fontSize: "14px", marginBottom: "8px", color: "#777"}}>
                     Phone Number:
                     <input
                         type="text"
                         name="phoneNumber"
                         value={formData.phoneNumber}
                         onChange={handleChange}
-                        style={{ width: "100%", marginTop: "5px" }}
+                        style={{
+                            width: "100%",
+                            marginTop: "5px",
+                            padding: "8px",
+                            borderRadius: "4px",
+                            border: "1px solid #ddd",
+                            backgroundColor: "#f9f9f9",
+                            cursor: "pointer",
+                        }}
                     />
                 </label>
             </div>
-            <div style={{ marginBottom: "10px" }}>
-                <label>
+            <div style={{marginBottom: "10px"}}>
+                <label style={{display: "block", fontSize: "14px", marginBottom: "8px", color: "#777"}}>
                     Schedule:
                     <input
                         type="text"
                         name="schedule"
                         value={formData.schedule}
                         onChange={handleChange}
-                        style={{ width: "100%", marginTop: "5px" }}
+                        style={{
+                            width: "100%",
+                            marginTop: "5px",
+                            padding: "8px",
+                            borderRadius: "4px",
+                            border: "1px solid #ddd",
+                            backgroundColor: "#f9f9f9",
+                            cursor: "pointer",
+                        }}
                     />
                 </label>
             </div>
-            <div style={{ marginBottom: "10px" }}>
-                <label>
+            <div style={{marginBottom: "10px"}}>
+                <label style={{display: "block", fontSize: "14px", marginBottom: "8px", color: "#777"}}>
                     Working Hours:
                     <input
                         type="text"
                         name="workingHours"
                         value={formData.workingHours}
                         onChange={handleChange}
-                        style={{ width: "100%", marginTop: "5px" }}
+                        style={{
+                            width: "100%",
+                            marginTop: "5px",
+                            padding: "8px",
+                            borderRadius: "4px",
+                            border: "1px solid #ddd",
+                            backgroundColor: "#f9f9f9",
+                            cursor: "pointer",
+                        }}
                     />
                 </label>
             </div>
-            <div style={{ marginBottom: "10px" }}>
-                <label>
+            <div style={{marginBottom: "10px"}}>
+                <label style={{display: "block", fontSize: "14px", marginBottom: "8px", color: "#777"}}>
                     Clinic:
                     <input
                         type="text"
                         name="clinic"
                         value={formData.clinic}
                         onChange={handleChange}
-                        style={{ width: "100%", marginTop: "5px" }}
+                        style={{
+                            width: "100%",
+                            marginTop: "5px",
+                            padding: "8px",
+                            borderRadius: "4px",
+                            border: "1px solid #ddd",
+                            backgroundColor: "#f9f9f9",
+                            cursor: "pointer",
+                        }}
                     />
                 </label>
             </div>
-            <div style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
-                <button className="button btn-no-border" onClick={handleSubmit}>
+            <div style={{display: "flex", justifyContent: "space-evenly", marginTop: "20px"}}>
+                <button className="form-button" style={{padding: "3px 30px"}} onClick={handleSubmit}>
                     Save
                 </button>
-                <button className="button btn-no-border" onClick={onClose}>
+                <button className="rounded-1" style={{padding: "3px 20px", backgroundColor: "white", border: "1"}} onClick={onClose}>
                     Cancel
                 </button>
             </div>

@@ -198,9 +198,9 @@ const VetDashboard = () => {
     return (
         <div>
             <Header/>
-            <div className="container mt-0" style={{display: "flex", gap: "100px"}}>
+            <div className="container mt-1" style={{display: "flex", gap: "200px"}}>
                 <div style={{flex: 0}}>
-                    <div className="container rounded-3 vet-card" style={{maxWidth: '450px', padding: "10px"}}>
+                        <div className="container rounded-3 vet-card" style={{maxWidth: '450px', padding: "20px 10px", margin: '0px 20px'}}>
                         <div className="mb-3 ps-2" style={{
                             maxWidth: '400px',
                             display: 'flex',
@@ -218,9 +218,14 @@ const VetDashboard = () => {
                                 <div>pic placeholder</div>
                             )}
                         </div>
-                        <div>
-                            <h2>Dr. {vetInfo.name} {vetInfo.surname}</h2>
-                            <h3> {vetInfo.qualification || "Not specified"}</h3>
+                        <div style={{padding: "5px 0 0 7% "}}>
+                            <h4><strong>Dr. {vetInfo.name} {vetInfo.surname}</strong></h4>
+                        </div>
+                        <div style={{padding: "0px 20%"}}>
+                            <h5> {vetInfo.qualification || "Not specified"}</h5>
+                        </div>
+
+                        <div style={{padding: "0px 0px"}}>
                             <p style={{marginBottom: '5px'}}><strong>Email:</strong> {vetInfo.email || "Not specified"}
                             </p>
                             <p style={{marginBottom: '5px'}}>
@@ -231,15 +236,17 @@ const VetDashboard = () => {
                                 hours:</strong> {vetInfo.workingHours || "Not specified"}</p>
                             <p style={{marginBottom: '5px'}}>
                                 <strong>Clinic:</strong> {vetInfo.clinic || "Not specified"} </p>
+                            </div>
+                        <div style={{padding: "0px 8%"}}>
+                            <button className="button btn-no-border rounded-3" onClick={openEditVetModal}>
+                                Edit Profile
+                            </button>
                         </div>
-                        <button className="button btn-no-border rounded-3" onClick={openEditVetModal}>
-                            Edit Profile
-                        </button>
                     </div>
 
                     <div className="vet-appointments bg-treatment container mt-3 rounded-1"
-                         style={{padding: "15px"}}>
-                        <h4 className="table-name">Upcoming Appointments</h4>
+                         style={{padding: "5px", margin: '0px 20px'}}>
+                        <h4 className="table-appointment">Upcoming Appointments</h4>
                         {appointments.length > 0 ? (
                             <table cellPadding="2" cellSpacing="0" className="uniq-table">
                                 <tbody>
@@ -258,7 +265,7 @@ const VetDashboard = () => {
                                 </tbody>
                             </table>
                         ) : (
-                            <p>No upcoming appointments.</p>
+                            <p style={{paddingLeft: "70px", paddingTop: "10px"}}>No upcoming appointments.</p>
                         )}
                     </div>
                 </div>
