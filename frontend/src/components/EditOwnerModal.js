@@ -53,64 +53,76 @@ const EditOwnerModal = ({ ownerInfo, onClose, onSave }) => {
 
     return (
         <div style={modalStyles}>
-            <h3>Edit Profile</h3>
+            <div className="modal-header">
+                <h3>Edit Profile</h3>
+            </div>
             <form onSubmit={handleSubmit}>
-                <div style={{ marginBottom: "20px" }}>
-                    <label>Avatar:</label>
+                <div style={{marginBottom: "20px", marginLeft: "20px"}}>
                     {avatarPreview && (
                         <img
                             src={avatarPreview}
                             alt="Avatar Preview"
-                            style={{ width: "100px", height: "100px", borderRadius: "50%", marginBottom: "10px" }}
+                            style={{ width: "100px", height: "100px", borderRadius: "50%", marginBottom: "10px", marginLeft: "100px"}}
                         />
                     )}
                     <input
                         type="file"
                         accept="image/*"
                         onChange={handleAvatarChange}
+                        style={{
+                            padding: "8px",
+                            borderRadius: "4px",
+                            border: "1px solid #ddd",
+                            backgroundColor: "#f9f9f9",
+                            cursor: "pointer",
+                        }}
                     />
                 </div>
 
                 <div>
-                    <label>Name:</label>
+                <label className="modal-label">Name:</label>
                     <input
                         type="text"
                         name="name"
                         value={formData.name}
                         onChange={handleChange}
+                        className="modal-input-group"
                     />
                 </div>
                 <div>
-                    <label>Surname:</label>
+                    <label className="modal-label">Surname:</label>
                     <input
                         type="text"
                         name="surname"
                         value={formData.surname}
                         onChange={handleChange}
+                        className="modal-input-group"
                     />
                 </div>
                 <div>
-                    <label>Email:</label>
+                    <label className="modal-label">Email:</label>
                     <input
                         type="email"
                         name="email"
                         value={formData.email}
                         onChange={handleChange}
+                        className="modal-input-group"
                     />
                 </div>
                 <div>
-                    <label>Phone Number:</label>
+                    <label className="modal-label">Phone Number:</label>
                     <input
                         type="text"
                         name="phoneNumber"
                         value={formData.phoneNumber}
                         onChange={handleChange}
+                        className="modal-input-group"
                     />
                 </div>
 
-                <div style={{ marginTop: "20px" }}>
-                    <button type="submit">Save</button>
-                    <button type="button" onClick={onClose}>Cancel</button>
+                <div style={{display: "flex", justifyContent: "space-evenly", marginTop: "20px"}}>
+                    <button className="form-button" style={{padding: "3px 30px"}} type="submit">Save</button>
+                    <button className="rounded-1" style={{padding: "3px 20px", backgroundColor: "white", border: "1"}} type="button" onClick={onClose}>Cancel</button>
                 </div>
             </form>
         </div>

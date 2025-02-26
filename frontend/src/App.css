@@ -139,9 +139,10 @@ input[type="checkbox"] {
 
 
 .container {
-  max-width: 100%;;
+  max-width: 100%;
   padding: 20px;
 }
+
 
 .btn-no-border {
   border: none !important;
@@ -272,6 +273,13 @@ header h1 {
   font-size: 20px;
   font-weight: bold;
   padding-left: 60px !important;
+}
+
+.table-appointment {
+  font-size: 20px;
+  font-weight: bold;
+  padding-left: 40px;
+  padding-top: 10px;
 }
 
 
@@ -412,4 +420,33 @@ header h1 {
 
 .form-button:hover {
   background-color: rgba(67,13,13,0.5);
+}
+
+.modal-form {
+  width: 1000px !important;
+  max-width: 90% !important;
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.modal-input-group {
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.modal-label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 2px;
+  color: #777;
 }
