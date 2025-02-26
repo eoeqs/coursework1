@@ -7,6 +7,7 @@ import DogBodyMap from "./DogBodyMap";
 import CatBodyMap from "./CatBodyMap";
 import Header from "./Header";
 import VetImage from '../pics/vet_bg.png';
+import EditVetModal from "./EditVetModal";
 
 const VetDashboard = () => {
     const { token } = useAuth();
@@ -24,6 +25,7 @@ const VetDashboard = () => {
     const [bodyMarker, setBodyMarker] = useState(null);
     const [cancelReason, setCancelReason] = useState("");
     const [showCancelModal, setShowCancelModal] = useState(false);
+    const [isEditVetModalOpen, setIsEditVetModalOpen] = useState(false);
 
     useEffect(() => {
         if (!token) return;
@@ -168,6 +170,19 @@ const VetDashboard = () => {
         setSelectedPetId(null);
     };
 
+    const handleSaveVetProfile = (updatedVetInfo) => {
+        setVetInfo(updatedVetInfo);
+    };
+
+    const openEditVetModal = () => {
+        setIsEditVetModalOpen(true);
+    };
+
+    const closeEditVetModal = () => {
+        setIsEditVetModalOpen(false);
+    };
+
+
     if (loading) {
         return <div className="loading-overlay">Loading...</div>;
     }
@@ -217,6 +232,9 @@ const VetDashboard = () => {
                             <p style={{marginBottom: '5px'}}>
                                 <strong>Clinic:</strong> {vetInfo.clinic || "Not specified"} </p>
                         </div>
+                        <button className="button btn-no-border rounded-3" onClick={openEditVetModal}>
+                            Edit Profile
+                        </button>
                     </div>
 
                     <div className="vet-appointments bg-treatment container mt-3 rounded-1"
@@ -390,9 +408,17 @@ const VetDashboard = () => {
                     </div>
                 </div>
             )}
-
+            {isEditVetModalOpen && (
+                <EditVetModal
+                    vetInfo={vetInfo}
+                    onClose={closeEditVetModal}
+                    onSave={handleSaveVetProfile}
+                />
+            )}
         </div>
+
     );
+
 };
 
 const modalStyles = {

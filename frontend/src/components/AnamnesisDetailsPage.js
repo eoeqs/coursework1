@@ -388,40 +388,47 @@ const AnamnesisDetailsPage = () => {
                     </div>
                 </div>
 
-                <div className="mt-1 rounded-1 treatment-vet element-space"
-                     style={{marginTop: "30px", padding: "20px"}}>
+                <div className="mt-1 rounded-1 treatment-vet element-space" style={{ marginTop: "30px", padding: "20px" }}>
                     <h3>Treatment Recommendations</h3>
-                    {treatments.length > 0 ? (
+                    {treatments.filter(treatment => !treatment.isCompleted).length > 0 ? (
                         <table cellPadding="3" cellSpacing="0" className="uniq-table">
                             <tbody>
-                            {treatments.map((treatment) => (
-                                <tr key={treatment.id}>
-                                    <td>{treatment.treatment}
-                                        <b>Name: {treatment.name}</b> {userRole === "ROLE_VET" && (
-                                            <input
-                                                type="checkbox"
-                                                checked={treatment.isCompleted}
-                                                onChange={() => handleCompleteTreatment(treatment.id)}
-                                            />)} <br/>
-                                        <b>Description</b>: {treatment.description} <br/>
-                                        <b>Prescribed Medication</b>: {treatment.prescribedMedication} <br/>
-                                        <b>Duration</b>: {treatment.duration} <br/>
-                                        {userRole === "ROLE_VET" && (
-                                            <button className="button btn-no-border" onClick={() => {
-                                                setSelectedTreatment(treatment);
-                                                setIsEditTreatmentModalOpen(true);
-                                            }}>
-                                                Edit treatment recommendation
-                                            </button>
-                                        )}
-                                    </td>
-
-                                </tr>
-                            ))}
+                            {treatments
+                                .filter((treatment) => !treatment.isCompleted) // Фильтруем только незавершенные
+                                .map((treatment) => (
+                                    <tr key={treatment.id}>
+                                        <td>
+                                            {treatment.treatment}
+                                            <b>Name: {treatment.name}</b>{" "}
+                                            {userRole === "ROLE_VET" && (
+                                                <input
+                                                    type="checkbox"
+                                                    checked={treatment.isCompleted}
+                                                    onChange={() => handleCompleteTreatment(treatment.id)}
+                                                />
+                                            )}{" "}
+                                            <br />
+                                            <b>Description</b>: {treatment.description} <br />
+                                            <b>Prescribed Medication</b>: {treatment.prescribedMedication} <br />
+                                            <b>Duration</b>: {treatment.duration} <br />
+                                            {userRole === "ROLE_VET" && (
+                                                <button
+                                                    className="button btn-no-border"
+                                                    onClick={() => {
+                                                        setSelectedTreatment(treatment);
+                                                        setIsEditTreatmentModalOpen(true);
+                                                    }}
+                                                >
+                                                    Edit treatment recommendation
+                                                </button>
+                                            )}
+                                        </td>
+                                    </tr>
+                                ))}
                             </tbody>
                         </table>
                     ) : (
-                        <p>No treatment recommendations found.</p>
+                        <p>No active treatment recommendations found.</p>
                     )}
                     {userRole === "ROLE_VET" && (
                         <button className="button rounded-3 btn-no-border" onClick={() => {
