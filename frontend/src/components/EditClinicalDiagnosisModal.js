@@ -138,17 +138,17 @@ const EditClinicalDiagnosisModal = ({ diagnosisId, petId, appointmentId, anamnes
             symptoms: selectedSymptoms,
             bodyPart: tempMarker?.bodyPart,
             anamnesis: anamnesisId,
-            date: diagnosisId ? undefined : new Date().toISOString(), // Добавляем дату только для нового диагноза
+            date: diagnosisId ? undefined : new Date().toISOString(), 
         };
         onSave(diagnosisData);
     };
 
-    if (!diagnosis || loading) return <div className="loading-overlay">Loading...</div>;
+    if (!diagnosisId || loading) return <div className="loading-overlay">Loading...</div>;
     if (error) return <div className="error-overlay">{error}</div>;
 
     return (
         <div style={modalStyles}>
-            <h3>{diagnosis.id ? "Edit Clinical Diagnosis" : "Add Clinical Diagnosis"}</h3>
+            <h3>{diagnosisId ? "Edit Clinical Diagnosis" : "Add Clinical Diagnosis"}</h3>
             <p><strong>Owner Name:</strong> {ownerInfo ? `${ownerInfo.name} ${ownerInfo.surname}` : "Unknown"}</p>
             <p><strong>Pet Name:</strong> {petInfo?.name}</p>
             <p><strong>Pet Type:</strong> {petInfo?.type}</p>
