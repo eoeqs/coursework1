@@ -50,7 +50,7 @@ public class AnamnesisController {
         } catch (Exception e) {
             logger.error("Error saving anamnesis", e);
             throw e;
-        } //TODO: если у ветеринара стоит галочка "создать анамнез" при принятии записи, перенаправить на заполнение анамнеза
+        }
     }
 
 }
