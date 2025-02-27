@@ -41,8 +41,11 @@ public class QuarantineService {
         return quarantineRepository.findAll();
     }
 
-    public Quarantine save(QuarantineDTO quarantineDTO, AppUser appUser) { //TODO: валидировать startDate < endDate
+    public Quarantine save(QuarantineDTO quarantineDTO, AppUser appUser) {
         Quarantine quarantine = quarantineMapper.fromDTO(quarantineDTO);
+        if (quarantine.getStartDate().isAfter(quarantine.getEndDate())) {
+            throw new IllegalArgumentException("Start date must be before end date");
+        }
         quarantine.setVet(appUser);
         quarantine.setStatus(QuarantineStatus.CURRENT);
         return quarantineRepository.save(setRelativeFields(quarantine, quarantineDTO));
@@ -53,7 +56,7 @@ public class QuarantineService {
     }
 
     @Scheduled(cron = "0 * * * * *")
-    public void updateExpiredQuarantines() { //TODO: потом поменять время на адекватное
+    public void updateExpiredQuarantines() { //не самое адекватное время, но для теста пойдет
         LocalDateTime now = LocalDateTime.now();
 
         List<Quarantine> quarantines = quarantineRepository.findByEndDateBeforeAndStatusNot(now, QuarantineStatus.DONE);
