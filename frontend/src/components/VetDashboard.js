@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import DogBodyMap from "./DogBodyMap";
 import CatBodyMap from "./CatBodyMap";
 import Header from "./Header";
-import VetImage from '../pics/vet_bg.png';
+import VetImage from '../pics/vet.png';
 import EditVetModal from "./EditVetModal";
 
 const VetDashboard = () => {
@@ -200,7 +200,7 @@ const VetDashboard = () => {
             <Header/>
             <div className="container mt-1" style={{display: "flex", gap: "200px"}}>
                 <div style={{flex: 0}}>
-                        <div className="container rounded-3 vet-card" style={{maxWidth: '450px', padding: "20px 10px", margin: '0px 20px'}}>
+                        <div className="container rounded-3 vet-card" style={{maxWidth: '450px', padding: "20px 10px", margin: '0px 20px', backgroundColor: '#fff7f7'}}>
                         <div className="mb-3 ps-2" style={{
                             maxWidth: '400px',
                             display: 'flex',
@@ -271,7 +271,7 @@ const VetDashboard = () => {
                 </div>
                 {userRole === "ROLE_VET" && (
                     <div className="bg-table element-space wards " style={{flex: 1}}>
-                        <h2>My Pets</h2>
+                        <h2>My Wards</h2>
                         {doctorPets.length > 0 ? (
                             <table cellPadding="0" cellSpacing="0" className="uniq-table">
 
@@ -279,7 +279,7 @@ const VetDashboard = () => {
                                 {doctorPets.map((pet) => (
                                     <tr key={pet.id}>
                                         <td style={{padding: '20px'}}>
-                                            {vetInfo.photoUrl ? (
+                                            {pet.photoUrl ? (
                                                 <img className="avatar"
                                                      src={pet.photoUrl}
                                                      alt={`${pet.name}'s avatar`}

@@ -5,6 +5,7 @@ import PetProfile from "./PetProfile";
 import { useNavigate } from "react-router-dom";
 import NewPetForm from "./NewPetForm";
 import EditOwnerModal from "./EditOwnerModal";
+import Header from "./Header";
 
 const OwnerDashboard = () => {
     const { token } = useAuth();
@@ -69,7 +70,7 @@ const OwnerDashboard = () => {
 
     const handleSaveOwner = async (updatedData) => {
         try {
-            const response = await axiosInstance.put(`/users/update-user/${ownerInfo.id}`, updatedData);
+            const response = await axiosInstance.put(`/users/update-user/`, updatedData);
             setOwnerInfo(response.data);
             setIsEditOwnerModalOpen(false);
             alert("Profile updated successfully!");
@@ -92,52 +93,75 @@ const OwnerDashboard = () => {
     }
 
     return (
-        <div>
-            <div style={{ display: "flex" }}>
-                <div style={{ flex: 1 }}>
-                    <div className="mb-4 ps-2">
+        <div style={{backgroundColor: '#f8efef'}}>
+            <Header/>
+            <div className="container mt-1" style={{display: "flex", gap: "150px"}}>
+                <div className="container rounded-3 vet-card" style={{flex: 0, maxWidth: '450px', padding: "30px 30px", margin: '10px 20px', backgroundColor: '#e6c8c8'}}>
+                    <div className="mb-3 ps-2" style={{
+                        maxWidth: '400px',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        height: '250px'
+                    }}>
                         {ownerInfo.photoUrl ? (
                             <img
                                 className="avatar"
                                 src={ownerInfo.photoUrl}
                                 alt={`${ownerInfo.name}'s avatar`}
-                                style={{ width: '250px', height: '250px', borderRadius: '2%' }}
+                                style={{width: '250px', height: '250px', borderRadius: '2%'}}
                             />
                         ) : (
                             <div>Owner profile pic placeholder</div>
                         )}
                     </div>
                     <div>
-                        <h2>{ownerInfo.name} {ownerInfo.surname}</h2>
-                        <p><strong>Email:</strong> {ownerInfo.email || "Not specified"}</p>
-                        <p><strong>Phone:</strong> {ownerInfo.phoneNumber || "Not specified"}</p>
-                        <button onClick={() => setIsEditOwnerModalOpen(true)}>
-                            Edit Profile
-                        </button>
+                        <div style={{padding: "0px 0 0 7% "}}>
+                            <h3><strong>{ownerInfo.name} {ownerInfo.surname}</strong></h3>
+                        </div>
+                        <div style={{padding: "0px 0px"}}>
+                            <p><strong>Email:</strong> {ownerInfo.email || "Not specified"}</p>
+                            <p><strong>Phone:</strong> {ownerInfo.phoneNumber || "Not specified"}</p>
+                            <div style={{padding: "0px 25%"}}>
+                                <button className="button btn-no-border rounded-3" onClick={() => setIsEditOwnerModalOpen(true)}>
+                                    Edit Profile
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                    </div>
 
-                <div style={{flex: 1, marginLeft: "20px"}}>
-                    <h2>My Pets</h2>
+                    <div className="bg-table element-space wards " style={{flex: 1, margin: '10px'}}>
+
+                    <h2 className="table-appointment">My Pets</h2>
 
                     {pets.length > 0 ? (
-                        <table border="1" cellPadding="10" cellSpacing="0">
-                            <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Age</th>
-                                <th>Sex</th>
-                                <th>Action</th>
-                            </tr>
-                            </thead>
+                        <table cellPadding="2" cellSpacing="0" className="uniq-table">
                             <tbody>
                             {pets.map((pet) => (
                                 <tr key={pet.id}>
-                                    <td>{pet.name}</td>
-                                    <td>{pet.age}</td>
-                                    <td>{pet.sex}</td>
-                                    <td>
-                                        <button onClick={() => handleViewPetProfile(pet.id)}>
+                                    <td style={{padding: '20px'}}>
+                                        {pet.photoUrl ? (
+                                            <img className="avatar"
+                                                 src={pet.photoUrl}
+                                                 alt={`${pet.name}'s avatar`}
+                                                 style={{
+                                                     width: '50px',
+                                                     height: '50px',
+                                                     borderRadius: '50%',
+                                                     marginRight: '20px'
+                                                 }}
+                                            />
+                                        ) : (
+                                            <p>(anonymous)</p>
+                                        )} {"\t"}
+                                        <strong>{pet.name}</strong>{" "} {"\t"}
+                                        ({pet.type}, {" "}
+                                        {pet.age} y.o. {" "}
+                                        {pet.sex})</td>
+                                    <td style={{textAlign: 'right'}}>
+                                        <button className="button btn-no-border"
+                                                onClick={() => handleViewPetProfile(pet.id)}>
                                             View Pet Profile
                                         </button>
                                     </td>
@@ -148,7 +172,7 @@ const OwnerDashboard = () => {
                     ) : (
                         <p>No pets found.</p>
                     )}
-                    <button onClick={handleAddNewPet} style={{marginBottom: "10px"}}>
+                    <button className="button btn-no-border rounded-3" onClick={handleAddNewPet} style={{marginBottom: "10px"}}>
                         Add New Pet
                     </button>
                 </div>
