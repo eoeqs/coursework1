@@ -63,14 +63,14 @@ public class AppointmentsService {
         Slot slot = availableSlotsRepository.findById(appointmentDTO.slotId()).orElse(null); //TODO: проверку добавить на Null
         Pet pet = petsRepository.findById(appointmentDTO.petId()).orElse(null);
         healthUpdatesService.saveWithAppointment(pet, appointmentDTO.description());
-        return appointmentsRepository.save(appointmentMapper.appointmentDTOToAppointment(appointmentDTO)); //TODO: переписать триггер на занятие слота
+        return appointmentsRepository.save(appointmentMapper.appointmentDTOToAppointment(appointmentDTO));
     }
 
     @Transactional
     public void delete(Long id, String reason) {
         Appointment appointment = appointmentsRepository.findById(id).orElseThrow();
         sendNotification(appointment, "Your appointment has been cancelled by vet cause: " + reason);
-        appointmentsRepository.deleteById(id); //TODO: переписать триггер на освобождение слота
+        appointmentsRepository.deleteById(id);
     }
 
     @Transactional

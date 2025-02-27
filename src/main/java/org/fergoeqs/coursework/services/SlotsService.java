@@ -38,7 +38,7 @@ public class SlotsService {
         availableSlot.setEndTime(availableSlotDTO.endTime());
         availableSlot.setVet(vet);
         availableSlot.setIsAvailable(true);
-        return slotsRepository.save(availableSlot); //TODO: маппер
+        return slotsRepository.save(availableSlot);
     }
 
     public void updateSlotStatus(Long id, Boolean isAvailable) {
@@ -50,6 +50,6 @@ public class SlotsService {
     }
 
     public void deleteSlot(Long id) {
-        slotsRepository.deleteById(id); //TODO: убедиться, что только админ сможет создавать и удалять слоты
+        slotsRepository.deleteById(id);
     }
 }

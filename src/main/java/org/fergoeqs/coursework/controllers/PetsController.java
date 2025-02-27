@@ -106,7 +106,7 @@ public class PetsController {
             return ResponseEntity.ok(petMapper.petToPetDTO(petsService.updatePet(petId, userService.getAuthenticatedUser(), petDTO)));
         } catch (Exception e) {
             logger.error("Pet updating failed: {}", e.getMessage());
-            throw e; //TODO: проверять, что редактировать может только владелец или врач
+            throw e;
         }
     }
 
@@ -114,7 +114,7 @@ public class PetsController {
     @PutMapping("/bind/{petId}")
     public ResponseEntity<?> bindPet(@PathVariable Long petId) throws BadRequestException {
         try {
-            petsService.bindPet(petId, userService.getAuthenticatedUser()); //TODO: только врач может или админ тоже?
+            petsService.bindPet(petId, userService.getAuthenticatedUser());
             return ResponseEntity.ok("Pet " + petId + " bound");
         } catch (Exception e) {
             logger.error("Pet binding failed: {}", e.getMessage());
@@ -123,7 +123,7 @@ public class PetsController {
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_VET')")
-    @PutMapping("/sector-place/{petId}") //TODO: requestParam удобно?????
+    @PutMapping("/sector-place/{petId}")
     public ResponseEntity<?> setSectorPlace(@PathVariable Long petId, @RequestParam Long sectorId) {
         try {
             petsService.placeInSector(petId, sectorId);
@@ -131,7 +131,7 @@ public class PetsController {
         } catch (Exception e) {
             logger.error("Pet sector setting failed: {}", e.getMessage());
             throw e;
-        } //TODO: нужен ли эндпоинт на вызволение из сектора?
+        }
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_VET')")
