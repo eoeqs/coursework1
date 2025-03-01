@@ -16,23 +16,14 @@ public class Report {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDateTime date;
-    private String description;
-    private String content;
-
-    @ManyToOne
-    @JoinColumn(name = "owner_id")
-    private AppUser owner;
+    private String contentUrl;
 
     @ManyToOne
     @JoinColumn(name = "vet_id")
     private AppUser vet;
 
     @ManyToOne
-    @JoinColumn(name = "diagnosis_id")
-    private Diagnosis diagnosis;
+    @JoinColumn(name = "anamnesis_id")
+    private Anamnesis anamnesis;
 
-    @ManyToOne
-    @JoinColumn(name = "pet_id")
-    private Pet pet;
 }
