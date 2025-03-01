@@ -8,4 +8,5 @@ public record SlotDTO(
     LocalDate date,
     LocalTime startTime,
     LocalTime endTime,
-    Long vetId){}
+    Long vetId,
+    Boolean isPriority){}

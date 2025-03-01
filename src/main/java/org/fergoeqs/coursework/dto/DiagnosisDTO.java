@@ -1,6 +1,9 @@
 package org.fergoeqs.coursework.dto;
 
+import org.fergoeqs.coursework.models.enums.BodyPart;
+
 import java.time.LocalDateTime;
+import java.util.List;
 
 public record DiagnosisDTO(
         Long id,
@@ -9,6 +12,8 @@ public record DiagnosisDTO(
         LocalDateTime date,
         Boolean contagious,
         String examinationPlan, //план обследования
-        Long anamnesis
+        Long anamnesis,
+        BodyPart bodyPart,
+        List<Long> symptoms
 ) {
 }

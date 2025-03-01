@@ -3,13 +3,17 @@ package org.fergoeqs.coursework.services;
 import org.fergoeqs.coursework.dto.DiagnosisDTO;
 import org.fergoeqs.coursework.models.Diagnosis;
 import org.fergoeqs.coursework.models.RecommendedDiagnosis;
+import org.fergoeqs.coursework.models.Symptom;
 import org.fergoeqs.coursework.repositories.DiagnosisRepository;
+import org.fergoeqs.coursework.repositories.SymptomsRepository;
 import org.fergoeqs.coursework.utils.Mappers.DiagnosisMapper;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Transactional(readOnly = true)
 @Service
@@ -18,13 +22,15 @@ public class DiagnosisService {
     private final AnamnesisService anamnesisService;
     private final DiagnosisMapper diagnosisMapper;
     private final RecommendedDiagnosisService recommendedDiagnosisService;
+    private final SymptomsRepository symptomsRepository;
 
-    public DiagnosisService(DiagnosisRepository diagnosisRepository, AnamnesisService anamnesisService,
+    public DiagnosisService(DiagnosisRepository diagnosisRepository, AnamnesisService anamnesisService, SymptomsRepository symptomsRepository,
                             DiagnosisMapper diagnosisMapper, RecommendedDiagnosisService recommendedDiagnosisService) {
         this.diagnosisRepository = diagnosisRepository;
         this.anamnesisService = anamnesisService;
         this.diagnosisMapper = diagnosisMapper;
         this.recommendedDiagnosisService = recommendedDiagnosisService;
+        this.symptomsRepository = symptomsRepository;
     }
 
     public Diagnosis getDiagnosisById(Long id) {
@@ -48,6 +54,16 @@ public class DiagnosisService {
         Diagnosis diagnosis = diagnosisMapper.fromDTO(diagnosisDTO);
         diagnosis.setAnamnesis(anamnesisService.findAnamnesisById(diagnosisDTO.anamnesis()));
         diagnosis.setDate(LocalDateTime.now());
+        List<Symptom> symptoms = symptomsRepository.findAllById(diagnosisDTO.symptoms());
+        diagnosis.setSymptoms(symptoms);
+        List<Long> symptomIds = diagnosis.getSymptoms().stream()
+                .map(Symptom::getId)
+                .toList();
+        if (!recommendedDiagnosisService.existsByNameAndBodyPartAndSymptoms(diagnosis.getName(), diagnosis.getBodyPart(), symptomIds, (long) symptomIds.size())){
+            RecommendedDiagnosis newRecommendedDiagnosis = diagnosisMapper.toRecommendedDiagnosis(diagnosis);
+            recommendedDiagnosisService.saveRaw(newRecommendedDiagnosis);
+        }
+
         return diagnosisRepository.save(diagnosis);
     }
 
@@ -65,6 +81,7 @@ public class DiagnosisService {
         if (rd == null) return null;
         Diagnosis diagnosis = new Diagnosis();
         diagnosis.setName(rd.getName());
+        diagnosis.setBodyPart(rd.getBodyPart());
         diagnosis.setDescription(rd.getDescription());
         diagnosis.setContagious(rd.getContagious());
         diagnosis.setAnamnesis(anamnesisService.findAnamnesisById(anamnesisId));

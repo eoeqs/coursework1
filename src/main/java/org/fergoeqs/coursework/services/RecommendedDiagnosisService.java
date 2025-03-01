@@ -37,11 +37,21 @@ public class RecommendedDiagnosisService {
         return recommendedDiagnosisRepository.findBySymptomsAndBodyPart(symptoms, bodyPart);
     }
 
+    public boolean existsByNameAndBodyPartAndSymptoms(String name, BodyPart bodyPart, List<Long> symptomIds, Long symptomCount){
+        return recommendedDiagnosisRepository.existsByNameAndBodyPartAndSymptoms(name, bodyPart, symptomIds, symptomCount);
+    };
+
     public RecommendedDiagnosis save(RecommendedDiagnosisDTO recommendedDiagnosisDTO) {
         RecommendedDiagnosis recDiagnosis = recommendedDiagnosisMapper.fromDTO(recommendedDiagnosisDTO);
         List<Symptom> symptoms = symptomsRepository.findAllById(recommendedDiagnosisDTO.symptoms());
         recDiagnosis.setSymptoms(symptoms);
         return recommendedDiagnosisRepository.save(recDiagnosis);
     }
+
+    public void saveRaw(RecommendedDiagnosis recommendedDiagnosis) {
+        recommendedDiagnosisRepository.save(recommendedDiagnosis);
+    }
+
+
 
 }

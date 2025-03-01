@@ -29,7 +29,7 @@ public class RecommendedDiagnosis {
 
     @ManyToMany
     @JoinTable(
-            name = "diagnosis_symptom",
+            name = "diagnosis_symptom", //rec_diagnosis_symptom
             joinColumns = @JoinColumn(name = "recommended_diagnosis_id"),
             inverseJoinColumns = @JoinColumn(name = "symptom_id")
     )

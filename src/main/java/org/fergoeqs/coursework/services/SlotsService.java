@@ -23,7 +23,11 @@ public class SlotsService {
     }
 
     public List<Slot> getAvailableSlots() {
-        return slotsRepository.findByIsAvailableTrue();
+        return slotsRepository.findByIsAvailableTrueAndIsPriorityFalse();
+    }
+
+    public List<Slot> getAvailablePrioritySlots() {
+        return slotsRepository.findByIsAvailableTrueAndIsPriorityTrue();
     }
 
     public Slot getSlotById(Long id) {
