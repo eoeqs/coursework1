@@ -9,6 +9,7 @@ import org.fergoeqs.coursework.repositories.AppointmentsRepository;
 import org.fergoeqs.coursework.repositories.SlotsRepository;
 import org.fergoeqs.coursework.repositories.PetsRepository;
 import org.fergoeqs.coursework.utils.Mappers.AppointmentMapper;
+import org.springframework.data.repository.query.Param;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,6 +56,10 @@ public class AppointmentsService {
     }
     public List<Appointment> getUpcomingPetAppointments(Long petId) {
         return appointmentsRepository.findByPetIdAndSlotDateGreaterThanEqual(petId, LocalDate.now());
+    }
+
+    public boolean existsByOwnerAndVet(Long ownerId, Long vetId) {
+        return appointmentsRepository.existsByOwnerAndVet(ownerId, vetId);
     }
 
     @Transactional
