@@ -1,8 +1,8 @@
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../AuthProvider";
+import {useNavigate} from "react-router-dom";
+import {useAuth} from "../AuthProvider";
 import Header from "./Header";
 import myImage from "../pics/logo_min.png";
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect} from "react";
 import AppointmentPage from "./AppointmentPage";
 import useAxiosWithAuth from "../AxiosAuth";
 import AddReviewModal from "./AddReviewModal";
@@ -10,7 +10,7 @@ import SeeAllReviewsModal from "./SeeAllReviewsModal"; // New import
 
 export default function HomePage() {
     const navigate = useNavigate();
-    const { token: authToken } = useAuth();
+    const {token: authToken} = useAuth();
     const storedToken = localStorage.getItem("token");
     const token = authToken || storedToken;
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -18,10 +18,10 @@ export default function HomePage() {
     const [vetRatings, setVetRatings] = useState({});
     const [loading, setLoading] = useState(true);
     const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
-    const [isSeeAllReviewsModalOpen, setIsSeeAllReviewsModalOpen] = useState(false); // New state for see all reviews modal
+    const [isSeeAllReviewsModalOpen, setIsSeeAllReviewsModalOpen] = useState(false);
     const [selectedVetId, setSelectedVetId] = useState(null);
     const [selectedVetName, setSelectedVetName] = useState("");
-    const [selectedVet, setSelectedVet] = useState(null); // New state for selected vet data
+    const [selectedVet, setSelectedVet] = useState(null);
     const [ownerId, setOwnerId] = useState(null);
     const axiosInstance = useAxiosWithAuth();
 
@@ -65,7 +65,7 @@ export default function HomePage() {
         if (token) {
             setIsModalOpen(true);
         } else {
-            navigate("/login", { state: { redirectTo: "/appointment" } });
+            navigate("/login", {state: {redirectTo: "/appointment"}});
         }
     };
 
@@ -86,7 +86,7 @@ export default function HomePage() {
 
     const openReviewModal = (vetId, vetName) => {
         if (!token) {
-            navigate("/login", { state: { redirectTo: "/" } });
+            navigate("/login", {state: {redirectTo: "/"}});
             return;
         }
         setSelectedVetId(vetId);
@@ -119,10 +119,10 @@ export default function HomePage() {
 
     return (
         <div>
-            <Header />
-            <div style={{ flex: 1 }}>
-                <div className="main-container mt-2" style={{ display: "flex", gap: "20px" }}>
-                    <div className="bg-table centered-content" style={{ position: "relative", flex: 1 }}>
+            <Header/>
+            <div style={{flex: 1}}>
+                <div className="main-container mt-2" style={{display: "flex", gap: "20px"}}>
+                    <div className="bg-table centered-content" style={{position: "relative", flex: 1}}>
                         <div
                             style={{
                                 position: "absolute",
@@ -137,16 +137,17 @@ export default function HomePage() {
                                 backgroundRepeat: "no-repeat",
                             }}
                         />
-                        <h1 style={{ marginBottom: "30px" }}>Welcome to VetCare!</h1>
-                        <p style={{ marginBottom: "15px", fontSize: "25px" }}>
+                        <h1 style={{marginBottom: "30px"}}>Welcome to VetCare!</h1>
+                        <p style={{marginBottom: "15px", fontSize: "25px"}}>
                             VetCare is a modern service for booking veterinary appointments, managing pet health,
                             and receiving online medical care.
                         </p>
-                        <p style={{ marginBottom: "20px", fontSize: "25px" }}>
-                            We offer convenient appointment scheduling, access to your pet's medical history, and clinic news.
+                        <p style={{marginBottom: "20px", fontSize: "25px"}}>
+                            We offer convenient appointment scheduling, access to your pet's medical history, and clinic
+                            news.
                         </p>
                         <button
-                            style={{ padding: "12px 30px", fontSize: "17px" }}
+                            style={{padding: "12px 30px", fontSize: "17px"}}
                             className="button btn-no-border rounded-4"
                             onClick={handleAppointmentClick}
                         >
@@ -154,7 +155,7 @@ export default function HomePage() {
                         </button>
                     </div>
 
-                    <div className="bg-table element-space prem_diagnsosis" style={{ flex: 1 }}>
+                    <div className="bg-table element-space prem_diagnsosis" style={{flex: 1}}>
                         <h2>Meet Our Veterinarians</h2>
                         {loading ? (
                             <p>Loading veterinarians...</p>
@@ -166,16 +167,17 @@ export default function HomePage() {
                                     const review = ratings.length > 0 ? ratings[ratings.length - 1].review : "No reviews yet";
 
                                     return (
-                                        <div key={vet.id} style={{ marginBottom: "20px" }}>
+                                        <div key={vet.id} style={{marginBottom: "20px"}}>
                                             <h3>Dr. {vet.name} {vet.surname}</h3>
                                             <p>Expert in {vet.qualification || "Veterinary Medicine"}</p>
-                                            <p style={{ marginBottom: "5px" }}>
-                                                <strong>Average Rating:</strong> {renderStars(averageRating)} ({averageRating})
+                                            <p style={{marginBottom: "5px"}}>
+                                                <strong>Average
+                                                    Rating:</strong> {renderStars(averageRating)} ({averageRating})
                                             </p>
-                                            <p style={{ marginBottom: "5px" }}>
+                                            <p style={{marginBottom: "5px"}}>
                                                 <strong>Latest Review:</strong> "{review}"
                                             </p>
-                                            <div style={{ display: "flex", gap: "10px" }}>
+                                            <div style={{display: "flex", gap: "10px"}}>
                                                 <button
                                                     className="button btn-no-border rounded-3"
                                                     onClick={() => openReviewModal(vet.id, `${vet.name} ${vet.surname}`)}
@@ -198,7 +200,7 @@ export default function HomePage() {
                         )}
                     </div>
 
-                    <div className="bg-table element-space prem_diagnsosis" style={{ flex: 1 }}>
+                    <div className="bg-table element-space prem_diagnsosis" style={{flex: 1}}>
                         <h2>Contact Information</h2>
                         <p>Address: 10 Veterinary Street, Moscow</p>
                         <p>Phone: +8 (800) 555-35-35</p>
@@ -248,7 +250,7 @@ export default function HomePage() {
                         >
                             ✕
                         </button>
-                        <AppointmentPage onClose={closeModal} />
+                        <AppointmentPage onClose={closeModal}/>
                     </div>
                 </div>
             )}
