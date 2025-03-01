@@ -32,7 +32,6 @@ const OwnerDashboard = () => {
 
                 const ownerInfoResponse = await axiosInstance.get(`/users/user-info/${ownerId}`);
                 setOwnerInfo(ownerInfoResponse.data);
-                console.log(ownerInfoResponse.data)
 
                 const petsResponse = await axiosInstance.get(`/pets/user-pets`);
                 setPets(petsResponse.data);

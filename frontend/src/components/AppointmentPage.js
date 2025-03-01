@@ -173,7 +173,7 @@ const AppointmentPage = ({ onClose }) => {
                     ))}
                 </select>
 
-                {userRole === "ROLE_OWNER" && (
+                {userRole === "ROLE_OWNER" || "ROLE_USER"  && (
                     <button onClick={() => setShowNewPetForm(true)}>Create New Pet</button>
                 )}
 

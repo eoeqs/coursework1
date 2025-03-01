@@ -6,8 +6,8 @@ import { useNavigate } from "react-router-dom";
 import DogBodyMap from "./DogBodyMap";
 import CatBodyMap from "./CatBodyMap";
 import Header from "./Header";
-import VetImage from '../pics/vet.png';
-import EditVetModal from "./EditVetModal";
+import VetImage from "../pics/vet.png";
+import EditOwnerModal from "./EditOwnerModal";
 
 const VetDashboard = () => {
     const { token } = useAuth();
@@ -25,7 +25,7 @@ const VetDashboard = () => {
     const [bodyMarker, setBodyMarker] = useState(null);
     const [cancelReason, setCancelReason] = useState("");
     const [showCancelModal, setShowCancelModal] = useState(false);
-    const [isEditVetModalOpen, setIsEditVetModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
     useEffect(() => {
         if (!token) return;
@@ -52,12 +52,12 @@ const VetDashboard = () => {
                 const appointmentPromises = appointmentsResponse.data.map(async (appointment) => {
                     const [slotResponse, petResponse] = await Promise.all([
                         axiosInstance.get(`/slots/${appointment.slotId}`),
-                        axiosInstance.get(`/pets/pet/${appointment.petId}`)
+                        axiosInstance.get(`/pets/pet/${appointment.petId}`),
                     ]);
                     return {
                         ...appointment,
                         slot: slotResponse.data,
-                        pet: petResponse.data
+                        pet: petResponse.data,
                     };
                 });
 
@@ -76,7 +76,7 @@ const VetDashboard = () => {
 
     const handleView = async (appointmentId) => {
         try {
-            const appointment = appointments.find(app => app.id === appointmentId);
+            const appointment = appointments.find((app) => app.id === appointmentId);
             if (!appointment) {
                 throw new Error("Appointment not found");
             }
@@ -96,7 +96,7 @@ const VetDashboard = () => {
                 ...appointmentData,
                 slot: slotData,
                 pet: petData,
-                ownerName: ownerName
+                ownerName: ownerName,
             });
         } catch (error) {
             console.error("Error fetching appointment details:", error);
@@ -122,7 +122,7 @@ const VetDashboard = () => {
                     name: selectedAppointment.pet.name,
                     description: selectedAppointment.description,
                     date: new Date().toISOString(),
-                    appointment: selectedAppointment.id
+                    appointment: selectedAppointment.id,
                 };
                 await axiosInstance.post("/anamnesis/save", anamnesisDTO);
                 alert("Anamnesis successfully created!");
@@ -139,10 +139,9 @@ const VetDashboard = () => {
         if (!selectedAppointment) return;
 
         try {
-            await axiosInstance.delete(
-                `/appointments/cancel-appointment/${selectedAppointment.id}`,
-                { data: cancelReason }
-            );
+            await axiosInstance.delete(`/appointments/cancel-appointment/${selectedAppointment.id}`, {
+                data: cancelReason,
+            });
             alert("Appointment successfully canceled!");
             closeModal();
             setCancelReason("");
@@ -170,18 +169,25 @@ const VetDashboard = () => {
         setSelectedPetId(null);
     };
 
-    const handleSaveVetProfile = (updatedVetInfo) => {
-        setVetInfo(updatedVetInfo);
+    const handleSaveVetProfile = async (updatedData) => {
+        try {
+            const response = await axiosInstance.put(`/users/update-user/`, updatedData);
+            setVetInfo(response.data);
+            setIsEditModalOpen(false);
+            alert("Profile updated successfully!");
+        } catch (error) {
+            console.error("Error updating vet profile:", error);
+            alert("Failed to update profile. Please try again.");
+        }
     };
 
     const openEditVetModal = () => {
-        setIsEditVetModalOpen(true);
+        setIsEditModalOpen(true);
     };
 
     const closeEditVetModal = () => {
-        setIsEditVetModalOpen(false);
+        setIsEditModalOpen(false);
     };
-
 
     if (loading) {
         return <div className="loading-overlay">Loading...</div>;
@@ -197,55 +203,76 @@ const VetDashboard = () => {
 
     return (
         <div>
-            <Header/>
-            <div className="container mt-1" style={{display: "flex", gap: "200px"}}>
-                <div style={{flex: 0}}>
-                        <div className="container rounded-3 vet-card" style={{maxWidth: '450px', padding: "20px 10px", margin: '0px 20px', backgroundColor: '#fff7f7'}}>
-                        <div className="mb-3 ps-2" style={{
-                            maxWidth: '400px',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            height: '250px'
-                        }}>
+            <Header />
+            <div className="container mt-1" style={{ display: "flex", gap: "200px" }}>
+                <div style={{ flex: 0 }}>
+                    <div
+                        className="container rounded-3 vet-card"
+                        style={{
+                            maxWidth: "450px",
+                            padding: "20px 10px",
+                            margin: "0px 20px",
+                            backgroundColor: "#fff7f7",
+                        }}
+                    >
+                        <div
+                            className="mb-3 ps-2"
+                            style={{
+                                maxWidth: "400px",
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                height: "250px",
+                            }}
+                        >
                             {vetInfo.photoUrl ? (
-                                <img className="avatar"
-                                     src={vetInfo.photoUrl}
-                                     alt={`${vetInfo.name}'s avatar`}
-                                     style={{width: '250px', height: '250px', borderRadius: '50%'}}
+                                <img
+                                    className="avatar"
+                                    src={vetInfo.photoUrl}
+                                    alt={`${vetInfo.name}'s avatar`}
+                                    style={{ width: "250px", height: "250px", borderRadius: "50%" }}
                                 />
                             ) : (
                                 <div>pic placeholder</div>
                             )}
                         </div>
-                        <div style={{padding: "5px 0 0 7% "}}>
-                            <h4><strong>Dr. {vetInfo.name} {vetInfo.surname}</strong></h4>
+                        <div style={{ padding: "5px 0 0 7%" }}>
+                            <h4>
+                                <strong>Dr. {vetInfo.name} {vetInfo.surname}</strong>
+                            </h4>
                         </div>
-                        <div style={{padding: "0px 20%"}}>
-                            <h5> {vetInfo.qualification || "Not specified"}</h5>
+                        <div style={{ padding: "0px 20%" }}>
+                            <h5>{vetInfo.qualification || "Not specified"}</h5>
                         </div>
 
-                        <div style={{padding: "0px 0px"}}>
-                            <p style={{marginBottom: '5px'}}><strong>Email:</strong> {vetInfo.email || "Not specified"}
+                        <div style={{ padding: "0px 0px" }}>
+                            <p style={{ marginBottom: "5px" }}>
+                                <strong>Email:</strong> {vetInfo.email || "Not specified"}
                             </p>
-                            <p style={{marginBottom: '5px'}}>
-                                <strong>Phone:</strong> {vetInfo.phoneNumber || "Not specified"}</p>
-                            <p style={{marginBottom: '5px'}}>
-                                <strong>Schedule:</strong> {vetInfo.schedule || "Not specified"}</p>
-                            <p style={{marginBottom: '5px'}}><strong>Working
-                                hours:</strong> {vetInfo.workingHours || "Not specified"}</p>
-                            <p style={{marginBottom: '5px'}}>
-                                <strong>Clinic:</strong> {vetInfo.clinic || "Not specified"} </p>
-                            </div>
-                        <div style={{padding: "0px 8%"}}>
+                            <p style={{ marginBottom: "5px" }}>
+                                <strong>Phone:</strong> {vetInfo.phoneNumber || "Not specified"}
+                            </p>
+                            <p style={{ marginBottom: "5px" }}>
+                                <strong>Schedule:</strong> {vetInfo.schedule || "Not specified"}
+                            </p>
+                            <p style={{ marginBottom: "5px" }}>
+                                <strong>Working hours:</strong> {vetInfo.workingHours || "Not specified"}
+                            </p>
+                            <p style={{ marginBottom: "5px" }}>
+                                <strong>Clinic:</strong> {vetInfo.clinic || "Not specified"}
+                            </p>
+                        </div>
+                        <div style={{ padding: "0px 8%" }}>
                             <button className="button btn-no-border rounded-3" onClick={openEditVetModal}>
                                 Edit Profile
                             </button>
                         </div>
                     </div>
 
-                    <div className="vet-appointments bg-treatment container mt-3 rounded-1"
-                         style={{padding: "5px", margin: '0px 20px'}}>
+                    <div
+                        className="vet-appointments bg-treatment container mt-3 rounded-1"
+                        style={{ padding: "5px", margin: "0px 20px" }}
+                    >
                         <h4 className="table-appointment">Upcoming Appointments</h4>
                         {appointments.length > 0 ? (
                             <table cellPadding="2" cellSpacing="0" className="uniq-table">
@@ -256,8 +283,8 @@ const VetDashboard = () => {
                                         <td>{appointment.slot.startTime.slice(0, 5)}</td>
                                         <td>{appointment.pet.name}</td>
                                         <td>
-                                            <button className="button btn-no-border"
-                                                    onClick={() => handleView(appointment.id)}>View
+                                            <button className="button btn-no-border" onClick={() => handleView(appointment.id)}>
+                                                View
                                             </button>
                                         </td>
                                     </tr>
@@ -265,44 +292,45 @@ const VetDashboard = () => {
                                 </tbody>
                             </table>
                         ) : (
-                            <p style={{paddingLeft: "70px", paddingTop: "10px"}}>No upcoming appointments.</p>
+                            <p style={{ paddingLeft: "70px", paddingTop: "10px" }}>No upcoming appointments.</p>
                         )}
                     </div>
                 </div>
                 {userRole === "ROLE_VET" && (
-                    <div className="bg-table element-space wards " style={{flex: 1}}>
+                    <div className="bg-table element-space wards " style={{ flex: 1 }}>
                         <h2>My Wards</h2>
                         {doctorPets.length > 0 ? (
                             <table cellPadding="0" cellSpacing="0" className="uniq-table">
-
                                 <tbody>
                                 {doctorPets.map((pet) => (
                                     <tr key={pet.id}>
-                                        <td style={{padding: '20px'}}>
+                                        <td style={{ padding: "20px" }}>
                                             {pet.photoUrl ? (
-                                                <img className="avatar"
-                                                     src={pet.photoUrl}
-                                                     alt={`${pet.name}'s avatar`}
-                                                     style={{
-                                                         width: '50px',
-                                                         height: '50px',
-                                                         borderRadius: '50%',
-                                                         marginRight: '20px'
-                                                     }}
+                                                <img
+                                                    className="avatar"
+                                                    src={pet.photoUrl}
+                                                    alt={`${pet.name}'s avatar`}
+                                                    style={{
+                                                        width: "50px",
+                                                        height: "50px",
+                                                        borderRadius: "50%",
+                                                        marginRight: "20px",
+                                                    }}
                                                 />
                                             ) : (
                                                 <p>(anonymous)</p>
-                                            )} {"\t"}
-
-                                            <strong>{pet.name}</strong>{" "} {"\t"}
+                                            )}{" "}
+                                            {"\t"}
+                                            <strong>{pet.name}</strong> {" "} {"\t"}
                                             ({pet.type}, {" "}
                                             {pet.age} y.o. {" "}
                                             {pet.sex})
                                         </td>
-
-                                        <td style={{textAlign: 'right'}}>
-                                            <button className="button btn-no-border rounded-3"
-                                                    onClick={() => handleViewPetProfile(pet.id)}>
+                                        <td style={{ textAlign: "right" }}>
+                                            <button
+                                                className="button btn-no-border rounded-3"
+                                                onClick={() => handleViewPetProfile(pet.id)}
+                                            >
                                                 View Pet Profile
                                             </button>
                                         </td>
@@ -333,42 +361,54 @@ const VetDashboard = () => {
             />
 
             {selectedAppointment && (
-                <div style={{
-                    position: "fixed",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                    backgroundColor: "white",
-                    padding: "20px",
-                    borderRadius: "10px",
-                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-                    zIndex: 1000
-                }}>
+                <div
+                    style={{
+                        position: "fixed",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        backgroundColor: "white",
+                        padding: "20px",
+                        borderRadius: "10px",
+                        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+                        zIndex: 1000,
+                    }}
+                >
                     <h3>Appointment Details</h3>
-                    <p><strong>Patient:</strong> {selectedAppointment.pet.name}</p>
-                    <p><strong>Type:</strong> {selectedAppointment.pet.type}</p>
-                    <p><strong>Age:</strong> {selectedAppointment.pet.age}</p>
-                    <p><strong>Sex:</strong> {selectedAppointment.pet.sex}</p>
-                    <p><strong>Owner:</strong> {selectedAppointment.ownerName}</p>
-                    <p><strong>Complaint:</strong> {selectedAppointment.description}</p>
-                    <p><strong>Date:</strong> {selectedAppointment.slot.date}</p>
-                    <p><strong>Time:</strong> {selectedAppointment.slot.startTime} - {selectedAppointment.slot.endTime}
+                    <p>
+                        <strong>Patient:</strong> {selectedAppointment.pet.name}
                     </p>
-                    <p><strong>Priority:</strong> {selectedAppointment.priority ? "Yes" : "No"}</p>
+                    <p>
+                        <strong>Type:</strong> {selectedAppointment.pet.type}
+                    </p>
+                    <p>
+                        <strong>Age:</strong> {selectedAppointment.pet.age}
+                    </p>
+                    <p>
+                        <strong>Sex:</strong> {selectedAppointment.pet.sex}
+                    </p>
+                    <p>
+                        <strong>Owner:</strong> {selectedAppointment.ownerName}
+                    </p>
+                    <p>
+                        <strong>Complaint:</strong> {selectedAppointment.description}
+                    </p>
+                    <p>
+                        <strong>Date:</strong> {selectedAppointment.slot.date}
+                    </p>
+                    <p>
+                        <strong>Time:</strong> {selectedAppointment.slot.startTime} - {selectedAppointment.slot.endTime}
+                    </p>
+                    <p>
+                        <strong>Priority:</strong> {selectedAppointment.priority ? "Yes" : "No"}
+                    </p>
 
-
-                    <div style={{margin: "20px 0"}}>
+                    <div style={{ margin: "20px 0" }}>
                         <h4>Body Marker</h4>
                         {selectedAppointment.pet.type === "DOG" ? (
-                            <DogBodyMap
-                                initialMarker={bodyMarker}
-                                readOnly={true}
-                            />
+                            <DogBodyMap initialMarker={bodyMarker} readOnly={true} />
                         ) : selectedAppointment.pet.type === "CAT" ? (
-                            <CatBodyMap
-                                initialMarker={bodyMarker}
-                                readOnly={true}
-                            />
+                            <CatBodyMap initialMarker={bodyMarker} readOnly={true} />
                         ) : (
                             <p>Unknown animal type</p>
                         )}
@@ -383,17 +423,11 @@ const VetDashboard = () => {
                         Create Anamnesis
                     </label>
                     <button onClick={handleApprove}>Approve</button>
-                    {selectedAppointment.priority && (
-                        <button onClick={openCancelModal}>Cancel</button>
-                    )}
+                    {selectedAppointment.priority && <button onClick={openCancelModal}>Cancel</button>}
                     <button onClick={closeModal}>Close</button>
                 </div>
-
             )}
-            {selectedPetId && (
-                <PetProfile petId={selectedPetId} onClose={closePetProfile}/>
-            )}
-
+            {selectedPetId && <PetProfile petId={selectedPetId} onClose={closePetProfile} />}
 
             {showCancelModal && (
                 <div style={modalStyles}>
@@ -403,29 +437,26 @@ const VetDashboard = () => {
                         onChange={(e) => setCancelReason(e.target.value)}
                         placeholder="Enter cancellation reason"
                         rows={4}
-                        style={{ width: '100%', margin: '10px 0' }}
+                        style={{ width: "100%", margin: "10px 0" }}
                     />
-                    <div style={{ display: 'flex', gap: '10px' }}>
+                    <div style={{ display: "flex", gap: "10px" }}>
                         <button onClick={handleCancel} disabled={!cancelReason}>
                             Confirm Cancel
                         </button>
-                        <button onClick={closeCancelModal}>
-                            Close
-                        </button>
+                        <button onClick={closeCancelModal}>Close</button>
                     </div>
                 </div>
             )}
-            {isEditVetModalOpen && (
-                <EditVetModal
-                    vetInfo={vetInfo}
+
+            {isEditModalOpen && (
+                <EditOwnerModal
+                    ownerInfo={vetInfo}
                     onClose={closeEditVetModal}
                     onSave={handleSaveVetProfile}
                 />
             )}
         </div>
-
     );
-
 };
 
 const modalStyles = {
