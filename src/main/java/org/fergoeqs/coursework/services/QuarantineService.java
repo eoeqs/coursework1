@@ -6,6 +6,9 @@ import org.fergoeqs.coursework.models.Quarantine;
 import org.fergoeqs.coursework.models.enums.QuarantineStatus;
 import org.fergoeqs.coursework.repositories.QuarantineRepository;
 import org.fergoeqs.coursework.utils.Mappers.QuarantineMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -37,8 +40,21 @@ public class QuarantineService {
         return quarantineRepository.findQuarantinesBySectorId(sectorId);
     }
 
+    public Page<Quarantine> findQuarantinesBySectorAndStatus(Long sectorId, QuarantineStatus status, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return quarantineRepository.findQuarantinesBySectorIdAndStatus(sectorId, status, pageable);
+    }
+
+    public List<Quarantine> findQuarantinesByPet(Long petId) {
+        return quarantineRepository.findQuarantinesByPetId(petId);
+    }
+
     public List<Quarantine> findAllQuarantines() {
         return quarantineRepository.findAll();
+    }
+
+    public List<String> findDistinctReason(Long sectorId) {
+        return quarantineRepository.findDistinctReasonsByCurrentStatus(sectorId);
     }
 
     public Quarantine save(QuarantineDTO quarantineDTO, AppUser appUser) {
