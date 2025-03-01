@@ -94,6 +94,16 @@ public class AppointmentsController {
         }
     }
 
+    @PutMapping("/update-appointment/{id}")
+    public ResponseEntity<?> updateAppointment(@PathVariable Long id, @RequestParam Long slotId) {
+        try {
+            return ResponseEntity.ok(appointmentMapper.appointmentToAppointmentDTO(appointmentsService.update(id, slotId)));
+        } catch (Exception e) {
+            logger.error("Error updating appointment: {}", e.getMessage());
+            throw e;
+        }
+    }
+
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_VET')")
     @DeleteMapping("/cancel-appointment/{id}")
     public ResponseEntity<?> cancelAppointment(@PathVariable Long id, @RequestBody String reason) {

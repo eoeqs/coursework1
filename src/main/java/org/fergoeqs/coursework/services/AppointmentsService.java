@@ -72,6 +72,14 @@ public class AppointmentsService {
     }
 
     @Transactional
+    public Appointment update(Long appointmentId, Long slotId) {
+        Appointment appointment = appointmentsRepository.findById(appointmentId).orElse(null);
+        assert appointment != null;
+        appointment.setSlot(availableSlotsRepository.findById(slotId).orElse(null));
+        return appointmentsRepository.save(appointment);
+    }
+
+    @Transactional
     public void delete(Long id, String reason) {
         Appointment appointment = appointmentsRepository.findById(id).orElseThrow();
         sendNotification(appointment, "Your appointment has been cancelled by vet cause: " + reason);

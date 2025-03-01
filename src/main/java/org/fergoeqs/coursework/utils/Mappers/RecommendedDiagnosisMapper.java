@@ -1,6 +1,7 @@
 package org.fergoeqs.coursework.utils.Mappers;
 
 import org.fergoeqs.coursework.dto.RecommendedDiagnosisDTO;
+import org.fergoeqs.coursework.models.Diagnosis;
 import org.fergoeqs.coursework.models.RecommendedDiagnosis;
 import org.fergoeqs.coursework.models.Symptom;
 import org.mapstruct.Mapper;

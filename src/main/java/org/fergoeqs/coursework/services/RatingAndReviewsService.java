@@ -36,7 +36,9 @@ public class RatingAndReviewsService {
     public RatingAndReviews save(RatingAndReviewsDTO ratingAndReviewsDTO) throws BadRequestException {
         AppUser owner = userService.getAuthenticatedUser();
         if (!appointmentsService.existsByOwnerAndVet(owner.getId(), ratingAndReviewsDTO.vet())) {
-            throw new IllegalStateException("Вы не можете оставить отзыв, так как не были записаны к этому ветеринару.");
+            throw new IllegalStateException("You cannot leave a review because you did not have an appointment with him");
+        } if (userService.isVet(owner)) {
+            throw new IllegalStateException("Veterinarian cannot leave reviews");
         }
         RatingAndReviews rr = rrMapper.fromDTO(ratingAndReviewsDTO);
         rr.setVet(userService.findById(ratingAndReviewsDTO.vet()).orElse(null));
