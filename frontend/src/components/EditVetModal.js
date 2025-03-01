@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import useAxiosWithAuth from "../AxiosAuth";
-
+//TODO: админ функционал сюда
 const EditVetModal = ({vetInfo, onClose, onSave}) => {
     const axiosInstance = useAxiosWithAuth();
     const [formData, setFormData] = useState({

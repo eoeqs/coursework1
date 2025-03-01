@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import useAxiosWithAuth from "../AxiosAuth";
 import DogBodyMap from "./DogBodyMap";
 import CatBodyMap from "./CatBodyMap";
@@ -23,7 +23,11 @@ const EditClinicalDiagnosisModal = ({ diagnosisId, petId, appointmentId, anamnes
         description: "",
         contagious: false,
         examinationPlan: "",
+        status: "",
     });
+    const [availableSectors, setAvailableSectors] = useState([]);
+    const [selectedSectorId, setSelectedSectorId] = useState(null);
+    const [showSectorModal, setShowSectorModal] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -55,6 +59,7 @@ const EditClinicalDiagnosisModal = ({ diagnosisId, petId, appointmentId, anamnes
                         description: diagnosis.description || "",
                         contagious: diagnosis.contagious || false,
                         examinationPlan: diagnosis.examinationPlan || "",
+                        status: diagnosis.contagious ? (diagnosis.dangerous ? "Dangerous" : "Contagious") : "",
                     });
                     setSelectedSymptoms(diagnosis.symptoms || []);
                     if (diagnosis.bodyPart) {
@@ -132,18 +137,67 @@ const EditClinicalDiagnosisModal = ({ diagnosisId, petId, appointmentId, anamnes
         }
     };
 
+    const handleStatusChange = (status) => {
+        const newStatus = formData.status === status ? "" : status;
+        setFormData((prev) => ({
+            ...prev,
+            status: newStatus,
+            contagious: newStatus === "Contagious" || newStatus === "Dangerous",
+        }));
+
+        if (newStatus === "Contagious") {
+            fetchAvailableSectors("/sectors/available-contagious");
+        } else if (newStatus === "Dangerous") {
+            fetchAvailableSectors("/sectors/available-dangerous");
+        } else {
+            setShowSectorModal(false);
+            setAvailableSectors([]);
+            setSelectedSectorId(null);
+        }
+    };
+
+    const fetchAvailableSectors = async (endpoint) => {
+        try {
+            const response = await axiosInstance.get(endpoint);
+            setAvailableSectors(response.data);
+            setShowSectorModal(true);
+        } catch (error) {
+            console.error(`Error fetching sectors from ${endpoint}:`, error);
+            alert("Failed to fetch available sectors.");
+        }
+    };
+
+    const handleSectorSelect = async () => {
+        if (!selectedSectorId) {
+            alert("Please select a sector.");
+            return;
+        }
+
+        try {
+            await axiosInstance.put(`/pets/sector-place/${petId}`, null, {
+                params: { sectorId: selectedSectorId },
+            });
+            alert(`Pet ${petId} successfully placed in sector ${selectedSectorId}`);
+            setShowSectorModal(false);
+        } catch (error) {
+            console.error("Error placing pet in sector:", error);
+            alert("Failed to place pet in sector.");
+        }
+    };
+
     const handleSave = () => {
         const diagnosisData = {
             ...formData,
             symptoms: selectedSymptoms,
             bodyPart: tempMarker?.bodyPart,
             anamnesis: anamnesisId,
-            date: diagnosisId ? undefined : new Date().toISOString(), 
+            date: diagnosisId ? undefined : new Date().toISOString(),
+            dangerous: formData.status === "Dangerous",
         };
         onSave(diagnosisData);
     };
 
-    if (!diagnosisId || loading) return <div className="loading-overlay">Loading...</div>;
+    if (loading) return <div className="loading-overlay">Loading...</div>;
     if (error) return <div className="error-overlay">{error}</div>;
 
     return (
@@ -185,15 +239,30 @@ const EditClinicalDiagnosisModal = ({ diagnosisId, petId, appointmentId, anamnes
                         placeholder="Enter diagnosis description"
                     />
                 </div>
-                <div>
-                    <label>
-                        <input
-                            type="checkbox"
-                            checked={formData.contagious}
-                            onChange={(e) => setFormData({ ...formData, contagious: e.target.checked })}
-                        />
-                        Contagious
-                    </label>
+                <div style={{ margin: "10px 0" }}>
+                    <label>Status:</label>
+                    <div>
+                        <label>
+                            <input
+                                type="radio"
+                                name="status"
+                                value="Contagious"
+                                checked={formData.status === "Contagious"}
+                                onChange={() => handleStatusChange("Contagious")}
+                            />
+                            Contagious
+                        </label>
+                        <label style={{ marginLeft: "20px" }}>
+                            <input
+                                type="radio"
+                                name="status"
+                                value="Dangerous"
+                                checked={formData.status === "Dangerous"}
+                                onChange={() => handleStatusChange("Dangerous")}
+                            />
+                            Dangerous
+                        </label>
+                    </div>
                 </div>
                 <div>
                     <label>Examination Plan:</label>
@@ -259,6 +328,36 @@ const EditClinicalDiagnosisModal = ({ diagnosisId, petId, appointmentId, anamnes
                 <button onClick={handleSave}>Save</button>
                 <button onClick={onClose}>Cancel</button>
             </div>
+
+            {showSectorModal && (
+                <div style={sectorModalStyles}>
+                    <h4>Select Sector</h4>
+                    {availableSectors.length > 0 ? (
+                        <div>
+                            {availableSectors.map((sector) => (
+                                <div key={sector.id}>
+                                    <label>
+                                        <input
+                                            type="radio"
+                                            name="sector"
+                                            value={sector.id}
+                                            checked={selectedSectorId === sector.id}
+                                            onChange={() => setSelectedSectorId(sector.id)}
+                                        />
+                                        {sector.name || `Sector ${sector.id}`}
+                                    </label>
+                                </div>
+                            ))}
+                            <button onClick={handleSectorSelect} disabled={!selectedSectorId}>
+                                Confirm
+                            </button>
+                            <button onClick={() => setShowSectorModal(false)}>Cancel</button>
+                        </div>
+                    ) : (
+                        <p>No available sectors found.</p>
+                    )}
+                </div>
+            )}
         </div>
     );
 };
@@ -274,6 +373,20 @@ const modalStyles = {
     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
     zIndex: 1000,
     maxWidth: "600px",
+    width: "90%",
+};
+
+const sectorModalStyles = {
+    position: "fixed",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    backgroundColor: "white",
+    padding: "20px",
+    borderRadius: "10px",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+    zIndex: 1001,
+    maxWidth: "400px",
     width: "90%",
 };
 

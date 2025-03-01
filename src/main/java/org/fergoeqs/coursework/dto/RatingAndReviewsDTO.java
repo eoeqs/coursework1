@@ -1,6 +1,5 @@
 package org.fergoeqs.coursework.dto;
 
-import org.fergoeqs.coursework.models.AppUser;
 
 public record RatingAndReviewsDTO (
     Long id,

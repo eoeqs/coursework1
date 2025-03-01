@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from "react";
-import {useParams, useNavigate} from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import useAxiosWithAuth from "../AxiosAuth";
 import EditPetModal from "./EditPetModal";
 import AddAnamnesisModal from "./AddAnamnesisModal";
@@ -9,7 +9,7 @@ import HealthUpdateDetailsModal from "./HealthUpdateDetailsModal";
 import Header from "./Header";
 
 const PetProfilePage = () => {
-    const {petId} = useParams();
+    const { petId } = useParams();
     const navigate = useNavigate();
     const axiosInstance = useAxiosWithAuth();
     const [petInfo, setPetInfo] = useState(null);
@@ -34,7 +34,6 @@ const PetProfilePage = () => {
             try {
                 const petResponse = await axiosInstance.get(`/pets/pet/${petId}`);
                 setPetInfo(petResponse.data);
-                console.log(petResponse.data);
 
                 const anamnesesResponse = await axiosInstance.get(`/anamnesis/all-by-patient/${petId}`);
                 setAnamneses(anamnesesResponse.data);
@@ -43,16 +42,24 @@ const PetProfilePage = () => {
                 setHealthUpdates(healthUpdatesResponse.data);
 
                 const appointmentsResponse = await axiosInstance.get(`/appointments/upcoming-pet/${petId}`);
-                const appointmentsWithSlots = await Promise.all(
+                const appointmentsWithDetails = await Promise.all(
                     appointmentsResponse.data.map(async (appointment) => {
                         const slotResponse = await axiosInstance.get(`/slots/${appointment.slotId}`);
+                        const slotData = slotResponse.data;
+
+                        const vetResponse = await axiosInstance.get(`/users/user-info/${slotData.vetId}`);
+                        const vetName = `${vetResponse.data.name} ${vetResponse.data.surname}`;
+
                         return {
                             ...appointment,
-                            slot: slotResponse.data,
+                            slot: {
+                                ...slotData,
+                                vetName,
+                            },
                         };
                     })
                 );
-                setUpcomingAppointments(appointmentsWithSlots);
+                setUpcomingAppointments(appointmentsWithDetails);
 
                 const treatmentsResponse = await axiosInstance.get(`/treatments/actual-by-pet/${petId}`);
                 setTreatments(treatmentsResponse.data);
@@ -129,13 +136,15 @@ const PetProfilePage = () => {
 
     return (
         <div>
-            <Header/>
-            <div className="container mt-2" style={{display: "flex", gap: "100px"}}>
+            <Header />
+            <div className="container mt-2" style={{ display: "flex", gap: "100px" }}>
                 <div className="ps-3">
-                    <PetInfo petInfo={petInfo} onEdit={() => setIsEditModalOpen(true)}/>
+                    <PetInfo petInfo={petInfo} onEdit={() => setIsEditModalOpen(true)} />
 
-                    <div className="bg-treatment container mt-3 rounded-1 upcoming-appointments"
-                         style={{padding: "20px"}}>
+                    <div
+                        className="bg-treatment container mt-3 rounded-1 upcoming-appointments"
+                        style={{ padding: "20px" }}
+                    >
                         <h4>Upcoming Appointments</h4>
                         {upcomingAppointments.length > 0 ? (
                             <table cellPadding="3" cellSpacing="0">
@@ -143,9 +152,9 @@ const PetProfilePage = () => {
                                 {upcomingAppointments.map((appointment) => (
                                     <tr key={appointment.id}>
                                         <td>{new Date(appointment.slot.date).toLocaleDateString()}</td>
-                                        <td>{appointment.slot.startTime.slice(0, 5)} </td>
-                                        <td> -</td>
-                                        <td>Dr. {appointment.slot.vetId}</td>
+                                        <td>{appointment.slot.startTime.slice(0, 5)}</td>
+                                        <td>-</td>
+                                        <td>Dr. {appointment.slot.vetName}</td>
                                     </tr>
                                 ))}
                                 </tbody>
@@ -156,21 +165,21 @@ const PetProfilePage = () => {
                     </div>
                 </div>
 
-                <div style={{flex: 1}}>
+                <div style={{ flex: 1 }}>
                     <h2>Anamneses</h2>
                     <div className="bg-table element-space">
                         {anamneses.length > 0 ? (
                             <table cellPadding="5" cellSpacing="0" className="uniq-table">
-
                                 <tbody>
-
                                 {anamneses.map((anamnesis) => (
                                     <tr key={anamnesis.id}>
                                         <td>{new Date(anamnesis.date).toLocaleDateString()}</td>
                                         <td>{anamnesis.description}</td>
                                         <td>
-                                            <button className="button btn-no-border"
-                                                    onClick={() => navigate(`/anamnesis/${anamnesis.id}`)}>
+                                            <button
+                                                className="button btn-no-border"
+                                                onClick={() => navigate(`/anamnesis/${anamnesis.id}`)}
+                                            >
                                                 More info
                                             </button>
                                         </td>
@@ -182,8 +191,10 @@ const PetProfilePage = () => {
                             <p>No anamneses found.</p>
                         )}
                         {userRole === "ROLE_VET" && (
-                            <button className="button rounded-3 btn-no-border"
-                                    onClick={() => setIsAddAnamnesisModalOpen(true)}>
+                            <button
+                                className="button rounded-3 btn-no-border"
+                                onClick={() => setIsAddAnamnesisModalOpen(true)}
+                            >
                                 Add New Anamnesis
                             </button>
                         )}
@@ -199,8 +210,10 @@ const PetProfilePage = () => {
                                         <td>{new Date(update.date).toLocaleDateString()}</td>
                                         <td>{update.dynamics ? "positive" : "negative"} dynamic</td>
                                         <td>
-                                            <button className="button btn-no-border"
-                                                    onClick={() => handleViewHealthUpdateDetails(update.id)}>
+                                            <button
+                                                className="button btn-no-border"
+                                                onClick={() => handleViewHealthUpdateDetails(update.id)}
+                                            >
                                                 More info
                                             </button>
                                         </td>
@@ -211,23 +224,27 @@ const PetProfilePage = () => {
                         ) : (
                             <p>No health updates found.</p>
                         )}
-                        <button className="button rounded-3 btn-no-border"
-                                onClick={() => setIsAddHealthUpdateModalOpen(true)}>Add Health Update
+                        <button
+                            className="button rounded-3 btn-no-border"
+                            onClick={() => setIsAddHealthUpdateModalOpen(true)}
+                        >
+                            Add Health Update
                         </button>
                     </div>
                 </div>
 
-                <div className="bg-treatment mt-1 rounded-1" style={{padding: "20px"}}>
+                <div className="bg-treatment mt-1 rounded-1" style={{ padding: "20px" }}>
                     <h4>Treatment Recommendations</h4>
                     {treatments.length > 0 ? (
                         <table cellPadding="3" cellSpacing="0" className="uniq-table">
                             <tbody>
                             {treatments.map((treatment) => (
                                 <tr key={treatment.id}>
-                                    <td><b>Treatment</b>: {treatment.name} <br/>
-                                        <b>Description</b>: {treatment.description} <br/>
-                                        <b>Prescribed Medication</b>: {treatment.prescribedMedication} <br/>
-                                        <b>Duration</b>: {treatment.duration} <br/>
+                                    <td>
+                                        <b>Treatment</b>: {treatment.name} <br />
+                                        <b>Description</b>: {treatment.description} <br />
+                                        <b>Prescribed Medication</b>: {treatment.prescribedMedication} <br />
+                                        <b>Duration</b>: {treatment.duration} <br />
                                     </td>
                                 </tr>
                             ))}
