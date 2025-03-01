@@ -34,7 +34,6 @@ const PetProfilePage = () => {
             try {
                 const petResponse = await axiosInstance.get(`/pets/pet/${petId}`);
                 setPetInfo(petResponse.data);
-                console.log(petResponse.data);
 
                 const anamnesesResponse = await axiosInstance.get(`/anamnesis/all-by-patient/${petId}`);
                 setAnamneses(anamnesesResponse.data);
