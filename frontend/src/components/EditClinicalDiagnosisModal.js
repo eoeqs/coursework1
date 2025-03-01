@@ -28,6 +28,13 @@ const EditClinicalDiagnosisModal = ({ diagnosisId, petId, appointmentId, anamnes
     const [availableSectors, setAvailableSectors] = useState([]);
     const [selectedSectorId, setSelectedSectorId] = useState(null);
     const [showSectorModal, setShowSectorModal] = useState(false);
+    const [quarantineData, setQuarantineData] = useState({
+        reason: "",
+        description: "",
+        startDate: "",
+        endDate: "",
+        status: "CURRENT",
+    });
 
     useEffect(() => {
         const fetchData = async () => {
@@ -153,18 +160,41 @@ const EditClinicalDiagnosisModal = ({ diagnosisId, petId, appointmentId, anamnes
             setShowSectorModal(false);
             setAvailableSectors([]);
             setSelectedSectorId(null);
+            setQuarantineData({ reason: "", description: "", startDate: "", endDate: "", status: "ACTIVE" }); // Reset quarantine data
         }
     };
 
     const fetchAvailableSectors = async (endpoint) => {
         try {
             const response = await axiosInstance.get(endpoint);
-            setAvailableSectors(response.data);
+            const sectors = response.data;
+
+            const sectorsWithQuarantine = await Promise.all(
+                sectors.map(async (sector) => {
+                    const quarantineResponse = await axiosInstance.get(`/quarantine/sector/${sector.id}`);
+                    const quarantines = quarantineResponse.data;
+                    const uniqueReasons = [...new Set(quarantines.map((q) => q.reason))];
+                    return {
+                        ...sector,
+                        quarantineReasons: uniqueReasons,
+                    };
+                })
+            );
+
+            setAvailableSectors(sectorsWithQuarantine);
             setShowSectorModal(true);
         } catch (error) {
             console.error(`Error fetching sectors from ${endpoint}:`, error);
             alert("Failed to fetch available sectors.");
         }
+    };
+
+    const handleQuarantineChange = (e) => {
+        const { name, value } = e.target;
+        setQuarantineData((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
     };
 
     const handleSectorSelect = async () => {
@@ -173,15 +203,36 @@ const EditClinicalDiagnosisModal = ({ diagnosisId, petId, appointmentId, anamnes
             return;
         }
 
+        // Validate quarantine data
+        const { reason, description, startDate, endDate, status } = quarantineData;
+        if (!reason || !description || !startDate || !endDate || !status) {
+            alert("Please fill out all quarantine fields.");
+            return;
+        }
+
         try {
+            // Save quarantine
+            const quarantineDTO = {
+                reason,
+                description,
+                startDate: new Date(startDate).toISOString(), // Ensure ISO format
+                endDate: new Date(endDate).toISOString(),    // Ensure ISO format
+                status,
+                sector: selectedSectorId,
+                pet: petId,
+            };
+            await axiosInstance.post("/quarantine/save", quarantineDTO);
+
+            // Place pet in sector
             await axiosInstance.put(`/pets/sector-place/${petId}`, null, {
                 params: { sectorId: selectedSectorId },
             });
-            alert(`Pet ${petId} successfully placed in sector ${selectedSectorId}`);
+
+            alert(`Pet ${petId} successfully placed in sector ${selectedSectorId} with quarantine`);
             setShowSectorModal(false);
         } catch (error) {
-            console.error("Error placing pet in sector:", error);
-            alert("Failed to place pet in sector.");
+            console.error("Error saving quarantine or placing pet in sector:", error);
+            alert("Failed to save quarantine or place pet in sector.");
         }
     };
 
@@ -331,11 +382,11 @@ const EditClinicalDiagnosisModal = ({ diagnosisId, petId, appointmentId, anamnes
 
             {showSectorModal && (
                 <div style={sectorModalStyles}>
-                    <h4>Select Sector</h4>
+                    <h4>Select Sector and Set Quarantine</h4>
                     {availableSectors.length > 0 ? (
                         <div>
                             {availableSectors.map((sector) => (
-                                <div key={sector.id}>
+                                <div key={sector.id} style={{ marginBottom: "15px" }}>
                                     <label>
                                         <input
                                             type="radio"
@@ -346,12 +397,69 @@ const EditClinicalDiagnosisModal = ({ diagnosisId, petId, appointmentId, anamnes
                                         />
                                         {sector.name || `Sector ${sector.id}`}
                                     </label>
+                                    <p style={{ marginLeft: "20px" }}>
+                                        <strong>Type:</strong> {sector.type || "Unknown"}<br />
+                                        <strong>Pets:</strong> {sector.occupancy || 0} / {sector.capacity || "Unknown"}<br />
+                                        <strong>Quarantine Reasons:</strong>{" "}
+                                        {sector.quarantineReasons && sector.quarantineReasons.length > 0
+                                            ? sector.quarantineReasons.join(", ")
+                                            : "None"}
+                                    </p>
                                 </div>
                             ))}
-                            <button onClick={handleSectorSelect} disabled={!selectedSectorId}>
-                                Confirm
-                            </button>
-                            <button onClick={() => setShowSectorModal(false)}>Cancel</button>
+                            <div style={{ marginBottom: "15px" }}>
+                                <h5>Quarantine Details</h5>
+                                <label>
+                                    Reason:
+                                    <input
+                                        type="text"
+                                        name="reason"
+                                        value={quarantineData.reason}
+                                        onChange={handleQuarantineChange}
+                                        placeholder="Enter quarantine reason"
+                                        style={{ width: "100%", marginTop: "5px" }}
+                                    />
+                                </label>
+                                <label>
+                                    Description:
+                                    <textarea
+                                        name="description"
+                                        value={quarantineData.description}
+                                        onChange={handleQuarantineChange}
+                                        placeholder="Enter quarantine description"
+                                        rows={3}
+                                        cols={40}
+                                        style={{ width: "100%", marginTop: "5px" }}
+                                    />
+                                </label>
+                                <label>
+                                    Start Date:
+                                    <input
+                                        type="datetime-local"
+                                        name="startDate"
+                                        value={quarantineData.startDate}
+                                        onChange={handleQuarantineChange}
+                                        style={{ width: "100%", marginTop: "5px" }}
+                                    />
+                                </label>
+                                <label>
+                                    End Date:
+                                    <input
+                                        type="datetime-local"
+                                        name="endDate"
+                                        value={quarantineData.endDate}
+                                        onChange={handleQuarantineChange}
+                                        style={{ width: "100%", marginTop: "5px" }}
+                                    />
+                                </label>
+
+                            </div>
+                            <div style={{ display: "flex", gap: "10px" }}>
+                                <button onClick={handleSectorSelect} disabled={!selectedSectorId}>
+                                    Confirm
+                                </button>
+                                <button onClick={() => setShowSectorModal(false)}>Cancel</button>
+                            </div>
                         </div>
                     ) : (
                         <p>No available sectors found.</p>
@@ -386,7 +494,7 @@ const sectorModalStyles = {
     borderRadius: "10px",
     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
     zIndex: 1001,
-    maxWidth: "400px",
+    maxWidth: "500px",
     width: "90%",
 };
 

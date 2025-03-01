@@ -24,4 +24,8 @@ public class DiagnosticAttachment {
     @ManyToOne
     @JoinColumn(name = "anamnesis_id")
     private Anamnesis anamnesis;
+
+    @ManyToOne
+    @JoinColumn(name = "diagnosis_id")
+    private Diagnosis diagnosis;
 }
