@@ -64,8 +64,6 @@ public class AppointmentsService {
 
     @Transactional
     public Appointment create(AppointmentDTO appointmentDTO) {
-        Appointment appointment = new Appointment();
-        Slot slot = availableSlotsRepository.findById(appointmentDTO.slotId()).orElse(null); //TODO: проверку добавить на Null
         Pet pet = petsRepository.findById(appointmentDTO.petId()).orElse(null);
         healthUpdatesService.saveWithAppointment(pet, appointmentDTO.description());
         return appointmentsRepository.save(appointmentMapper.appointmentDTOToAppointment(appointmentDTO));
@@ -97,7 +95,6 @@ public class AppointmentsService {
             sendNotification(appointment, message, true);
         }
     }
-
 
     private void sendNotification(Appointment appointment, String message, Boolean dublicateVet) {
         AppUser owner = appointment.getPet().getOwner();

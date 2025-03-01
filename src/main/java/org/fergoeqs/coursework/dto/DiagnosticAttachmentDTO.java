@@ -1,7 +1,5 @@
 package org.fergoeqs.coursework.dto;
 
-import org.fergoeqs.coursework.models.Anamnesis;
-
 import java.time.LocalDateTime;
 
 public record DiagnosticAttachmentDTO(
@@ -10,5 +8,6 @@ public record DiagnosticAttachmentDTO(
         String description,
         String fileUrl,
         LocalDateTime uploadDate,
-        Long anamnesis) {
+        Long anamnesis,
+        Long diagnosis) {
 }

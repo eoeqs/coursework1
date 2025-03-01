@@ -16,14 +16,17 @@ public class DiagnosticAttachmentService{
     private final DiagnosticAttachmentRepository diagnosticAttachmentRepository;
     private final DiagnosticAttachmentMapper diagnosticAttachmentMapper;
     private final AnamnesisService anamnesisService;
+    private final DiagnosisService diagnosisService;
     private final StorageService storageService;
 
     public DiagnosticAttachmentService(DiagnosticAttachmentRepository diagnosticAttachmentRepository, AnamnesisService anamnesisService,
-                                       DiagnosticAttachmentMapper diagnosticAttachmentMapper, StorageService storageService) {
+                                       DiagnosticAttachmentMapper diagnosticAttachmentMapper, StorageService storageService,
+                                       DiagnosisService diagnosisService) {
         this.diagnosticAttachmentRepository = diagnosticAttachmentRepository;
         this.diagnosticAttachmentMapper = diagnosticAttachmentMapper;
         this.storageService = storageService;
         this.anamnesisService = anamnesisService;
+        this.diagnosisService = diagnosisService;
 
     }
 
@@ -43,6 +46,7 @@ public class DiagnosticAttachmentService{
     public DiagnosticAttachment save(DiagnosticAttachmentDTO daDTO, MultipartFile attachment) throws IOException {
         DiagnosticAttachment diagnosticAttachment = diagnosticAttachmentMapper.fromDTO(daDTO);
         diagnosticAttachment.setAnamnesis(anamnesisService.findAnamnesisById(daDTO.anamnesis()));
+        diagnosticAttachment.setDiagnosis(diagnosisService.getDiagnosisById(daDTO.diagnosis()));
         diagnosticAttachment.setUploadDate(LocalDateTime.now());
         String objectName = "anamnesis" + daDTO.anamnesis() + "/" + attachment.getOriginalFilename();
         storageService.uploadFile("attachment", objectName, attachment.getInputStream(), attachment.getContentType());
