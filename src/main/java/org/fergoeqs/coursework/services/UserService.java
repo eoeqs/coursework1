@@ -57,6 +57,9 @@ public class UserService {
         return userRepository.findByUsername(username);
     }
 
+    public List<AppUser> findByRole(RoleType role) {
+        return userRepository.findByRolesContaining(role);
+    }
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }

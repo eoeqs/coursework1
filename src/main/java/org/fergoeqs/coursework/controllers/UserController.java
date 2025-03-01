@@ -18,6 +18,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -36,6 +37,26 @@ public class UserController {
         this.jwtService = jwtService;
         this.authenticationService = authenticationService;
         this.appUserMapper = appUserMapper;
+    }
+
+    @GetMapping("/all-owners")
+    public ResponseEntity<?> getAllOwners() {
+        try {
+            return ResponseEntity.ok(appUserMapper.toDTOs(userService.findByRole(RoleType.ROLE_OWNER)));
+        } catch (Exception e) {
+            logger.error("Error getting owners: {}", e.getMessage());
+            throw new InternalServerErrorException("Error getting owners");
+        }
+    }
+
+    @GetMapping("/all-vets")
+    public ResponseEntity<?> getAllVets() {
+        try {
+            return ResponseEntity.ok(appUserMapper.toDTOs(userService.findByRole(RoleType.ROLE_VET)));
+        } catch (Exception e) {
+            logger.error("Error getting vets: {}", e.getMessage());
+            throw new InternalServerErrorException("Error getting owners");
+        }
     }
 
     @PostMapping("/register")
