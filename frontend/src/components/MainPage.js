@@ -6,7 +6,7 @@ import React, {useState, useEffect} from "react";
 import AppointmentPage from "./AppointmentPage";
 import useAxiosWithAuth from "../AxiosAuth";
 import AddReviewModal from "./AddReviewModal";
-import SeeAllReviewsModal from "./SeeAllReviewsModal"; // New import
+import SeeAllReviewsModal from "./SeeAllReviewsModal";
 
 export default function HomePage() {
     const navigate = useNavigate();
