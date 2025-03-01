@@ -28,5 +28,4 @@ public class DiagnosticAttachment {
     @ManyToOne
     @JoinColumn(name = "diagnosis_id")
     private Diagnosis diagnosis;
-
 }

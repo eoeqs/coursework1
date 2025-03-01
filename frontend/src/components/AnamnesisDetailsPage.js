@@ -1,17 +1,18 @@
-import React, {useEffect, useState} from "react";
-import {useParams} from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import useAxiosWithAuth from "../AxiosAuth";
 import PetInfo from "./PetInfo";
 import AppointmentModal from "./AppointmentModal";
-import EditDiagnosisModal from "./EditDianosisModal";
+import EditDiagnosisModal from "./EditDiagnosisModal";
 import EditExaminationPlanModal from "./EditExaminationPlanModal";
 import EditClinicalDiagnosisModal from "./EditClinicalDiagnosisModal";
 import EditTreatmentModal from "./EditTreatmentModal";
 import Header from "./Header";
 import AddProcedureModal from "./AddProcedureModal";
-
+import AttachmentDetailsModal from "./AttachmentDetailsModal";
+import AddAttachmentModal from "./AddAttachmentModal";
 const AnamnesisDetailsPage = () => {
-    const {id} = useParams();
+    const { id } = useParams();
     const axiosInstance = useAxiosWithAuth();
     const [anamnesis, setAnamnesis] = useState(null);
     const [petInfo, setPetInfo] = useState(null);
@@ -23,7 +24,8 @@ const AnamnesisDetailsPage = () => {
     const [isEditDiagnosisModalOpen, setIsEditDiagnosisModalOpen] = useState(false);
     const [isEditExaminationPlanModalOpen, setIsEditExaminationPlanModalOpen] = useState(false);
     const [isEditClinicalDiagnosisModalOpen, setIsEditClinicalDiagnosisModalOpen] = useState(false);
-    const [selectedClinicalDiagnosisId, setSelectedClinicalDiagnosisId] = useState(null);    const [loading, setLoading] = useState(true);
+    const [selectedClinicalDiagnosisId, setSelectedClinicalDiagnosisId] = useState(null);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [treatments, setTreatments] = useState([]);
     const [isEditTreatmentModalOpen, setIsEditTreatmentModalOpen] = useState(false);
@@ -33,9 +35,16 @@ const AnamnesisDetailsPage = () => {
     const [selectedProcedure, setSelectedProcedure] = useState(null);
     const [isProcedureModalOpen, setIsProcedureModalOpen] = useState(false);
     const [isAddProcedureModalOpen, setIsAddProcedureModalOpen] = useState(false);
+    const [attachments, setAttachments] = useState([]);
+    const [isAttachmentModalOpen, setIsAttachmentModalOpen] = useState(false);
+    const [selectedAttachment, setSelectedAttachment] = useState(null);
+    const [isAddAttachmentModalOpen, setIsAddAttachmentModalOpen] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true);
+            setError(null);
+
             try {
                 const anamnesisResponse = await axiosInstance.get(`/anamnesis/${id}`);
                 setAnamnesis(anamnesisResponse.data);
@@ -59,9 +68,9 @@ const AnamnesisDetailsPage = () => {
 
                 if (appointmentResponse.data.slotId) {
                     const slotResponse = await axiosInstance.get(`/slots/${appointmentResponse.data.slotId}`);
-                    setAppointment(prevAppointment => ({
+                    setAppointment((prevAppointment) => ({
                         ...prevAppointment,
-                        slot: slotResponse.data
+                        slot: slotResponse.data,
                     }));
                 }
 
@@ -70,6 +79,9 @@ const AnamnesisDetailsPage = () => {
 
                 const proceduresResponse = await axiosInstance.get(`/procedures/by-anamnesis/${id}`);
                 setProcedures(proceduresResponse.data);
+
+                const attachmentsResponse = await axiosInstance.get(`/diagnostic-attachment/all-by-anamnesis/${id}`);
+                setAttachments(attachmentsResponse.data);
 
                 const userResponse = await axiosInstance.get("/users/current-user-info");
                 setUserRole(userResponse.data.role);
@@ -106,7 +118,7 @@ const AnamnesisDetailsPage = () => {
 
     const handleSaveExaminationPlan = async (updatedPlan) => {
         try {
-            const updatedDiagnosis = {...diagnosis, examinationPlan: updatedPlan};
+            const updatedDiagnosis = { ...diagnosis, examinationPlan: updatedPlan };
             const response = await axiosInstance.put(`/diagnosis/update/${diagnosis.id}`, updatedDiagnosis);
             setDiagnosis(response.data);
             setIsEditExaminationPlanModalOpen(false);
@@ -116,7 +128,6 @@ const AnamnesisDetailsPage = () => {
             alert("Failed to update examination plan. Please try again later.");
         }
     };
-
 
     const handleSaveClinicalDiagnosis = async (clinicalDiagnosisData) => {
         try {
@@ -139,7 +150,7 @@ const AnamnesisDetailsPage = () => {
         try {
             if (selectedTreatment) {
                 const response = await axiosInstance.put(`/treatments/update/${selectedTreatment.id}`, treatmentData);
-                setTreatments(treatments.map(t => t.id === response.data.id ? response.data : t));
+                setTreatments(treatments.map((t) => (t.id === response.data.id ? response.data : t)));
             } else {
                 const response = await axiosInstance.post("/treatments/add", treatmentData);
                 setTreatments([...treatments, response.data]);
@@ -167,7 +178,7 @@ const AnamnesisDetailsPage = () => {
     const handleCompleteTreatment = async (treatmentId) => {
         try {
             const response = await axiosInstance.put(`/treatments/complete/${treatmentId}`);
-            setTreatments(treatments.map(t => t.id === response.data.id ? response.data : t));
+            setTreatments(treatments.map((t) => (t.id === response.data.id ? response.data : t)));
             alert("Treatment marked as complete!");
         } catch (error) {
             console.error("Error completing treatment:", error);
@@ -178,9 +189,7 @@ const AnamnesisDetailsPage = () => {
     const handleSaveRecommendedDiagnosis = async (diagnosisId) => {
         try {
             const response = await axiosInstance.post(`/diagnosis/save-recomended/${id}`, diagnosisId, {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { "Content-Type": "application/json" },
             });
             setClinicalDiagnoses([...clinicalDiagnoses, response.data]);
             alert("Recommended diagnosis saved successfully!");
@@ -189,6 +198,29 @@ const AnamnesisDetailsPage = () => {
             alert("Failed to save recommended diagnosis. Please try again later.");
         }
     };
+
+    const handleSaveAttachment = (newAttachment) => {
+        setAttachments((prev) => [...prev, newAttachment]);
+    };
+
+    const openAttachmentModal = (attachment) => {
+        setSelectedAttachment(attachment);
+        setIsAttachmentModalOpen(true);
+    };
+
+    const closeAttachmentModal = () => {
+        setIsAttachmentModalOpen(false);
+        setSelectedAttachment(null);
+    };
+
+    const openAddAttachmentModal = () => {
+        setIsAddAttachmentModalOpen(true);
+    };
+
+    const closeAddAttachmentModal = () => {
+        setIsAddAttachmentModalOpen(false);
+    };
+
     if (loading) {
         return <div className="loading-overlay">Loading...</div>;
     }
@@ -201,8 +233,6 @@ const AnamnesisDetailsPage = () => {
         return <div>No data found.</div>;
     }
 
-    const activeTreatments = treatments.filter(treatment => !treatment.isCompleted);
-
     return (
         <div>
             <Header/>
@@ -210,24 +240,24 @@ const AnamnesisDetailsPage = () => {
                 <div>
                     <PetInfo petInfo={petInfo} onEdit={() => {
                     }}/>
-
                     <div style={{marginTop: "20px"}}>
-                        <h4 style={{marginBottom: '5px'}}>Diagnosis</h4>
+                        <h4 style={{marginBottom: "5px"}}>Diagnosis</h4>
                         <p>{diagnosis ? diagnosis.name : "No diagnosis provided."}</p>
                     </div>
                     <div style={{marginTop: "10px"}}>
-                        <h4 style={{marginBottom: '5px'}}>Doctor</h4>
+                        <h4 style={{marginBottom: "5px"}}>Doctor</h4>
                         <p>{doctorName || "No doctor assigned."}</p>
                     </div>
-                    <button className="button rounded-3 btn-no-border" onClick={() => window.history.back()}>Back to pet
-                        profile
+                    <button className="button rounded-3 btn-no-border" onClick={() => window.history.back()}>
+                        Back to pet profile
                     </button>
                 </div>
 
                 <div style={{flex: 1}}>
-
-                    <h2><strong>Anamnesis details </strong> (appeal
-                        from {new Date(anamnesis.date).toLocaleDateString()}: {diagnosis.name})</h2>
+                    <h2>
+                        <strong>Anamnesis details </strong> (appeal
+                        from {new Date(anamnesis.date).toLocaleDateString()}: {diagnosis ? diagnosis.name : "No diagnosis"})
+                    </h2>
                     <h3 className="py-1">Complaints</h3>
                     <div className="bg-table element-space" style={{flex: 1}}>
                         <div>
@@ -239,7 +269,8 @@ const AnamnesisDetailsPage = () => {
                             }}>
                                 <p>{anamnesis.description || "No complaints provided."}</p>
                                 <button className="button rounded-3 btn-no-border"
-                                        onClick={() => setIsAppointmentModalOpen(true)}>Show an appointment
+                                        onClick={() => setIsAppointmentModalOpen(true)}>
+                                    Show an appointment
                                 </button>
                             </div>
                         </div>
@@ -254,17 +285,17 @@ const AnamnesisDetailsPage = () => {
                                     flexDirection: "column",
                                     height: "100%"
                                 }}>
-                                    <p style={{marginBottom: '5px'}}><strong>Name:</strong> {diagnosis.name}</p>
-                                    <p style={{marginBottom: '5px'}}>
+                                    <p style={{marginBottom: "5px"}}><strong>Name:</strong> {diagnosis.name}</p>
+                                    <p style={{marginBottom: "5px"}}>
                                         <strong>Date:</strong> {new Date(diagnosis.date).toLocaleDateString()}</p>
-                                    <p style={{marginBottom: '5px'}}>
+                                    <p style={{marginBottom: "5px"}}>
                                         <strong>Contagious:</strong> {diagnosis.contagious ? "Yes" : "No"}</p>
-                                    <p style={{marginBottom: '0px'}}>
+                                    <p style={{marginBottom: "0px"}}>
                                         <strong>Description:</strong> {diagnosis.description}</p>
                                     <div style={{marginTop: "auto", textAlign: "right"}}>
                                         <button className="button btn-no-border"
-
-                                                onClick={() => setIsEditDiagnosisModalOpen(true)}>Edit
+                                                onClick={() => setIsEditDiagnosisModalOpen(true)}>
+                                            Edit
                                         </button>
                                     </div>
                                 </div>
@@ -272,10 +303,8 @@ const AnamnesisDetailsPage = () => {
                                 <p>No preliminary diagnosis provided.</p>
                             )}
                             {!diagnosis && userRole === "ROLE_VET" && (
-                                <button className="button rounded-3 btn-no-border" onClick={() => {
-                                    setSelectedClinicalDiagnosisId(null);
-                                    setIsEditClinicalDiagnosisModalOpen(true);
-                                }}>
+                                <button className="button rounded-3 btn-no-border"
+                                        onClick={() => setIsEditDiagnosisModalOpen(true)}>
                                     Add Preliminary Diagnosis
                                 </button>
                             )}
@@ -361,12 +390,12 @@ const AnamnesisDetailsPage = () => {
                                             <td>{procedure.type}</td>
                                             <td>{procedure.name}</td>
                                             <td>
-                                                <button className="button btn-no-border"
-
-                                                        onClick={() => {
-                                                            setSelectedProcedure(procedure);
-                                                            setIsProcedureModalOpen(true);
-                                                        }}
+                                                <button
+                                                    className="button btn-no-border"
+                                                    onClick={() => {
+                                                        setSelectedProcedure(procedure);
+                                                        setIsProcedureModalOpen(true);
+                                                    }}
                                                 >
                                                     More
                                                 </button>
@@ -504,22 +533,62 @@ const AnamnesisDetailsPage = () => {
                             <div className="modal-header">
                                 <h3>Procedure Details</h3>
                             </div>
-                            <div className='rounded-3' style={{backgroundColor: 'rgba(179, 35, 35, 0.06)', padding: '10px'}}>
-                            <p><strong>Type:</strong> {selectedProcedure.type}</p>
-                            <p><strong>Name:</strong> {selectedProcedure.name}</p>
-                            <p><strong>Description:</strong> {selectedProcedure.description}</p>
-                            <p><strong>Notes:</strong> {selectedProcedure.notes}</p>
-                            <p><strong>Date:</strong> {new Date(selectedProcedure.date).toLocaleDateString()}</p>
+                            <div className="rounded-3"
+                                 style={{backgroundColor: "rgba(179, 35, 35, 0.06)", padding: "10px"}}>
+                                <p><strong>Type:</strong> {selectedProcedure.type}</p>
+                                <p><strong>Name:</strong> {selectedProcedure.name}</p>
+                                <p><strong>Description:</strong> {selectedProcedure.description}</p>
+                                <p><strong>Notes:</strong> {selectedProcedure.notes}</p>
+                                <p><strong>Date:</strong> {new Date(selectedProcedure.date).toLocaleDateString()}</p>
                             </div>
                         </div>
                     </div>
                 )}
 
+                {isAttachmentModalOpen && (
+                    <AttachmentDetailsModal attachment={selectedAttachment} onClose={closeAttachmentModal}/>
+                )}
 
+                {isAddAttachmentModalOpen && (
+                    <AddAttachmentModal
+                        diagnoses={[diagnosis, ...clinicalDiagnoses].filter((d) => d)}
+                        anamnesisId={id}
+                        onClose={closeAddAttachmentModal}
+                        onSave={handleSaveAttachment}
+                    />
+                )}
+            </div>
+            <div className="mt-1 rounded-1 treatment-vet element-space" style={{padding: "20px"}}>
+                <h3>Diagnostic Attachments</h3>
+                {attachments.length > 0 ? (
+                    <table cellPadding="3" cellSpacing="0" className="uniq-table">
+                        <tbody>
+                        {attachments.map((attachment) => (
+                            <tr key={attachment.id}>
+                                <td>{attachment.name}</td>
+                                <td>
+                                    <button className="button btn-no-border"
+                                            onClick={() => openAttachmentModal(attachment)}>
+                                        More
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                        </tbody>
+                    </table>
+                ) : (
+                    <p>No diagnostic attachments found.</p>
+                )}
+                {(userRole === "ROLE_VET" || userRole === "ROLE_ADMIN") && (
+                    <button className="button rounded-3 btn-no-border" onClick={openAddAttachmentModal}>
+                        Add Attachment
+                    </button>
+                )}
             </div>
         </div>
     );
 };
+
 const modalStyles = {
     position: "fixed",
     top: "50%",
@@ -532,16 +601,6 @@ const modalStyles = {
     zIndex: 1000,
     maxWidth: "500px",
     width: "90%",
-};
-
-const overlayStyles = {
-    position: "fixed",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    zIndex: 999,
 };
 
 export default AnamnesisDetailsPage;

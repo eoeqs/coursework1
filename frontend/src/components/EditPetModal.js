@@ -160,16 +160,6 @@ const EditPetModal = ({ petInfo, onClose, onSave }) => {
                         style={inputStyles}
                     />
                 </div>
-                <div>
-                    <label style={{ display: "block", fontSize: "14px", marginTop: "10px", color: "#777" }}>Sector:</label>
-                    <input
-                        type="text"
-                        name="sector"
-                        value={formData.sector}
-                        onChange={handleChange}
-                        style={inputStyles}
-                    />
-                </div>
 
                 <div style={{ display: "flex", justifyContent: "space-evenly", marginTop: "20px" }}>
                     <button style={buttonStyles} type="submit">Save</button>
