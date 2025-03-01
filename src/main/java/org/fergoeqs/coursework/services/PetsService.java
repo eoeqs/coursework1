@@ -3,6 +3,7 @@ package org.fergoeqs.coursework.services;
 import org.fergoeqs.coursework.dto.PetDTO;
 import org.fergoeqs.coursework.models.AppUser;
 import org.fergoeqs.coursework.models.Pet;
+import org.fergoeqs.coursework.models.enums.RoleType;
 import org.fergoeqs.coursework.repositories.PetsRepository;
 import org.fergoeqs.coursework.utils.Mappers.PetMapper;
 import org.springframework.stereotype.Service;
@@ -46,6 +47,11 @@ public class PetsService {
 
     @Transactional
     public Pet addPet(PetDTO petDTO, AppUser owner) {
+        if (owner.getAuthorities().stream().anyMatch(auth ->
+                auth.getAuthority().equals("ROLE_USER"))){
+            owner.getRoles().clear();
+            owner.getRoles().add(RoleType.ROLE_OWNER);
+        }
         Pet pet = petMapper.petDTOToPet(petDTO);
         pet.setOwner(owner);
         return petsRepository.save(pet);

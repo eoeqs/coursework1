@@ -28,7 +28,7 @@ public class Quarantine {
 
     @ManyToOne
     @JoinColumn(name = "sector_id")
-    private Sector sector; //нужно ли из секторов доставать каратины?
+    private Sector sector;
 
     @ManyToOne
     @JoinColumn(name = "pet_id")
