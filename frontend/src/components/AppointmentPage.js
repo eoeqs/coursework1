@@ -244,7 +244,7 @@ const AppointmentPage = ({ onClose }) => {
                                 <td>
                                     {slot.startTime} - {slot.endTime}
                                 </td>
-                                <td>{slot.vetName}</td> {/* Отображаем имя и фамилию вместо vetId */}
+                                <td>{slot.vetName}</td>
                             </tr>
                         ))}
                         </tbody>

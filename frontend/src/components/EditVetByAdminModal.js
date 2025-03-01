@@ -1,7 +1,7 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import useAxiosWithAuth from "../AxiosAuth";
-//TODO: админ функционал сюда
-const EditVetModal = ({vetInfo, onClose, onSave}) => {
+
+const EditVetByAdminModal = ({ vetInfo, clinics, onClose, onSave }) => {
     const axiosInstance = useAxiosWithAuth();
     const [formData, setFormData] = useState({
         name: vetInfo?.name || "",
@@ -11,12 +11,12 @@ const EditVetModal = ({vetInfo, onClose, onSave}) => {
         phoneNumber: vetInfo?.phoneNumber || "",
         schedule: vetInfo?.schedule || "",
         workingHours: vetInfo?.workingHours || "",
-        clinic: vetInfo?.clinic || "",
+        clinic: vetInfo?.clinic || "", // Clinic ID
     });
     const [error, setError] = useState(null);
 
     const handleChange = (e) => {
-        const {name, value} = e.target;
+        const { name, value } = e.target;
         setFormData((prev) => ({
             ...prev,
             [name]: value,
@@ -29,7 +29,7 @@ const EditVetModal = ({vetInfo, onClose, onSave}) => {
                 ...formData,
                 id: vetInfo.id,
             };
-            const response = await axiosInstance.put(`/users/update-user/`, updatedVetData);
+            const response = await axiosInstance.put(`/users/update-user-admin/${vetInfo.id}`, updatedVetData); // Use admin endpoint
             onSave(response.data);
             onClose();
             alert("Profile updated successfully!");
@@ -58,9 +58,9 @@ const EditVetModal = ({vetInfo, onClose, onSave}) => {
             <div className="modal-header">
                 <h3>Edit Vet Profile</h3>
             </div>
-            {error && <p style={{color: "red"}}>{error}</p>}
-            <div style={{marginBottom: "10px"}}>
-                <label style={{display: "block", fontSize: "14px", marginBottom: "8px", color: "#777"}}>
+            {error && <p style={{ color: "red" }}>{error}</p>}
+            <div style={{ marginBottom: "10px" }}>
+                <label style={{ display: "block", fontSize: "14px", marginBottom: "8px", color: "#777" }}>
                     Name:
                     <input
                         type="text"
@@ -79,8 +79,8 @@ const EditVetModal = ({vetInfo, onClose, onSave}) => {
                     />
                 </label>
             </div>
-            <div style={{marginBottom: "10px"}}>
-                <label style={{display: "block", fontSize: "14px", marginBottom: "8px", color: "#777"}}>
+            <div style={{ marginBottom: "10px" }}>
+                <label style={{ display: "block", fontSize: "14px", marginBottom: "8px", color: "#777" }}>
                     Surname:
                     <input
                         type="text"
@@ -99,8 +99,8 @@ const EditVetModal = ({vetInfo, onClose, onSave}) => {
                     />
                 </label>
             </div>
-            <div style={{marginBottom: "10px"}}>
-                <label style={{display: "block", fontSize: "14px", marginBottom: "8px", color: "#777"}}>
+            <div style={{ marginBottom: "10px" }}>
+                <label style={{ display: "block", fontSize: "14px", marginBottom: "8px", color: "#777" }}>
                     Qualification:
                     <input
                         type="text"
@@ -119,8 +119,8 @@ const EditVetModal = ({vetInfo, onClose, onSave}) => {
                     />
                 </label>
             </div>
-            <div style={{marginBottom: "10px"}}>
-                <label style={{display: "block", fontSize: "14px", marginBottom: "8px", color: "#777"}}>
+            <div style={{ marginBottom: "10px" }}>
+                <label style={{ display: "block", fontSize: "14px", marginBottom: "8px", color: "#777" }}>
                     Email:
                     <input
                         type="email"
@@ -139,8 +139,8 @@ const EditVetModal = ({vetInfo, onClose, onSave}) => {
                     />
                 </label>
             </div>
-            <div style={{marginBottom: "10px"}}>
-                <label style={{display: "block", fontSize: "14px", marginBottom: "8px", color: "#777"}}>
+            <div style={{ marginBottom: "10px" }}>
+                <label style={{ display: "block", fontSize: "14px", marginBottom: "8px", color: "#777" }}>
                     Phone Number:
                     <input
                         type="text"
@@ -159,8 +159,8 @@ const EditVetModal = ({vetInfo, onClose, onSave}) => {
                     />
                 </label>
             </div>
-            <div style={{marginBottom: "10px"}}>
-                <label style={{display: "block", fontSize: "14px", marginBottom: "8px", color: "#777"}}>
+            <div style={{ marginBottom: "10px" }}>
+                <label style={{ display: "block", fontSize: "14px", marginBottom: "8px", color: "#777" }}>
                     Schedule:
                     <input
                         type="text"
@@ -179,8 +179,8 @@ const EditVetModal = ({vetInfo, onClose, onSave}) => {
                     />
                 </label>
             </div>
-            <div style={{marginBottom: "10px"}}>
-                <label style={{display: "block", fontSize: "14px", marginBottom: "8px", color: "#777"}}>
+            <div style={{ marginBottom: "10px" }}>
+                <label style={{ display: "block", fontSize: "14px", marginBottom: "8px", color: "#777" }}>
                     Working Hours:
                     <input
                         type="text"
@@ -199,11 +199,10 @@ const EditVetModal = ({vetInfo, onClose, onSave}) => {
                     />
                 </label>
             </div>
-            <div style={{marginBottom: "10px"}}>
-                <label style={{display: "block", fontSize: "14px", marginBottom: "8px", color: "#777"}}>
+            <div style={{ marginBottom: "10px" }}>
+                <label style={{ display: "block", fontSize: "14px", marginBottom: "8px", color: "#777" }}>
                     Clinic:
-                    <input
-                        type="text"
+                    <select
                         name="clinic"
                         value={formData.clinic}
                         onChange={handleChange}
@@ -216,14 +215,25 @@ const EditVetModal = ({vetInfo, onClose, onSave}) => {
                             backgroundColor: "#f9f9f9",
                             cursor: "pointer",
                         }}
-                    />
+                    >
+                        <option value="">Select a clinic (optional)</option>
+                        {clinics.map((clinic) => (
+                            <option key={clinic.id} value={clinic.id}>
+                                {clinic.address}
+                            </option>
+                        ))}
+                    </select>
                 </label>
             </div>
-            <div style={{display: "flex", justifyContent: "space-evenly", marginTop: "20px"}}>
-                <button className="form-button" style={{padding: "3px 30px"}} onClick={handleSubmit}>
+            <div style={{ display: "flex", justifyContent: "space-evenly", marginTop: "20px" }}>
+                <button className="form-button" style={{ padding: "3px 30px" }} onClick={handleSubmit}>
                     Save
                 </button>
-                <button className="rounded-1" style={{padding: "3px 20px", backgroundColor: "white", border: "1"}} onClick={onClose}>
+                <button
+                    className="rounded-1"
+                    style={{ padding: "3px 20px", backgroundColor: "white", border: "1px solid #ddd" }}
+                    onClick={onClose}
+                >
                     Cancel
                 </button>
             </div>
@@ -231,4 +241,4 @@ const EditVetModal = ({vetInfo, onClose, onSave}) => {
     );
 };
 
-export default EditVetModal;
+export default EditVetByAdminModal;

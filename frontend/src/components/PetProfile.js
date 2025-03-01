@@ -25,6 +25,10 @@ const PetProfilePage = () => {
     const [upcomingAppointments, setUpcomingAppointments] = useState([]);
     const [treatments, setTreatments] = useState([]);
     const [userRole, setUserRole] = useState("");
+    const [isChangeSlotModalOpen, setIsChangeSlotModalOpen] = useState(false); // New state for slot modal
+    const [selectedAppointment, setSelectedAppointment] = useState(null); // New state for selected appointment
+    const [availableSlots, setAvailableSlots] = useState([]); // New state for available slots
+    const [newSlotId, setNewSlotId] = useState(null); // New state for selected slot
 
     useEffect(() => {
         const fetchData = async () => {
@@ -122,6 +126,59 @@ const PetProfilePage = () => {
         setIsHealthUpdateDetailsModalOpen(true);
     };
 
+    const openChangeSlotModal = (appointment) => {
+        setSelectedAppointment(appointment);
+        fetchAvailableSlots();
+        setIsChangeSlotModalOpen(true);
+    };
+
+    const closeChangeSlotModal = () => {
+        setIsChangeSlotModalOpen(false);
+        setSelectedAppointment(null);
+        setAvailableSlots([]);
+        setNewSlotId(null);
+    };
+
+    const fetchAvailableSlots = async () => {
+        try {
+            const response = await axiosInstance.get("/slots/available-priority-slots");
+            setAvailableSlots(response.data);
+        } catch (error) {
+            console.error("Error fetching available slots:", error);
+            alert("Failed to fetch available slots.");
+        }
+    };
+
+    const handleChangeSlot = async () => {
+        if (!newSlotId) {
+            alert("Please select a new slot.");
+            return;
+        }
+
+        try {
+            // Book the new slot
+            await axiosInstance.put(`/slots/book-slot/${newSlotId}`);
+            // Release the old slot
+            await axiosInstance.put(`/slots/release-slot/${selectedAppointment.slotId}`);
+            // Update the appointment with the new slot
+            await axiosInstance.put(`/appointments/update-appointment/${selectedAppointment.id}`, null, {
+                params: { slotId: newSlotId },
+            });
+
+            // Update local state
+            const updatedAppointments = upcomingAppointments.map((app) =>
+                app.id === selectedAppointment.id ? { ...app, slotId: newSlotId } : app
+            );
+            setUpcomingAppointments(updatedAppointments);
+
+            alert("Appointment slot changed successfully!");
+            closeChangeSlotModal();
+        } catch (error) {
+            console.error("Error changing slot:", error);
+            alert("Failed to change slot.");
+        }
+    };
+
     if (loading) {
         return <div className="loading-overlay">Loading...</div>;
     }
@@ -147,7 +204,7 @@ const PetProfilePage = () => {
                     >
                         <h4>Upcoming Appointments</h4>
                         {upcomingAppointments.length > 0 ? (
-                            <table cellPadding="3" cellSpacing="0">
+                            <table cellPadding="3" cellSpacing="0" className="uniq-table">
                                 <tbody>
                                 {upcomingAppointments.map((appointment) => (
                                     <tr key={appointment.id}>
@@ -155,6 +212,16 @@ const PetProfilePage = () => {
                                         <td>{appointment.slot.startTime.slice(0, 5)}</td>
                                         <td>-</td>
                                         <td>Dr. {appointment.slot.vetName}</td>
+                                        <td>
+                                            {userRole === "ROLE_ADMIN" && appointment.priority && (
+                                                <button
+                                                    className="button btn-no-border"
+                                                    onClick={() => openChangeSlotModal(appointment)}
+                                                >
+                                                    Change Slot
+                                                </button>
+                                            )}
+                                        </td>
                                     </tr>
                                 ))}
                                 </tbody>
@@ -285,9 +352,67 @@ const PetProfilePage = () => {
                         onClose={() => setIsHealthUpdateDetailsModalOpen(false)}
                     />
                 )}
+
+                {isChangeSlotModalOpen && (
+                    <div style={modalOverlayStyles}>
+                        <div style={modalStyles} onClick={(e) => e.stopPropagation()}>
+                            <h3>Change Appointment Slot</h3>
+                            {availableSlots.length > 0 ? (
+                                <div style={{ maxHeight: "300px", overflowY: "auto" }}>
+                                    {availableSlots.map((slot) => (
+                                        <div key={slot.id} style={{ marginBottom: "10px" }}>
+                                            <label>
+                                                <input
+                                                    type="radio"
+                                                    name="newSlot"
+                                                    value={slot.id}
+                                                    checked={newSlotId === slot.id}
+                                                    onChange={() => setNewSlotId(slot.id)}
+                                                />
+                                                {new Date(slot.date).toLocaleDateString()} {slot.startTime} - {slot.endTime}
+                                            </label>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <p>No available priority slots found.</p>
+                            )}
+                            <div style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
+                                <button onClick={handleChangeSlot} disabled={!newSlotId}>
+                                    Confirm Change
+                                </button>
+                                <button onClick={closeChangeSlotModal}>Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
 };
-// TODO: treatment timeline
+
+const modalOverlayStyles = {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1000,
+};
+
+const modalStyles = {
+    backgroundColor: "white",
+    padding: "20px",
+    borderRadius: "10px",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+    maxWidth: "500px",
+    width: "90%",
+    maxHeight: "80vh",
+    overflowY: "auto",
+};
+
 export default PetProfilePage;

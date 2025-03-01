@@ -26,9 +26,9 @@ const VetDashboard = () => {
     const [cancelReason, setCancelReason] = useState("");
     const [showCancelModal, setShowCancelModal] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-    const [showRescheduleModal, setShowRescheduleModal] = useState(false); // New state for reschedule modal
-    const [availableSlots, setAvailableSlots] = useState([]); // New state for available slots
-    const [selectedSlotId, setSelectedSlotId] = useState(null); // New state for selected slot
+    const [showRescheduleModal, setShowRescheduleModal] = useState(false);
+    const [availableSlots, setAvailableSlots] = useState([]);
+    const [selectedSlotId, setSelectedSlotId] = useState(null);
 
     useEffect(() => {
         if (!token) return;

@@ -13,6 +13,7 @@ import AnamnesisDetailsPage from "./components/AnamnesisDetailsPage";
 import HealthUpdateDetailsModal from "./components/HealthUpdateDetailsModal";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import OwnerDashboard from "./components/OwnerDashboard";
+import AdminDashboard from "./components/AdminDashboard";
 
 
 const App = () => {
@@ -33,6 +34,7 @@ const App = () => {
                 <Route path="/pet/:petId" element={<PetProfile/>} />
                 <Route path="/anamnesis/:id" element={<AnamnesisDetailsPage />} />
                 <Route path="/health/:id" element={<HealthUpdateDetailsModal />} />
+                <Route path="/admin-dashboard" element={<AdminDashboard />} />
             </Routes>
         </Router>
     );
