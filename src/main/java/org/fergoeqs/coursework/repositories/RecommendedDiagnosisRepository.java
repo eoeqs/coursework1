@@ -17,12 +17,23 @@ public interface RecommendedDiagnosisRepository extends JpaRepository<Recommende
     @Query("SELECT d FROM RecommendedDiagnosis d JOIN d.symptoms s WHERE s.id = :symptomId")
     List<RecommendedDiagnosis> findBySymptomId(Long symptomId);
 
-        @Query("SELECT d FROM RecommendedDiagnosis d " +
-                "JOIN d.symptoms s " +
-                "WHERE s.id IN :symptomIds " +
-                "AND d.bodyPart = :bodyPart")
-        List<RecommendedDiagnosis> findBySymptomsAndBodyPart(
-                @Param("symptomIds") List<Long> symptomIds,
-                @Param("bodyPart") BodyPart bodyPart);
+    @Query("SELECT d FROM RecommendedDiagnosis d " +
+            "JOIN d.symptoms s " +
+            "WHERE s.id IN :symptomIds " +
+            "AND d.bodyPart = :bodyPart")
+    List<RecommendedDiagnosis> findBySymptomsAndBodyPart(
+            @Param("symptomIds") List<Long> symptomIds,
+            @Param("bodyPart") BodyPart bodyPart);
 
+    @Query("SELECT COUNT(d) > 0 " +
+            "FROM RecommendedDiagnosis d " +
+            "WHERE d.name = :name " +
+            "AND d.bodyPart = :bodyPart " +
+            "AND (SELECT COUNT(DISTINCT s.id) FROM d.symptoms s WHERE s.id IN :symptomIds) = :symptomCount " +
+            "AND (SELECT COUNT(DISTINCT s.id) FROM d.symptoms s) = :symptomCount")
+    boolean existsByNameAndBodyPartAndSymptoms(
+            @Param("name") String name,
+            @Param("bodyPart") BodyPart bodyPart,
+            @Param("symptomIds") List<Long> symptomIds,
+            @Param("symptomCount") Long symptomCount);
 }

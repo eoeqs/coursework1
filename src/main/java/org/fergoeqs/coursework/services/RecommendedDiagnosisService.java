@@ -7,6 +7,7 @@ import org.fergoeqs.coursework.models.enums.BodyPart;
 import org.fergoeqs.coursework.repositories.RecommendedDiagnosisRepository;
 import org.fergoeqs.coursework.repositories.SymptomsRepository;
 import org.fergoeqs.coursework.utils.Mappers.RecommendedDiagnosisMapper;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,11 +38,21 @@ public class RecommendedDiagnosisService {
         return recommendedDiagnosisRepository.findBySymptomsAndBodyPart(symptoms, bodyPart);
     }
 
+    public boolean existsByNameAndBodyPartAndSymptoms(String name, BodyPart bodyPart, List<Long> symptomIds, Long symptomCount){
+        return recommendedDiagnosisRepository.existsByNameAndBodyPartAndSymptoms(name, bodyPart, symptomIds, symptomCount);
+    };
+
     public RecommendedDiagnosis save(RecommendedDiagnosisDTO recommendedDiagnosisDTO) {
         RecommendedDiagnosis recDiagnosis = recommendedDiagnosisMapper.fromDTO(recommendedDiagnosisDTO);
         List<Symptom> symptoms = symptomsRepository.findAllById(recommendedDiagnosisDTO.symptoms());
         recDiagnosis.setSymptoms(symptoms);
         return recommendedDiagnosisRepository.save(recDiagnosis);
     }
+
+    public RecommendedDiagnosis saveRaw(RecommendedDiagnosis recommendedDiagnosis) {
+        return recommendedDiagnosisRepository.save(recommendedDiagnosis);
+    }
+
+
 
 }
