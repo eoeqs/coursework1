@@ -22,6 +22,8 @@ public class Slot {
     private LocalTime endTime;
     private Boolean isAvailable = true;
 
+    private Boolean isPriority;
+
     @ManyToOne
     @JoinColumn(name = "vet_id", nullable = false)
     private AppUser vet;

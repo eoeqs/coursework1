@@ -7,7 +7,6 @@ import org.fergoeqs.coursework.models.enums.BodyPart;
 import org.fergoeqs.coursework.repositories.RecommendedDiagnosisRepository;
 import org.fergoeqs.coursework.repositories.SymptomsRepository;
 import org.fergoeqs.coursework.utils.Mappers.RecommendedDiagnosisMapper;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -49,8 +48,8 @@ public class RecommendedDiagnosisService {
         return recommendedDiagnosisRepository.save(recDiagnosis);
     }
 
-    public RecommendedDiagnosis saveRaw(RecommendedDiagnosis recommendedDiagnosis) {
-        return recommendedDiagnosisRepository.save(recommendedDiagnosis);
+    public void saveRaw(RecommendedDiagnosis recommendedDiagnosis) {
+        recommendedDiagnosisRepository.save(recommendedDiagnosis);
     }
 
 

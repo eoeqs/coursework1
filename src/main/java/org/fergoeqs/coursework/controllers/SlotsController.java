@@ -46,6 +46,18 @@ public class SlotsController {
         }
     }
 
+    @GetMapping("/available-priority-slots")
+    public ResponseEntity<?> getAvailablePrioritySlots() {
+        try {
+            List<Slot> slots = slotsService.getAvailablePrioritySlots();
+            return ResponseEntity.ok(slotMapper.slotsToSlotDTOs(slots));
+        } catch (Exception e) {
+            logger.error("Failed to get available priority slots: {}", e.getMessage());
+            throw e;
+        }
+    }
+
+
     @GetMapping("/all")
     public ResponseEntity<?> getSlots() {
         try {
