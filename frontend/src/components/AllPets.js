@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import useAxiosWithAuth from "../AxiosAuth";
 import Header from "./Header";
 import EditPetModal from "./EditPetModal";
+import '../AllEntitiesPage.css';
+import PawStub from "../pics/paw.png";
 
 const AllPets = () => {
     const axiosInstance = useAxiosWithAuth();
@@ -12,6 +14,8 @@ const AllPets = () => {
     const [error, setError] = useState(null);
     const [selectedPet, setSelectedPet] = useState(null);
     const [isEditPetModalOpen, setIsEditPetModalOpen] = useState(false);
+    const [filterType, setFilterType] = useState("all"); // Фильтр по виду
+    const [searchQuery, setSearchQuery] = useState(""); // Поиск по кличке
 
     useEffect(() => {
         const fetchPets = async () => {
@@ -31,6 +35,12 @@ const AllPets = () => {
 
         fetchPets();
     }, [axiosInstance]);
+
+    const filteredPets = pets.filter((pet) => {
+        const matchesType = filterType === "all" || pet.type.toLowerCase() === filterType;
+        const matchesSearch = pet.name.toLowerCase().includes(searchQuery.toLowerCase());
+        return matchesType && matchesSearch;
+    });
 
     const openEditPetModal = (pet) => {
         setSelectedPet(pet);
@@ -69,14 +79,58 @@ const AllPets = () => {
     return (
         <div>
             <Header />
-            <div className="container mt-3" style={{ padding: "20px" }}>
+            <div className="entities_container" style={{ padding: "20px"}}>
                 <h2>All Pets</h2>
-                <div className="bg-table element-space" style={{ marginBottom: "20px" }}>
-                    {pets.length > 0 ? (
-                        <table cellPadding="5" cellSpacing="0" className="uniq-table">
+
+                <div style={{ marginBottom: "20px", display: "flex", gap: "10px" }}>
+                    <select
+                        value={filterType}
+                        onChange={(e) => setFilterType(e.target.value)}
+                        style={{ padding: "5px", borderRadius: "5px" }}
+                    >
+                        <option value="all">All</option>
+                        <option value="dog">Dog</option>
+                        <option value="cat">Cat</option>
+                    </select>
+
+                    <input
+                        type="text"
+                        placeholder="Search by name..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        style={{ padding: "5px", borderRadius: "5px", flex: 1 }}
+                    />
+                </div>
+
+                <div className="bg-entities element-space" style={{ marginBottom: "20px" }}>
+                    {filteredPets.length > 0 ? (
+                        <table cellPadding="5" cellSpacing="0" className="entities-table table-right-end">
                             <tbody>
-                            {pets.map((pet) => (
+                            {filteredPets.map((pet) => (
                                 <tr key={pet.id}>
+                                    <td>{pet.photoUrl ? (
+                                        <img className="avatar"
+                                             src={pet.photoUrl}
+                                             alt={`${pet.name}'s avatar`}
+                                             style={{
+                                                 width: '50px',
+                                                 height: '50px',
+                                                 borderRadius: '50%',
+                                                 marginRight: '20px'
+                                             }}
+                                        />
+                                    ) : (
+                                        <img
+                                            className="avatar"
+                                            src={PawStub}
+                                            alt={`photo stub`}
+                                            style={{
+                                                width: '50px',
+                                                height: '50px',
+                                                borderRadius: '50%',
+                                                marginRight: '20px'
+                                            }}
+                                        />)}</td>
                                     <td>{pet.name}</td>
                                     <td>{pet.type}</td>
                                     <td>{pet.breed}</td>

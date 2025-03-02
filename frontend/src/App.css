@@ -510,3 +510,27 @@ html, body, #root {
 /*  font-family: 'Arial', sans-serif;*/
 /*  color: #333;*/
 /*}*/
+
+button {
+  padding: 3px 16px;
+  border: none;
+  border-radius: 2px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button.btn-no-border {
+  background-color: #da9a9a;
+
+}
+
+button.btn-no-border:hover {
+  background-color: #8a3636;
+  color: white;
+  transform: translateY(-2px);
+}
+
+button.btn-no-border:active {
+  transform: translateY(0);
+}
