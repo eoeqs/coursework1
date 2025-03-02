@@ -50,6 +50,8 @@ export default function Header() {
             navigate("/vet-dashboard");
         } else if (userRole === "ROLE_OWNER") {
             navigate("/owner-dashboard");
+        } else if (userRole === "ROLE_ADMIN") {
+            navigate("/admin-dashboard");
         } else {
             navigate("/");
         }

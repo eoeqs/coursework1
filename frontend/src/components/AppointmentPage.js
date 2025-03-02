@@ -173,7 +173,7 @@ const AppointmentPage = ({ onClose }) => {
                     ))}
                 </select>
 
-                {userRole === "ROLE_OWNER" || "ROLE_USER"  && (
+                {(userRole === "ROLE_OWNER" || userRole === "ROLE_USER") && (
                     <button onClick={() => setShowNewPetForm(true)}>Create New Pet</button>
                 )}
 
@@ -244,7 +244,7 @@ const AppointmentPage = ({ onClose }) => {
                                 <td>
                                     {slot.startTime} - {slot.endTime}
                                 </td>
-                                <td>{slot.vetName}</td> {/* Отображаем имя и фамилию вместо vetId */}
+                                <td>{slot.vetName}</td>
                             </tr>
                         ))}
                         </tbody>

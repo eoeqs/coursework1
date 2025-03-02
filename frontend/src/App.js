@@ -13,6 +13,9 @@ import AnamnesisDetailsPage from "./components/AnamnesisDetailsPage";
 import HealthUpdateDetailsModal from "./components/HealthUpdateDetailsModal";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import OwnerDashboard from "./components/OwnerDashboard";
+import AdminDashboard from "./components/AdminDashboard";
+import QuarantineManagement from "./components/QuarantineManagement";
+import SectorQuarantineManagement from "./components/SectorQuarantineManagement";
 
 
 const App = () => {
@@ -33,6 +36,9 @@ const App = () => {
                 <Route path="/pet/:petId" element={<PetProfile/>} />
                 <Route path="/anamnesis/:id" element={<AnamnesisDetailsPage />} />
                 <Route path="/health/:id" element={<HealthUpdateDetailsModal />} />
+                <Route path="/admin-dashboard" element={<AdminDashboard />} />
+                <Route path="/quarantine-management" element={<QuarantineManagement />} />
+                <Route path="/quarantine/sector/:sectorId" element={<SectorQuarantineManagement />} />
             </Routes>
         </Router>
     );
