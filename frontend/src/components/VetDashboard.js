@@ -254,7 +254,7 @@ const VetDashboard = () => {
     return (
         <div>
             <Header />
-            <div className="container mt-1" style={{ display: "flex", gap: "200px" }}>
+            <div className="container mt-1" style={{ display: "flex", gap: "200px", paddingTop: '110px' }}>
                 <div style={{ flex: 0 }}>
                     <div
                         className="container rounded-3 vet-card"

@@ -293,7 +293,7 @@ const AnamnesisDetailsPage = () => {
     return (
         <div>
             <Header />
-            <div className="container mt-3" style={{ display: "flex", gap: "50px" }}>
+            <div className="container mt-3" style={{ display: "flex", gap: "50px", paddingTop: '80px' }}>
                 <div>
                     <PetInfo petInfo={petInfo} onEdit={() => {
                     }}/>
@@ -312,10 +312,10 @@ const AnamnesisDetailsPage = () => {
 
                 <div style={{flex: 1}}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <h2>
+                    <h3>
                         <strong>Anamnesis details </strong> (appeal
                         from {new Date(anamnesis.date).toLocaleDateString()}: {diagnosis ? diagnosis.name : "No diagnosis"})
-                    </h2>
+                    </h3>
                     <div>
                         {userRole === "ROLE_VET" && (
                             <button className="button rounded-3 btn-no-border" onClick={openGenerateReportModal}>
@@ -325,7 +325,7 @@ const AnamnesisDetailsPage = () => {
                         <button
                             className="button rounded-3 btn-no-border"
                             onClick={handleViewReport}
-                            style={{marginLeft: "10px"}}
+                            style={{marginLeft: "5px"}}
                         >
                             View Report
                         </button>

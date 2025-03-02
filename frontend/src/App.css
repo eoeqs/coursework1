@@ -57,6 +57,11 @@
   overflow-y: auto;
 }
 
+.scroll-modal {
+  overflow-y: auto
+
+}
+
 .treatment-vet {
     background-color: #FFDDDD5E;
     box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.3);
@@ -175,13 +180,17 @@ input[type="checkbox"] {
 }
 
 header {
-  background-color: rgba(189, 120, 125, 0.72);
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background-color: rgb(205, 154, 158);
   padding: 10px 20px;
   margin-bottom: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   box-shadow: 0 2px 5px rgba(67, 13, 13, 0.4);
+  z-index: 1000;
 }
 
 header h1 {
@@ -485,3 +494,19 @@ html, body, #root {
 .swiper-button-prev:hover {
   color: #cc0000;
 }
+
+/*.edit-mod {*/
+/*  position: fixed;*/
+/*  top: 50%;*/
+/*  left: 50%;*/
+/*  transform: translate(-50%, -50%);*/
+/*  background-color: #fff;*/
+/*  padding: 30px 40px;*/
+/*  border-radius: 12px;*/
+/*  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);*/
+/*  z-index: 1000;*/
+/*  width: 400px;*/
+/*  max-width: 90%;*/
+/*  font-family: 'Arial', sans-serif;*/
+/*  color: #333;*/
+/*}*/

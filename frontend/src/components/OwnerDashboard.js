@@ -95,7 +95,7 @@ const OwnerDashboard = () => {
     return (
         <div style={{backgroundColor: '#f8efef'}}>
             <Header/>
-            <div className="container mt-1" style={{display: "flex", gap: "150px"}}>
+            <div className="container mt-1" style={{display: "flex", gap: "150px", paddingTop: '100px'}}>
                 <div className="container rounded-3 vet-card" style={{flex: 0, maxWidth: '450px', padding: "30px 30px", margin: '10px 20px', backgroundColor: '#e6c8c8'}}>
                     <div className="mb-3 ps-2" style={{
                         maxWidth: '400px',

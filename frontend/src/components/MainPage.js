@@ -133,7 +133,7 @@ export default function HomePage() {
                 <img src={KegaSideBar} alt="Cute Dog"/>
             </div>
             <div style={{flex: 1}}>
-                <div className="main-container mt-2" style={{display: "flex", gap: "5px"}}>
+                <div className="main-container mt-2" style={{display: "flex", gap: "5px", paddingTop: '80px'}}>
                     <div className="bg-table centered-content"
                          style={{position: "relative", flex: 1, margin: "20px", padding: "20px"}}>
                         <div
