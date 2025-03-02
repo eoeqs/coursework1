@@ -9,14 +9,17 @@ import EditRolesModal from "./EditRolesModal";
 import CreateClinicModal from "./CreateClinicModal";
 import CreateSectorModal from "./CreateSectorModal";
 import EditPetModal from "./EditPetModal";
+import CreateSlotModal from "./CreateSlotModal";
 
 const AdminDashboard = () => {
     const axiosInstance = useAxiosWithAuth();
     const navigate = useNavigate();
-    const [users, setUsers] = useState([]);
+    const [vets, setVets] = useState([]);
+    const [owners, setOwners] = useState([]);
     const [clinics, setClinics] = useState([]);
     const [sectors, setSectors] = useState([]);
     const [pets, setPets] = useState([]);
+    const [slots, setSlots] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedUser, setSelectedUser] = useState(null);
@@ -26,6 +29,7 @@ const AdminDashboard = () => {
     const [isCreateClinicModalOpen, setIsCreateClinicModalOpen] = useState(false);
     const [isCreateSectorModalOpen, setIsCreateSectorModalOpen] = useState(false);
     const [isEditPetModalOpen, setIsEditPetModalOpen] = useState(false);
+    const [isCreateSlotModalOpen, setIsCreateSlotModalOpen] = useState(false);
     const [userRole, setUserRole] = useState(null);
 
     useEffect(() => {
@@ -34,8 +38,11 @@ const AdminDashboard = () => {
             setError(null);
 
             try {
-                const usersResponse = await axiosInstance.get("/users/get-users");
-                setUsers(usersResponse.data);
+                const vetsResponse = await axiosInstance.get("/users/all-vets");
+                setVets(vetsResponse.data);
+
+                const ownersResponse = await axiosInstance.get("/users/all-owners");
+                setOwners(ownersResponse.data);
 
                 const clinicsResponse = await axiosInstance.get("/clinics/all");
                 setClinics(clinicsResponse.data);
@@ -45,7 +52,9 @@ const AdminDashboard = () => {
 
                 const petsResponse = await axiosInstance.get("/pets/all-pets");
                 setPets(petsResponse.data);
-                console.log("Pets:", petsResponse.data);
+
+                const slotsResponse = await axiosInstance.get("/slots/all");
+                setSlots(slotsResponse.data);
 
                 const userResponse = await axiosInstance.get("/users/current-user-info");
                 setUserRole(userResponse.data.role);
@@ -106,10 +115,22 @@ const AdminDashboard = () => {
         setSelectedPet(null);
     };
 
+    const openCreateSlotModal = () => {
+        setIsCreateSlotModalOpen(true);
+    };
+
+    const closeCreateSlotModal = () => {
+        setIsCreateSlotModalOpen(false);
+    };
+
     const handleSaveUser = async (updatedData) => {
         try {
             const response = await axiosInstance.put(`/users/update-user-admin/${selectedUser.id}`, updatedData);
-            setUsers(users.map((u) => (u.id === selectedUser.id ? response.data : u)));
+            if (selectedUser.roles.includes("ROLE_VET")) {
+                setVets(vets.map((v) => (v.id === selectedUser.id ? response.data : v)));
+            } else if (selectedUser.roles.includes("ROLE_OWNER")) {
+                setOwners(owners.map((o) => (o.id === selectedUser.id ? response.data : o)));
+            }
             alert("User updated successfully!");
             closeEditUserModal();
         } catch (error) {
@@ -123,7 +144,11 @@ const AdminDashboard = () => {
             const response = await axiosInstance.put(`/users/update-roles/${selectedUser.id}`, newRole, {
                 headers: { "Content-Type": "application/json" },
             });
-            setUsers(users.map((u) => (u.id === selectedUser.id ? response.data : u)));
+            if (response.data.roles.includes("ROLE_VET")) {
+                setVets(vets.map((v) => (v.id === selectedUser.id ? response.data : v)));
+            } else if (response.data.roles.includes("ROLE_OWNER")) {
+                setOwners(owners.map((o) => (o.id === selectedUser.id ? response.data : o)));
+            }
             alert("Roles updated successfully!");
             closeEditRolesModal();
         } catch (error) {
@@ -185,12 +210,33 @@ const AdminDashboard = () => {
         }
     };
 
-    const handleViewVetProfile = (vetId) => {
-        navigate("/vet-dashboard");
-    };
-
     const handleManageQuarantines = () => {
         navigate("/quarantine-management");
+    };
+
+    const handleSaveSlot = async (slotData) => {
+        try {
+            const response = await axiosInstance.post("/slots/add-slot", slotData);
+            setSlots([...slots, response.data]);
+            alert("Slot created successfully!");
+            closeCreateSlotModal();
+        } catch (error) {
+            console.error("Error creating slot:", error);
+            alert("Failed to create slot.");
+        }
+    };
+
+    const handleDeleteSlot = async (slotId) => {
+        if (!window.confirm("Are you sure you want to delete this slot?")) return;
+
+        try {
+            await axiosInstance.delete(`/slots/delete-slot/${slotId}`);
+            setSlots(slots.filter((slot) => slot.id !== slotId));
+            alert("Slot deleted successfully!");
+        } catch (error) {
+            console.error("Error deleting slot:", error);
+            alert("Failed to delete slot.");
+        }
     };
 
     if (loading) {
@@ -220,6 +266,13 @@ const AdminDashboard = () => {
                 >
                     Create Sector
                 </button>
+                <button
+                    className="button rounded-3 btn-no-border"
+                    onClick={openCreateSlotModal}
+                    style={{ marginBottom: "20px", marginLeft: "10px" }}
+                >
+                    Create Slot
+                </button>
                 {(userRole === "ROLE_ADMIN" || userRole === "ROLE_VET") && (
                     <button
                         className="button rounded-3 btn-no-border"
@@ -234,20 +287,10 @@ const AdminDashboard = () => {
                 <div className="bg-table element-space" style={{ marginBottom: "20px" }}>
                     {sectors.length > 0 ? (
                         <table cellPadding="5" cellSpacing="0" className="uniq-table">
-                            <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Category</th>
-                                <th>Capacity</th>
-                                <th>Occupancy</th>
-                                <th>Available</th>
-                                <th>Actions</th>
-                            </tr>
-                            </thead>
+
                             <tbody>
                             {sectors.map((sector) => (
                                 <tr key={sector.id}>
-                                    <td>{sector.id}</td>
                                     <td>{sector.category}</td>
                                     <td>{sector.capacity}</td>
                                     <td>{sector.occupancy}</td>
@@ -273,21 +316,10 @@ const AdminDashboard = () => {
                 <div className="bg-table element-space" style={{ marginBottom: "20px" }}>
                     {pets.length > 0 ? (
                         <table cellPadding="5" cellSpacing="0" className="uniq-table">
-                            <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Type</th>
-                                <th>Breed</th>
-                                <th>Age</th>
-                                <th>Sex</th>
-                                <th>Actions</th>
-                            </tr>
-                            </thead>
+
                             <tbody>
                             {pets.map((pet) => (
                                 <tr key={pet.id}>
-                                    <td>{pet.id}</td>
                                     <td>{pet.name}</td>
                                     <td>{pet.type}</td>
                                     <td>{pet.breed}</td>
@@ -317,56 +349,105 @@ const AdminDashboard = () => {
                     )}
                 </div>
 
-                <h3>Users</h3>
-                <div className="bg-table element-space">
-                    {users.length > 0 ? (
+                <h3>Slots</h3>
+                <div className="bg-table element-space" style={{ marginBottom: "20px" }}>
+                    {slots.length > 0 ? (
                         <table cellPadding="5" cellSpacing="0" className="uniq-table">
-                            <thead>
-                            <tr>
-                                <th>Username</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Roles</th>
-                                <th>Actions</th>
-                            </tr>
-                            </thead>
+
                             <tbody>
-                            {users.map((user) => (
-                                <tr key={user.id}>
-                                    <td>{user.username}</td>
-                                    <td>{user.name} {user.surname}</td>
-                                    <td>{user.email}</td>
-                                    <td>{Array.from(user.roles).join(", ")}</td>
+                            {slots.map((slot) => (
+                                <tr key={slot.id}>
+                                    <td>{slot.date}</td>
+                                    <td>{slot.startTime}</td>
+                                    <td>{slot.endTime}</td>
+                                    <td>{slot.vetId}</td>
+                                    <td>{slot.isPriority ? "Yes" : "No"}</td>
                                     <td>
                                         <button
                                             className="button btn-no-border"
-                                            onClick={() => openEditUserModal(user)}
+                                            onClick={() => handleDeleteSlot(slot.id)}
                                         >
-                                            Edit User
+                                            Delete
                                         </button>
-                                        <button
-                                            className="button btn-no-border"
-                                            onClick={() => openEditRolesModal(user)}
-                                            style={{ marginLeft: "10px" }}
-                                        >
-                                            Edit Roles
-                                        </button>
-                                        {user.roles.includes("ROLE_VET") && (
-                                            <button
-                                                className="button btn-no-border"
-                                                onClick={() => handleViewVetProfile(user.id)}
-                                                style={{ marginLeft: "10px" }}
-                                            >
-                                                View Profile
-                                            </button>
-                                        )}
                                     </td>
                                 </tr>
                             ))}
                             </tbody>
                         </table>
                     ) : (
-                        <p>No users found.</p>
+                        <p>No slots found.</p>
+                    )}
+                </div>
+
+                <h3>Veterinarians</h3>
+                <div className="bg-table element-space" style={{ marginBottom: "20px" }}>
+                    {vets.length > 0 ? (
+                        <table cellPadding="5" cellSpacing="0" className="uniq-table">
+
+                            <tbody>
+                            {vets.map((vet) => (
+                                <tr key={vet.id}>
+                                    <td>{vet.username}</td>
+                                    <td>{vet.name} {vet.surname}</td>
+                                    <td>{vet.email}</td>
+                                    <td>{Array.isArray(vet.roles) ? vet.roles.join(", ") : vet.roles}</td>
+                                    <td>
+                                        <button
+                                            className="button btn-no-border"
+                                            onClick={() => openEditUserModal(vet)}
+                                        >
+                                            Edit User
+                                        </button>
+                                        <button
+                                            className="button btn-no-border"
+                                            onClick={() => openEditRolesModal(vet)}
+                                            style={{ marginLeft: "10px" }}
+                                        >
+                                            Edit Roles
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+                    ) : (
+                        <p>No veterinarians found.</p>
+                    )}
+                </div>
+
+                <h3>Owners</h3>
+                <div className="bg-table element-space">
+                    {owners.length > 0 ? (
+                        <table cellPadding="5" cellSpacing="0" className="uniq-table">
+
+                            <tbody>
+                            {owners.map((owner) => (
+                                <tr key={owner.id}>
+                                    <td>{owner.username}</td>
+                                    <td>{owner.name} {owner.surname}</td>
+                                    <td>{owner.email}</td>
+                                    <td>{Array.isArray(owner.roles) ? owner.roles.join(", ") : owner.roles}</td>
+                                    <td>
+                                        <button
+                                            className="button btn-no-border"
+                                            onClick={() => openEditUserModal(owner)}
+                                        >
+                                            Edit User
+                                        </button>
+                                        <button
+                                            className="button btn-no-border"
+                                            onClick={() => openEditRolesModal(owner)}
+                                            style={{ marginLeft: "10px" }}
+                                        >
+                                            Edit Roles
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+                    ) : (
+                        <p>No owners found.</p>
                     )}
                 </div>
             </div>
@@ -424,6 +505,14 @@ const AdminDashboard = () => {
                     petInfo={selectedPet}
                     onClose={closeEditPetModal}
                     onSave={handleSavePet}
+                />
+            )}
+
+            {isCreateSlotModalOpen && (
+                <CreateSlotModal
+                    onClose={closeCreateSlotModal}
+                    onSave={handleSaveSlot}
+                    vets={vets}
                 />
             )}
         </div>

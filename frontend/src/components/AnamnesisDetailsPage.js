@@ -42,6 +42,7 @@ const AnamnesisDetailsPage = () => {
     const [selectedAttachment, setSelectedAttachment] = useState(null);
     const [isAddAttachmentModalOpen, setIsAddAttachmentModalOpen] = useState(false);
     const [isGenerateReportModalOpen, setIsGenerateReportModalOpen] = useState(false);
+    const [reportValidationMessage, setReportValidationMessage] = useState("");
 
     useEffect(() => {
         const fetchData = async () => {
@@ -224,8 +225,30 @@ const AnamnesisDetailsPage = () => {
         setIsAddAttachmentModalOpen(false);
     };
 
-    // Report Functions
     const openGenerateReportModal = () => {
+        const missingFields = [];
+
+        if (!diagnosis || !diagnosis.name) {
+            missingFields.push("Preliminary Diagnosis");
+        }
+        if (!diagnosis || !diagnosis.examinationPlan) {
+            missingFields.push("Examination Plan");
+        }
+        if (procedures.length === 0) {
+            missingFields.push("Procedures Performed");
+        }
+        if (treatments.filter((t) => !t.isCompleted).length === 0) {
+            missingFields.push("Treatment Recommendations");
+        }
+
+        if (missingFields.length > 0) {
+            setReportValidationMessage(
+                `Report generation is not available yet. Please ensure the following are provided: ${missingFields.join(", ")}.`
+            );
+            return;
+        }
+
+        setReportValidationMessage("");
         setIsGenerateReportModalOpen(true);
     };
 
@@ -354,7 +377,7 @@ const AnamnesisDetailsPage = () => {
                     <div className="bg-table element-space prem_diagnsosis" style={{ flex: 1 }}>
                         <div style={{ marginTop: "20px" }}>
                             {clinicalDiagnoses.length > 0 ? (
-                                <table cellPadding="3" cellSpacing="0" className="uniq-table" >
+                                <table cellPadding="3" cellSpacing="0" className="uniq-table">
                                     <tbody>
                                     {clinicalDiagnoses.map((diagnosis) => (
                                         <tr key={diagnosis.id}>
@@ -431,37 +454,9 @@ const AnamnesisDetailsPage = () => {
                             )}
                         </div>
                     </div>
-                    <h3>Diagnostic Attachments</h3>
-                    <div className="bg-table element-space prem_diagnsosis" style={{padding: "20px"}}>
-                        {attachments.length > 0 ? (
-                            <table cellPadding="3" cellSpacing="0" className="uniq-table table-right-end">
-                                <tbody>
-                                {attachments.map((attachment) => (
-                                    <tr key={attachment.id}>
-                                        <td>{attachment.name}</td>
-                                        <td>
-                                            <button className="button btn-no-border"
-                                                    onClick={() => openAttachmentModal(attachment)}>
-                                                More
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                                </tbody>
-                            </table>
-                        ) : (
-                            <p>No diagnostic attachments found.</p>
-                        )}
-                        {(userRole === "ROLE_VET" || userRole === "ROLE_ADMIN") && (
-                            <button className="button rounded-3 btn-no-border" onClick={openAddAttachmentModal}>
-                                Add Attachment
-                            </button>
-                        )}
-                    </div>
                 </div>
 
-                <div className="mt-1 rounded-1 treatment-vet element-space"
-                     style={{marginTop: "30px", padding: "20px"}}>
+                <div className="mt-1 rounded-1 treatment-vet element-space" style={{ marginTop: "30px", padding: "20px" }}>
                     <h3>Treatment Recommendations</h3>
                     {treatments.filter((treatment) => !treatment.isCompleted).length > 0 ? (
                         <table cellPadding="3" cellSpacing="0" className="uniq-table">
@@ -514,6 +509,50 @@ const AnamnesisDetailsPage = () => {
                             Add New Treatment
                         </button>
                     )}
+                </div>
+
+                <div className="mt-1 rounded-1 treatment-vet element-space" style={{ padding: "20px" }}>
+                    <h3>Diagnostic Attachments</h3>
+                    {attachments.length > 0 ? (
+                        <table cellPadding="3" cellSpacing="0" className="uniq-table">
+                            <tbody>
+                            {attachments.map((attachment) => (
+                                <tr key={attachment.id}>
+                                    <td>{attachment.name}</td>
+                                    <td>
+                                        <button className="button btn-no-border" onClick={() => openAttachmentModal(attachment)}>
+                                            More
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+                    ) : (
+                        <p>No diagnostic attachments found.</p>
+                    )}
+                    {(userRole === "ROLE_VET" || userRole === "ROLE_ADMIN") && (
+                        <button className="button rounded-3 btn-no-border" onClick={openAddAttachmentModal}>
+                            Add Attachment
+                        </button>
+                    )}
+                    <div style={{ marginTop: "20px" }}>
+                        {userRole === "ROLE_VET" && (
+                            <button className="button rounded-3 btn-no-border" onClick={openGenerateReportModal}>
+                                Generate Report
+                            </button>
+                        )}
+                        <button
+                            className="button rounded-3 btn-no-border"
+                            onClick={handleViewReport}
+                            style={{ marginLeft: "10px" }}
+                        >
+                            View Report
+                        </button>
+                        {reportValidationMessage && (
+                            <p style={{ color: "red", marginTop: "10px" }}>{reportValidationMessage}</p>
+                        )}
+                    </div>
                 </div>
 
                 {isAppointmentModalOpen && (
