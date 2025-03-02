@@ -1,11 +1,12 @@
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { FaUserCircle, FaBars } from "react-icons/fa";
 import { useAuth } from "../AuthProvider";
 import useAxiosWithAuth from "../AxiosAuth";
 import myImage from "../pics/logo_min.png";
 import NotificationsModal from "./NotificationsModal";
 import NotificationDetailsModal from "./NotificationDetailsModal";
+import '../header.css';
 
 export default function Header() {
     const navigate = useNavigate();
@@ -19,6 +20,8 @@ export default function Header() {
     const [isNotificationDetailsModalOpen, setIsNotificationDetailsModalOpen] = useState(false);
     const [selectedNotificationId, setSelectedNotificationId] = useState(null);
     const axiosInstance = useAxiosWithAuth();
+    const menuRef = useRef(null);
+    const sidebarRef = useRef(null);
 
     useEffect(() => {
         if (isAuthenticated) {
@@ -37,6 +40,38 @@ export default function Header() {
             setUserId(null);
         }
     }, [isAuthenticated, axiosInstance]);
+
+    useEffect(() => {
+        const handleClickOutsideMenu = (event) => {
+            if (menuRef.current && !menuRef.current.contains(event.target)) {
+                setMenuOpen(false);
+            }
+        };
+
+        if (menuOpen) {
+            document.addEventListener("mousedown", handleClickOutsideMenu);
+        }
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutsideMenu);
+        };
+    }, [menuOpen]);
+
+    useEffect(() => {
+        const handleClickOutsideSidebar = (event) => {
+            if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+                setSidebarOpen(false);
+            }
+        };
+
+        if (sidebarOpen) {
+            document.addEventListener("mousedown", handleClickOutsideSidebar);
+        }
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutsideSidebar);
+        };
+    }, [sidebarOpen]);
 
     const handleProfileClick = () => {
         if (isAuthenticated) {
@@ -90,7 +125,7 @@ export default function Header() {
         else if (userRole === "ROLE_ADMIN") profilePath = "/admin-dashboard";
 
         return (
-            <div className="menu-dropdown">
+            <div ref={menuRef} className="menu-dropdown">
                 <button onClick={() => handleMenuItemClick(profilePath)}>My Profile</button>
                 <button onClick={openNotificationsModal}>Notifications</button>
                 <button onClick={handleLogout}>Logout</button>
@@ -103,31 +138,39 @@ export default function Header() {
 
         if (userRole === "ROLE_OWNER") {
             return (
-                <div className={`sidebar ${sidebarOpen ? "open" : ""}`}>
-                    <button className="close-sidebar" onClick={handleSidebarToggle}>×</button>
+                <div ref={sidebarRef} className={`sidebar ${sidebarOpen ? "open" : ""}`}>
                     <button onClick={() => handleMenuItemClick("/")}>Main Page</button>
+                    <div className="divider"></div>
                     <button onClick={() => handleMenuItemClick("/my-pets")}>My Pets</button>
+                    <div className="divider"></div>
                 </div>
             );
         } else if (userRole === "ROLE_VET") {
             return (
-                <div className={`sidebar ${sidebarOpen ? "open" : ""}`}>
-                    <button className="close-sidebar" onClick={handleSidebarToggle}>×</button>
+                <div ref={sidebarRef} className={`sidebar ${sidebarOpen ? "open" : ""}`}>
                     <button onClick={() => handleMenuItemClick("/")}>Main Page</button>
+                    <div className="divider"></div>
                     <button onClick={() => handleMenuItemClick("/my-wards")}>My Wards</button>
+                    <div className="divider"></div>
                     <button onClick={() => handleMenuItemClick("/quarantine-management")}>Quarantine Manager</button>
+                    <div className="divider"></div>
                 </div>
             );
         } else if (userRole === "ROLE_ADMIN") {
             return (
-                <div className={`sidebar ${sidebarOpen ? "open" : ""}`}>
-                    <button className="close-sidebar" onClick={handleSidebarToggle}>×</button>
+                <div ref={sidebarRef} className={`sidebar ${sidebarOpen ? "open" : ""}`}>
                     <button onClick={() => handleMenuItemClick("/")}>Main Page</button>
+                    <div className="divider"></div>
                     <button onClick={() => handleMenuItemClick("/all-pets")}>All Pets</button>
+                    <div className="divider"></div>
                     <button onClick={() => handleMenuItemClick("/all-vets")}>All Vets</button>
+                    <div className="divider"></div>
                     <button onClick={() => handleMenuItemClick("/all-pet-owners")}>All Pet Owners</button>
+                    <div className="divider"></div>
                     <button onClick={() => handleMenuItemClick("/quarantine-management")}>Quarantine Manager</button>
+                    <div className="divider"></div>
                     <button onClick={() => handleMenuItemClick("/sector-management")}>Sector Management</button>
+                    <div className="divider"></div>
                 </div>
             );
         }
@@ -184,97 +227,6 @@ export default function Header() {
                     />
                 )}
             </header>
-
-            <style jsx>{`
-                .header {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    padding: 10px 20px;
-                    background-color: #f8f8f8;
-                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                    position: fixed;
-                    top: 0;
-                    width: 100%;
-                    z-index: 1000;
-                }
-
-                .menu-dropdown {
-                    position: absolute;
-                    top: 60px;
-                    right: 20px;
-                    background-color: white;
-                    border: 1px solid #ddd;
-                    border-radius: 5px;
-                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                    z-index: 1001;
-                }
-
-                .menu-dropdown button {
-                    display: block;
-                    width: 100%;
-                    padding: 10px 20px;
-                    border: none;
-                    background: none;
-                    text-align: left;
-                    cursor: pointer;
-                }
-
-                .menu-dropdown button:hover {
-                    background-color: #f0f0f0;
-                }
-
-                .sidebar {
-                    position: fixed;
-                    top: 0;
-                    right: -300px;
-                    width: 300px;
-                    height: 100%;
-                    background-color: #fff;
-                    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
-                    transition: right 0.3s ease-in-out;
-                    z-index: 1002;
-                    padding: 20px;
-                }
-
-                .sidebar.open {
-                    right: 0;
-                }
-
-                .sidebar button {
-                    display: block;
-                    width: 100%;
-                    padding: 10px;
-                    border: none;
-                    background: none;
-                    text-align: left;
-                    cursor: pointer;
-                    font-size: 16px;
-                }
-
-                .sidebar button:hover {
-                    background-color: #f0f0f0;
-                }
-
-                .close-sidebar {
-                    position: absolute;
-                    top: 10px;
-                    right: 10px;
-                    font-size: 24px;
-                    background: none;
-                    border: none;
-                    cursor: pointer;
-                }
-
-                .btn-pink {
-                    color: #fff;
-                    background-color: #ff6f61;
-                }
-
-                .btn-pink:hover {
-                    background-color: #e65b50;
-                }
-            `}</style>
         </>
     );
 }
