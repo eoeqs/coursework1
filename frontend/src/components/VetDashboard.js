@@ -224,7 +224,6 @@ const VetDashboard = () => {
             alert("Appointment rescheduled successfully!");
             closeRescheduleModal();
             closeModal();
-            // Refresh appointments (simplified here; ideally fetch updated list)
             const updatedAppointments = appointments.map((app) =>
                 app.id === selectedAppointment.id ? { ...app, slotId: selectedSlotId } : app
             );
@@ -233,6 +232,10 @@ const VetDashboard = () => {
             console.error("Error rescheduling appointment:", error);
             alert("Failed to reschedule appointment.");
         }
+    };
+
+    const handleManageQuarantines = () => {
+        navigate("/quarantine-management");
     };
 
     if (loading) {
@@ -311,6 +314,15 @@ const VetDashboard = () => {
                             <button className="button btn-no-border rounded-3" onClick={openEditVetModal}>
                                 Edit Profile
                             </button>
+                            {userRole === "ROLE_VET" && (
+                                <button
+                                    className="button btn-no-border rounded-3"
+                                    onClick={handleManageQuarantines}
+                                    style={{ marginLeft: "10px" }}
+                                >
+                                    Manage Quarantines
+                                </button>
+                            )}
                         </div>
                     </div>
 
@@ -342,7 +354,7 @@ const VetDashboard = () => {
                     </div>
                 </div>
                 {userRole === "ROLE_VET" && (
-                    <div className="bg-table element-space wards " style={{ flex: 1 }}>
+                    <div className="bg-table element-space wards" style={{ flex: 1 }}>
                         <h2>My Wards</h2>
                         {doctorPets.length > 0 ? (
                             <table cellPadding="0" cellSpacing="0" className="uniq-table">

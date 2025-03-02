@@ -8,7 +8,7 @@ import EditUserModal from "./EditUserModal";
 import EditRolesModal from "./EditRolesModal";
 import CreateClinicModal from "./CreateClinicModal";
 import CreateSectorModal from "./CreateSectorModal";
-import EditPetModal from "./EditPetModal"; // Import EditPetModal
+import EditPetModal from "./EditPetModal";
 
 const AdminDashboard = () => {
     const axiosInstance = useAxiosWithAuth();
@@ -26,6 +26,7 @@ const AdminDashboard = () => {
     const [isCreateClinicModalOpen, setIsCreateClinicModalOpen] = useState(false);
     const [isCreateSectorModalOpen, setIsCreateSectorModalOpen] = useState(false);
     const [isEditPetModalOpen, setIsEditPetModalOpen] = useState(false);
+    const [userRole, setUserRole] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -45,6 +46,9 @@ const AdminDashboard = () => {
                 const petsResponse = await axiosInstance.get("/pets/all-pets");
                 setPets(petsResponse.data);
                 console.log("Pets:", petsResponse.data);
+
+                const userResponse = await axiosInstance.get("/users/current-user-info");
+                setUserRole(userResponse.data.role);
             } catch (error) {
                 console.error("Error fetching data:", error);
                 setError("Failed to fetch data. Please try again later.");
@@ -181,6 +185,14 @@ const AdminDashboard = () => {
         }
     };
 
+    const handleViewVetProfile = (vetId) => {
+        navigate("/vet-dashboard");
+    };
+
+    const handleManageQuarantines = () => {
+        navigate("/quarantine-management");
+    };
+
     if (loading) {
         return <div className="loading-overlay">Loading...</div>;
     }
@@ -208,12 +220,30 @@ const AdminDashboard = () => {
                 >
                     Create Sector
                 </button>
+                {(userRole === "ROLE_ADMIN" || userRole === "ROLE_VET") && (
+                    <button
+                        className="button rounded-3 btn-no-border"
+                        onClick={handleManageQuarantines}
+                        style={{ marginBottom: "20px", marginLeft: "10px" }}
+                    >
+                        Manage Quarantines
+                    </button>
+                )}
 
                 <h3>Sectors</h3>
                 <div className="bg-table element-space" style={{ marginBottom: "20px" }}>
                     {sectors.length > 0 ? (
                         <table cellPadding="5" cellSpacing="0" className="uniq-table">
-
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Category</th>
+                                <th>Capacity</th>
+                                <th>Occupancy</th>
+                                <th>Available</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
                             <tbody>
                             {sectors.map((sector) => (
                                 <tr key={sector.id}>
@@ -243,7 +273,17 @@ const AdminDashboard = () => {
                 <div className="bg-table element-space" style={{ marginBottom: "20px" }}>
                     {pets.length > 0 ? (
                         <table cellPadding="5" cellSpacing="0" className="uniq-table">
-
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Breed</th>
+                                <th>Age</th>
+                                <th>Sex</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
                             <tbody>
                             {pets.map((pet) => (
                                 <tr key={pet.id}>
@@ -281,7 +321,15 @@ const AdminDashboard = () => {
                 <div className="bg-table element-space">
                     {users.length > 0 ? (
                         <table cellPadding="5" cellSpacing="0" className="uniq-table">
-
+                            <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Roles</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
                             <tbody>
                             {users.map((user) => (
                                 <tr key={user.id}>
@@ -303,6 +351,15 @@ const AdminDashboard = () => {
                                         >
                                             Edit Roles
                                         </button>
+                                        {user.roles.includes("ROLE_VET") && (
+                                            <button
+                                                className="button btn-no-border"
+                                                onClick={() => handleViewVetProfile(user.id)}
+                                                style={{ marginLeft: "10px" }}
+                                            >
+                                                View Profile
+                                            </button>
+                                        )}
                                     </td>
                                 </tr>
                             ))}
