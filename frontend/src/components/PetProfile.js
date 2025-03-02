@@ -368,10 +368,10 @@ const PetProfilePage = () => {
                                         .map((procedure, index) => {
                                             const date = new Date(procedure.date);
                                             const totalProcedures = procedures.length;
-                                            const marginPercentage = 10; // 10% margin on each side
+                                            const marginPercentage = 10;
                                             const adjustedPosition = totalProcedures > 1
                                                 ? `${marginPercentage + (index / (totalProcedures - 1)) * (100 - 2 * marginPercentage)}%`
-                                                : "50%"; // Center single procedure
+                                                : "50%";
                                             return (
                                                 <div
                                                     key={procedure.id}
