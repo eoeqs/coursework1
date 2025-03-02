@@ -381,7 +381,17 @@ const VetDashboard = () => {
                                                     }}
                                                 />
                                             ) : (
-                                                <p>(anonymous)</p>
+                                                <img
+                                                    className="avatar"
+                                                    src={PawStub}
+                                                    alt={`photo stub`}
+                                                    style={{
+                                                        width: "50px",
+                                                        height: "50px",
+                                                        borderRadius: "50%",
+                                                        marginRight: "20px",
+                                                    }}
+                                                />
                                             )}{" "}
                                             {"\t"}
                                             <strong>{pet.name}</strong> {" "} {"\t"}

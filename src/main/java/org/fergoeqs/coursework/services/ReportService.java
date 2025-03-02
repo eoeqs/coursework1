@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ReportService {
@@ -39,7 +40,10 @@ public class ReportService {
         report.setAnamnesis(anamnesis);
         report.setVet(author);
         report.setContentUrl(reportGenerator.generatePetReport(reportDTO, anamnesis.getPet(), anamnesis, diagnoses, procedures, healthUpdates, treatments));
-        return reportRepository.save(report);
+        Report checkRep = reportRepository.findReportByAnamnesisId(anamnesisId);
+        if (checkRep == null) {
+            return reportRepository.save(report);
+        } else {return checkRep; }
     }
 
     public String getReportUrlByAnamnesis(Long anamnesisId){
