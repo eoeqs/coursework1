@@ -42,6 +42,7 @@ const AnamnesisDetailsPage = () => {
     const [selectedAttachment, setSelectedAttachment] = useState(null);
     const [isAddAttachmentModalOpen, setIsAddAttachmentModalOpen] = useState(false);
     const [isGenerateReportModalOpen, setIsGenerateReportModalOpen] = useState(false);
+    const [reportValidationMessage, setReportValidationMessage] = useState("");
 
     useEffect(() => {
         const fetchData = async () => {
@@ -224,8 +225,30 @@ const AnamnesisDetailsPage = () => {
         setIsAddAttachmentModalOpen(false);
     };
 
-    // Report Functions
     const openGenerateReportModal = () => {
+        const missingFields = [];
+
+        if (!diagnosis || !diagnosis.name) {
+            missingFields.push("Preliminary Diagnosis");
+        }
+        if (!diagnosis || !diagnosis.examinationPlan) {
+            missingFields.push("Examination Plan");
+        }
+        if (procedures.length === 0) {
+            missingFields.push("Procedures Performed");
+        }
+        if (treatments.filter((t) => !t.isCompleted).length === 0) {
+            missingFields.push("Treatment Recommendations");
+        }
+
+        if (missingFields.length > 0) {
+            setReportValidationMessage(
+                `Report generation is not available yet. Please ensure the following are provided: ${missingFields.join(", ")}.`
+            );
+            return;
+        }
+
+        setReportValidationMessage("");
         setIsGenerateReportModalOpen(true);
     };
 
@@ -526,6 +549,9 @@ const AnamnesisDetailsPage = () => {
                         >
                             View Report
                         </button>
+                        {reportValidationMessage && (
+                            <p style={{ color: "red", marginTop: "10px" }}>{reportValidationMessage}</p>
+                        )}
                     </div>
                 </div>
 
