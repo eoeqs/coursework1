@@ -83,7 +83,7 @@ export default function HomePage() {
 
     const renderStars = (rating) => {
         const stars = Math.round(rating);
-        return "⭐".repeat(stars) + "☆".repeat(5 - stars);
+        return "⭐".repeat(stars) + "✯".repeat(5 - stars); //return "⭐".repeat(stars) + "✩".repeat(5 - stars);
     };
 
     const openReviewModal = (vetId, vetName) => {

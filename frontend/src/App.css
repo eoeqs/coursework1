@@ -239,7 +239,7 @@ header h1 {
   height: 100%;
 }
 
-* {
+*:not(.rating, .rating *) {
   font-family: 'Arial', sans-serif;
   color: #682020;
 }
