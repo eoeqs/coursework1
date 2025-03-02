@@ -32,7 +32,6 @@ export default function HomePage() {
     const [selectedVet, setSelectedVet] = useState(null);
     const [ownerId, setOwnerId] = useState(null);
     const axiosInstance = useAxiosWithAuth();
-    const publicAxios = axios.create({ baseURL: "http://localhost:8080/api" });
 
     useEffect(() => {
         const fetchVetsAndRatings = async () => {
@@ -43,7 +42,7 @@ export default function HomePage() {
                 setVets(vetsData);
 
                 const ratingsPromises = vetsData.map((vet) =>
-                    publicAxios.get(`/rating-and-reviews/by-vet/${vet.id}`).then((response) => ({
+                    axiosInstance.get(`/rating-and-reviews/by-vet/${vet.id}`).then((response) => ({
                         vetId: vet.id,
                         ratings: response.data,
                     }))
