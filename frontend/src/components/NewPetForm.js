@@ -61,9 +61,11 @@ const NewPetForm = ({ onPetCreated, onCancel }) => {
                 width: "400px",
                 boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
             }}>
-                <h2>Create New Pet</h2>
+                <div className="modal-header">
+                <h3>Create New Pet</h3>
+                </div>
                 <form onSubmit={handleSubmit}>
-                    <div style={{ marginBottom: "10px" }}>
+                    <div style={{marginBottom: "10px"}}>
                         <input
                             type="text"
                             name="name"
@@ -71,10 +73,11 @@ const NewPetForm = ({ onPetCreated, onCancel }) => {
                             onChange={handleChange}
                             placeholder="Name"
                             required
-                            style={{ width: "100%", padding: "8px" }}
+                            style={{width: "100%", padding: "8px"}}
+                            className="form-info"
                         />
                     </div>
-                    <div style={{ marginBottom: "10px" }}>
+                    <div style={{marginBottom: "10px"}}>
                         <input
                             type="text"
                             name="breed"
@@ -82,10 +85,11 @@ const NewPetForm = ({ onPetCreated, onCancel }) => {
                             onChange={handleChange}
                             placeholder="Breed"
                             required
-                            style={{ width: "100%", padding: "8px" }}
+                            style={{width: "100%", padding: "8px"}}
+                            className="form-info"
                         />
                     </div>
-                    <div style={{ marginBottom: "10px" }}>
+                    <div style={{marginBottom: "10px"}}>
                         <input
                             type="number"
                             name="age"
@@ -93,10 +97,11 @@ const NewPetForm = ({ onPetCreated, onCancel }) => {
                             onChange={handleChange}
                             placeholder="Age"
                             required
-                            style={{ width: "100%", padding: "8px" }}
+                            style={{width: "100%", padding: "8px"}}
+                            className="form-info"
                         />
                     </div>
-                    <div style={{ marginBottom: "10px" }}>
+                    <div style={{marginBottom: "10px"}}>
                         <input
                             type="number"
                             name="weight"
@@ -104,48 +109,52 @@ const NewPetForm = ({ onPetCreated, onCancel }) => {
                             onChange={handleChange}
                             placeholder="Weight (kg)"
                             required
-                            style={{ width: "100%", padding: "8px" }}
+                            style={{width: "100%", padding: "8px"}}
+                            className="form-info"
                         />
                     </div>
-                    <div style={{ marginBottom: "10px" }}>
-                        <label>Animal Type:</label>
+                    <div style={{marginBottom: "10px"}}>
+                        <label className="modal-label">Animal Type:</label>
                         <select
                             name="type"
                             value={petData.type}
                             onChange={handleChange}
-                            style={{ width: "100%", padding: "8px" }}
+                            style={{width: "100%", padding: "8px"}}
+                            className="form-info"
                         >
                             <option value="DOG">Dog</option>
                             <option value="CAT">Cat</option>
                         </select>
                     </div>
-                    <div style={{ marginBottom: "10px" }}>
-                        <label>Sex:</label>
+                    <div style={{marginBottom: "10px"}}>
+                        <label className="modal-label">Sex:</label>
                         <select
                             name="sex"
                             value={petData.sex}
                             onChange={handleChange}
-                            style={{ width: "100%", padding: "8px" }}
+                            style={{width: "100%", padding: "8px"}}
+                            className="form-info"
                         >
                             <option value="MALE">Male</option>
                             <option value="FEMALE">Female</option>
                         </select>
                     </div>
-                    <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
+                    <div style={{display: "flex", justifyContent: "space-evenly", marginTop: "20px"}}>
                         <button
+                            className="form-button"
                             type="submit"
-                            style={{ padding: "8px 16px", border: "none", borderRadius: "4px" }}
-                        >
+                            style={{padding: "8px 16px", border: "none", borderRadius: "4px"}}>
                             Create Pet
                         </button>
                         <button
+                            className="rounded-2"
                             type="button"
                             onClick={onCancel}
-                            style={{ padding: "8px 16px", border: "none", borderRadius: "4px" }}
-                        >
+                            style={{padding: "8px 16px", backgroundColor: "#ffffff", border: "1"}}>
                             Cancel
                         </button>
                     </div>
+
                 </form>
             </div>
         </div>

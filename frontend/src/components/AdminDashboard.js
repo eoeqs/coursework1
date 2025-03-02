@@ -250,7 +250,7 @@ const AdminDashboard = () => {
     return (
         <div>
             <Header />
-            <div className="container mt-3" style={{ padding: "20px" }}>
+            <div className="container mt-3" style={{ padding: "20px", paddingTop: '90px'}}>
                 <h2>Admin Dashboard</h2>
                 <button
                     className="button rounded-3 btn-no-border"

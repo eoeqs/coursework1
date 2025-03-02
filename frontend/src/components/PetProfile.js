@@ -221,7 +221,7 @@ const PetProfilePage = () => {
     return (
         <div>
             <Header/>
-            <div className="container mt-2" style={{display: "flex", gap: "100px"}}>
+            <div className="container mt-2" style={{display: "flex", gap: "100px", paddingTop: '100px'}}>
                 <div className="ps-3">
                     <PetInfo petInfo={petInfo} onEdit={() => setIsEditModalOpen(true)}/>
 
@@ -229,24 +229,14 @@ const PetProfilePage = () => {
                          style={{padding: "20px"}}>
                         <h4>Upcoming Appointments</h4>
                         {upcomingAppointments.length > 0 ? (
-                            <table cellPadding="3" cellSpacing="0" className="uniq-table">
+                            <table cellPadding="3" cellSpacing="0">
                                 <tbody>
                                 {upcomingAppointments.map((appointment) => (
                                     <tr key={appointment.id}>
                                         <td>{new Date(appointment.slot.date).toLocaleDateString()}</td>
-                                        <td>{appointment.slot.startTime.slice(0, 5)}</td>
-                                        <td>-</td>
-                                        <td>Dr. {appointment.slot.vetName}</td>
-                                        <td>
-                                            {userRole === "ROLE_ADMIN" && appointment.priority && (
-                                                <button
-                                                    className="button btn-no-border"
-                                                    onClick={() => openChangeSlotModal(appointment)}
-                                                >
-                                                    Change Slot
-                                                </button>
-                                            )}
-                                        </td>
+                                        <td>{appointment.slot.startTime.slice(0, 5)} </td>
+                                        <td> -</td>
+                                        <td>Dr. {appointment.slot.vetId}</td>
                                     </tr>
                                 ))}
                                 </tbody>
@@ -262,16 +252,16 @@ const PetProfilePage = () => {
                     <div className="bg-table element-space">
                         {anamneses.length > 0 ? (
                             <table cellPadding="5" cellSpacing="0" className="uniq-table">
+
                                 <tbody>
+
                                 {anamneses.map((anamnesis) => (
                                     <tr key={anamnesis.id}>
                                         <td>{new Date(anamnesis.date).toLocaleDateString()}</td>
                                         <td>{anamnesis.description}</td>
                                         <td>
-                                            <button
-                                                className="button btn-no-border"
-                                                onClick={() => navigate(`/anamnesis/${anamnesis.id}`)}
-                                            >
+                                            <button className="button btn-no-border"
+                                                    onClick={() => navigate(`/anamnesis/${anamnesis.id}`)}>
                                                 More info
                                             </button>
                                         </td>
@@ -283,16 +273,14 @@ const PetProfilePage = () => {
                             <p>No anamneses found.</p>
                         )}
                         {userRole === "ROLE_VET" && (
-                            <button
-                                className="button rounded-3 btn-no-border"
-                                onClick={() => setIsAddAnamnesisModalOpen(true)}
-                            >
+                            <button className="button rounded-3 btn-no-border"
+                                    onClick={() => setIsAddAnamnesisModalOpen(true)}>
                                 Add New Anamnesis
                             </button>
                         )}
                     </div>
 
-                    <h2>Health Updates</h2>
+                    <h2 style={{marginTop: '30px'}}>Health Updates</h2>
                     <div className="bg-table">
                         {healthUpdates.length > 0 ? (
                             <table cellPadding="5" cellSpacing="0" className="uniq-table">
@@ -302,10 +290,8 @@ const PetProfilePage = () => {
                                         <td>{new Date(update.date).toLocaleDateString()}</td>
                                         <td>{update.dynamics ? "positive" : "negative"} dynamic</td>
                                         <td>
-                                            <button
-                                                className="button btn-no-border"
-                                                onClick={() => handleViewHealthUpdateDetails(update.id)}
-                                            >
+                                            <button className="button btn-no-border"
+                                                    onClick={() => handleViewHealthUpdateDetails(update.id)}>
                                                 More info
                                             </button>
                                         </td>
@@ -316,36 +302,11 @@ const PetProfilePage = () => {
                         ) : (
                             <p>No health updates found.</p>
                         )}
-                        <button
-                            className="button rounded-3 btn-no-border"
-                            onClick={() => setIsAddHealthUpdateModalOpen(true)}
-                        >
-                            Add Health Update
+                        <button className="button rounded-3 btn-no-border"
+                                onClick={() => setIsAddHealthUpdateModalOpen(true)}>Add Health Update
                         </button>
                     </div>
-                    <div className="bg-treatment mt-1 rounded-1" style={{padding: "20px"}}>
-                        <h4>Treatment Recommendations</h4>
-                        {treatments.length > 0 ? (
-                            <table cellPadding="3" cellSpacing="0" className="uniq-table">
-                                <tbody>
-                                {treatments.map((treatment) => (
-                                    <tr key={treatment.id}>
-                                        <td>
-                                            <b>Treatment</b>: {treatment.name} <br/>
-                                            <b>Description</b>: {treatment.description} <br/>
-                                            <b>Prescribed Medication</b>: {treatment.prescribedMedication} <br/>
-                                            <b>Duration</b>: {treatment.duration} <br/>
-                                        </td>
-                                    </tr>
-                                ))}
-                                </tbody>
-                            </table>
-                        ) : (
-                            <p>No treatment recommendations found.</p>
-                        )}
-                    </div>
-
-                    <h2>Procedure Timeline</h2>
+                    <h2 style={{marginTop: '30px'}}>Procedure Timeline</h2>
                     <div className="bg-table element-space" style={{padding: "20px"}}>
                         {procedures.length > 0 ? (
                             <>
@@ -452,7 +413,7 @@ const PetProfilePage = () => {
                                             <div style={{
                                                 width: "15px",
                                                 height: "15px",
-                                                backgroundColor: "#FFEEAD",
+                                                backgroundColor: "#9c1212",
                                                 borderRadius: "50%",
                                                 marginRight: "5px"
                                             }}/>
@@ -466,7 +427,7 @@ const PetProfilePage = () => {
                                                 borderRadius: "50%",
                                                 marginRight: "5px"
                                             }}/>
-                                            <span>Unknown</span>
+                                            <span>Other</span>
                                         </div>
                                     </div>
                                 </div>
@@ -477,8 +438,33 @@ const PetProfilePage = () => {
                     </div>
                 </div>
 
+                <div className="bg-treatment mt-1 rounded-1" style={{padding: "20px"}}>
+                    <h4>Treatment Recommendations</h4>
+                    {treatments.length > 0 ? (
+                        <table cellPadding="3" cellSpacing="0" className="uniq-table">
+                            <tbody>
+                            {treatments.map((treatment) => (
+                                <tr key={treatment.id}>
+                                    <td><b>Treatment</b>: {treatment.name} <br/>
+                                        <b>Description</b>: {treatment.description} <br/>
+                                        <b>Prescribed Medication</b>: {treatment.prescribedMedication} <br/>
+                                        <b>Duration</b>: {treatment.duration} <br/>
+                                    </td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+                    ) : (
+                        <p>No treatment recommendations found.</p>
+                    )}
+                </div>
+
                 {isEditModalOpen && (
-                    <EditPetModal petInfo={petInfo} onClose={() => setIsEditModalOpen(false)} onSave={handleSavePet}/>
+                    <EditPetModal
+                        petInfo={petInfo}
+                        onClose={() => setIsEditModalOpen(false)}
+                        onSave={handleSavePet}
+                    />
                 )}
 
                 {isAddAnamnesisModalOpen && (
@@ -503,41 +489,68 @@ const PetProfilePage = () => {
                         onClose={() => setIsHealthUpdateDetailsModalOpen(false)}
                     />
                 )}
+            </div>
 
-                {isChangeSlotModalOpen && (
-                    <div style={modalOverlayStyles}>
-                        <div style={modalStyles} onClick={(e) => e.stopPropagation()}>
-                            <h3>Change Appointment Slot</h3>
-                            {availableSlots.length > 0 ? (
-                                <div style={{maxHeight: "300px", overflowY: "auto"}}>
-                                    {availableSlots.map((slot) => (
-                                        <div key={slot.id} style={{marginBottom: "10px"}}>
-                                            <label>
-                                                <input
-                                                    type="radio"
-                                                    name="newSlot"
-                                                    value={slot.id}
-                                                    checked={newSlotId === slot.id}
-                                                    onChange={() => setNewSlotId(slot.id)}
-                                                />
-                                                {new Date(slot.date).toLocaleDateString()} {slot.startTime} - {slot.endTime}
-                                            </label>
-                                        </div>
-                                    ))}
-                                </div>
-                            ) : (
-                                <p>No available priority slots found.</p>
-                            )}
-                            <div style={{display: "flex", gap: "10px", marginTop: "20px"}}>
-                                <button onClick={handleChangeSlot} disabled={!newSlotId}>
-                                    Confirm Change
-                                </button>
-                                <button onClick={closeChangeSlotModal}>Cancel</button>
+            {isEditModalOpen && (
+                <EditPetModal petInfo={petInfo} onClose={() => setIsEditModalOpen(false)} onSave={handleSavePet}/>
+            )}
+
+            {isAddAnamnesisModalOpen && (
+                <AddAnamnesisModal
+                    petId={petId}
+                    onClose={() => setIsAddAnamnesisModalOpen(false)}
+                    onSave={handleSaveAnamnesis}
+                />
+            )}
+
+            {isAddHealthUpdateModalOpen && (
+                <AddHealthUpdateModal
+                    petId={petId}
+                    onClose={() => setIsAddHealthUpdateModalOpen(false)}
+                    onSave={handleSaveHealthUpdate}
+                />
+            )}
+
+            {isHealthUpdateDetailsModalOpen && (
+                <HealthUpdateDetailsModal
+                    id={selectedHealthUpdateId}
+                    onClose={() => setIsHealthUpdateDetailsModalOpen(false)}
+                />
+            )}
+
+            {isChangeSlotModalOpen && (
+                <div style={modalOverlayStyles}>
+                    <div style={modalStyles} onClick={(e) => e.stopPropagation()}>
+                        <h3>Change Appointment Slot</h3>
+                        {availableSlots.length > 0 ? (
+                            <div style={{maxHeight: "300px", overflowY: "auto"}}>
+                                {availableSlots.map((slot) => (
+                                    <div key={slot.id} style={{marginBottom: "10px"}}>
+                                        <label>
+                                            <input
+                                                type="radio"
+                                                name="newSlot"
+                                                value={slot.id}
+                                                checked={newSlotId === slot.id}
+                                                onChange={() => setNewSlotId(slot.id)}
+                                            />
+                                            {new Date(slot.date).toLocaleDateString()} {slot.startTime} - {slot.endTime}
+                                        </label>
+                                    </div>
+                                ))}
                             </div>
+                        ) : (
+                            <p>No available priority slots found.</p>
+                        )}
+                        <div style={{display: "flex", gap: "10px", marginTop: "20px"}}>
+                            <button onClick={handleChangeSlot} disabled={!newSlotId}>
+                                Confirm Change
+                            </button>
+                            <button onClick={closeChangeSlotModal}>Cancel</button>
                         </div>
                     </div>
-                )}
-            </div>
+                </div>
+            )}
         </div>
     );
 };

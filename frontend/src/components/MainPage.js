@@ -8,8 +8,13 @@ import AppointmentPage from "./AppointmentPage";
 import useAxiosWithAuth from "../AxiosAuth";
 import AddReviewModal from "./AddReviewModal";
 import SeeAllReviewsModal from "./SeeAllReviewsModal";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/navigation";
+import { Navigation } from "swiper/modules";
 import axios from "axios";
 import KegaSideBar from "../pics/kega.png";
+import PawStub from "../pics/paw.png";
 
 export default function HomePage() {
     const navigate = useNavigate();
@@ -127,13 +132,14 @@ export default function HomePage() {
                 <img src={KegaSideBar} alt="Cute Dog"/>
             </div>
             <div style={{flex: 1}}>
-                <div className="main-container mt-2" style={{display: "flex", gap: "20px"}}>
-                    <div className="bg-table centered-content" style={{position: "relative", flex: 1}}>
+                <div className="main-container mt-2" style={{display: "flex", gap: "5px", paddingTop: '80px'}}>
+                    <div className="bg-table centered-content"
+                         style={{position: "relative", flex: 1, margin: "20px", padding: "20px"}}>
                         <div
                             style={{
                                 position: "absolute",
                                 left: 20,
-                                top: 50,
+                                top: 20,
                                 bottom: 0,
                                 width: "210px",
                                 height: "210px",
@@ -143,75 +149,137 @@ export default function HomePage() {
                                 backgroundRepeat: "no-repeat",
                             }}
                         />
-                        <h1 style={{ marginBottom: "30px" }}>Welcome to VetCare!</h1>
-                        <p style={{ marginBottom: "15px", fontSize: "25px" }}>
+                        <h1 style={{marginBottom: "10px", textAlign: "left", paddingRight: "950px"}}>Welcome to
+                            VetCare!</h1>
+                        <p style={{
+                            marginBottom: "15px",
+                            fontSize: "25px",
+                            textAlign: "left",
+                            paddingLeft: "250px",
+                            paddingRight: "80px"
+                        }}>
                             VetCare is a modern service for booking veterinary appointments, managing pet health,
-                            and receiving online medical care.
-                        </p>
-                        <p style={{ marginBottom: "20px", fontSize: "25px" }}>
-                            We offer convenient appointment scheduling, access to your pet's medical history, and clinic
+                            and receiving online medical care. We offer convenient appointment scheduling, access to
+                            your pet's medical history, and clinic
                             news.
                         </p>
+
                         <button
-                            style={{ padding: "12px 30px", fontSize: "17px" }}
+                            style={{padding: "12px 30px", fontSize: "17px"}}
                             className="button btn-no-border rounded-4"
                             onClick={handleAppointmentClick}
                         >
                             <b>Book an Appointment</b>
                         </button>
                     </div>
-
-                    <div className="bg-table element-space prem_diagnsosis" style={{ flex: 1 }}>
-                        <h2>Meet Our Veterinarians</h2>
+                    <h2>Meet Our Veterinarians</h2>
+                    <div className="bg-vet" style={{flex: 1, margin: '0px', padding: '20px'}}>
                         {loading ? (
                             <p>Loading veterinarians...</p>
                         ) : vets.length > 0 ? (
-                            <div>
-                                {vets.map((vet) => {
-                                    const ratings = vetRatings[vet.id] || [];
-                                    const averageRating = getAverageRating(ratings);
-                                    const review = ratings.length > 0 ? ratings[ratings.length - 1].review : "No reviews yet";
+                            <div style={{padding: '0 20px'}}>
+                                <Swiper
+                                    slidesPerView={4}
+                                    spaceBetween={10}
+                                    navigation={true}
+                                    modules={[Navigation]}
+                                    breakpoints={{
+                                        320: {slidesPerView: 1},
+                                        768: {slidesPerView: 2},
+                                        1024: {slidesPerView: 4},
+                                    }}
+                                >
+                                    {vets.map((vet) => {
+                                        const ratings = vetRatings[vet.id] || [];
+                                        const averageRating = getAverageRating(ratings);
+                                        const review = ratings.length > 0 ? ratings[ratings.length - 1].review : "No reviews yet";
 
-                                    return (
-                                        <div key={vet.id} style={{ marginBottom: "20px" }}>
-                                            <h3>Dr. {vet.name} {vet.surname}</h3>
-                                            <p>Expert in {vet.qualification || "Veterinary Medicine"}</p>
-                                            <p style={{ marginBottom: "5px" }}>
-                                                <strong>Average Rating:</strong> {renderStars(averageRating)} ({averageRating})
-                                            </p>
-                                            <p style={{ marginBottom: "5px" }}>
-                                                <strong>Latest Review:</strong> "{review}"
-                                            </p>
-                                            <div style={{ display: "flex", gap: "10px" }}>
-                                                <button
-                                                    className="button btn-no-border rounded-3"
-                                                    onClick={() => openReviewModal(vet.id, `${vet.name} ${vet.surname}`)}
-                                                >
-                                                    Leave a Review
-                                                </button>
-                                                <button
-                                                    className="button btn-no-border rounded-3"
-                                                    onClick={() => openSeeAllReviewsModal(vet)}
-                                                >
-                                                    See all Reviews
-                                                </button>
-                                            </div>
-                                        </div>
-                                    );
-                                })}
+                                        return (
+                                            <SwiperSlide key={vet.id}>
+                                                <div style={{
+                                                    marginBottom: "20px",
+                                                    padding: '10px',
+                                                    textAlign: 'center'
+                                                }}>
+                                                    {vet.photoUrl ? (
+                                                        <img
+                                                            className="avatar"
+                                                            src={vet.photoUrl}
+                                                            alt={`${vet.name}'s avatar`}
+                                                            style={{
+                                                                width: "200px",
+                                                                height: "200px",
+                                                                borderRadius: "50%"
+                                                            }}
+                                                        />
+                                                    ) : (
+                                                        <img
+                                                            className="avatar"
+                                                            src={PawStub}
+                                                            alt={`photo stub`}
+                                                            style={{
+                                                                width: "200px",
+                                                                height: "200px",
+                                                                borderRadius: "50%"
+                                                            }}
+                                                        />
+                                                    )}
+                                                    <h3 style={{marginTop: "15px"}}>Dr. {vet.name} {vet.surname}</h3>
+                                                    <h6>{vet.qualification || "Expert in Veterinary Medicine"}</h6>
+                                                    <div
+                                                        style={{margin: '5px 0'}}>
+                                                        <p style={{marginBottom: "5px"}}>
+                                                            {renderStars(averageRating)} ({averageRating})
+                                                        </p>
+                                                    </div>
+                                                    <p style={{marginBottom: "5px"}}>
+                                                        <strong>Latest Review:</strong> "{review}"
+                                                    </p>
+                                                    <div style={{
+                                                        display: "flex",
+                                                        gap: "10px",
+                                                        justifyContent: 'center'
+                                                    }}>
+                                                        <button
+                                                            className="button btn-no-border rounded-3"
+                                                            onClick={() => openReviewModal(vet.id, `${vet.name} ${vet.surname}`)}
+                                                        >
+                                                            Leave a Review
+                                                        </button>
+                                                        <button
+                                                            className="button btn-no-border rounded-3"
+                                                            onClick={() => openSeeAllReviewsModal(vet)}
+                                                        >
+                                                            See all Reviews
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </SwiperSlide>
+                                        );
+                                    })}
+                                </Swiper>
                             </div>
                         ) : (
                             <p>No veterinarians found.</p>
                         )}
                     </div>
-
-                    <div className="bg-table element-space prem_diagnsosis" style={{ flex: 1 }}>
-                        <h2>Contact Information</h2>
-                        <p>Address: 10 Veterinary Street, Moscow</p>
-                        <p>Phone: +8 (800) 555-35-35</p>
-                        <p>Email: contact@vetcare.ru</p>
-                    </div>
                 </div>
+                <footer className="footer" style={{
+                    backgroundColor: 'rgba(131,61,59,0.69)',
+                    padding: '30px',
+                    marginTop: '20px',
+                    textAlign: 'center',
+                    borderTop: '1px solid #e9ecef',
+                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.5)',
+                }}>
+                    <div className="container">
+                        <h2 style={{marginBottom: '20px', fontSize: '24px', color: '#fff3f3'}}>Contact Information</h2>
+                        <p style={{margin: '5px 0', fontSize: '16px', color: '#ffe9e9'}}>Address: 10 Veterinary Street,
+                            Moscow</p>
+                        <p style={{margin: '5px 0', fontSize: '16px', color: '#fff3f3'}}>Phone: +8 (800) 555-35-35</p>
+                        <p style={{margin: '5px 0', fontSize: '16px', color: '#fff3f3'}}>Email: contact@vetcare.ru</p>
+                    </div>
+                </footer>
             </div>
 
             {isModalOpen && (
@@ -255,7 +323,7 @@ export default function HomePage() {
                         >
                             ✕
                         </button>
-                        <AppointmentPage onClose={closeModal} />
+                        <AppointmentPage onClose={closeModal}/>
                     </div>
                 </div>
             )}

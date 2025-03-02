@@ -254,7 +254,7 @@ const VetDashboard = () => {
     return (
         <div>
             <Header />
-            <div className="container mt-1" style={{ display: "flex", gap: "200px" }}>
+            <div className="container mt-1" style={{ display: "flex", gap: "200px", paddingTop: '110px' }}>
                 <div style={{ flex: 0 }}>
                     <div
                         className="container rounded-3 vet-card"
@@ -381,7 +381,17 @@ const VetDashboard = () => {
                                                     }}
                                                 />
                                             ) : (
-                                                <p>(anonymous)</p>
+                                                <img
+                                                    className="avatar"
+                                                    src={PawStub}
+                                                    alt={`photo stub`}
+                                                    style={{
+                                                        width: "50px",
+                                                        height: "50px",
+                                                        borderRadius: "50%",
+                                                        marginRight: "20px",
+                                                    }}
+                                                />
                                             )}{" "}
                                             {"\t"}
                                             <strong>{pet.name}</strong> {" "} {"\t"}
