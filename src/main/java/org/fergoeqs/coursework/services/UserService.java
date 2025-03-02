@@ -1,11 +1,9 @@
 package org.fergoeqs.coursework.services;
 
 import org.apache.coyote.BadRequestException;
-import org.checkerframework.checker.units.qual.C;
 import org.fergoeqs.coursework.dto.AppUserDTO;
 import org.fergoeqs.coursework.exception.UnauthorizedAccessException;
 import org.fergoeqs.coursework.models.AppUser;
-import org.fergoeqs.coursework.models.Pet;
 import org.fergoeqs.coursework.models.enums.RoleType;
 import org.fergoeqs.coursework.repositories.UserRepository;
 import org.fergoeqs.coursework.utils.Mappers.AppUserMapper;
@@ -14,7 +12,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
