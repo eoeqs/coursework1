@@ -105,9 +105,22 @@ const AllPets = () => {
                 <div className="bg-entities element-space" style={{ marginBottom: "20px" }}>
                     {filteredPets.length > 0 ? (
                         <table cellPadding="5" cellSpacing="0" className="entities-table table-right-end">
+                            <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Photo</th>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Breed</th>
+                                <th>Age</th>
+                                <th>Sex</th>
+                                <th></th>
+                            </tr>
+                            </thead>
                             <tbody>
                             {filteredPets.map((pet) => (
                                 <tr key={pet.id}>
+                                    <td>{pet.id}</td>
                                     <td>{pet.photoUrl ? (
                                         <img className="avatar"
                                              src={pet.photoUrl}
@@ -134,7 +147,7 @@ const AllPets = () => {
                                     <td>{pet.name}</td>
                                     <td>{pet.type}</td>
                                     <td>{pet.breed}</td>
-                                    <td>{pet.age}</td>
+                                    <td>{pet.age} y.o.</td>
                                     <td>{pet.sex}</td>
                                     <td>
                                         <button
@@ -146,7 +159,7 @@ const AllPets = () => {
                                         <button
                                             className="button btn-no-border"
                                             onClick={() => openEditPetModal(pet)}
-                                            style={{ marginLeft: "10px" }}
+                                            style={{marginLeft: "10px"}}
                                         >
                                             Edit
                                         </button>

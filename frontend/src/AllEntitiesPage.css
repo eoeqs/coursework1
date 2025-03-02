@@ -1,7 +1,7 @@
 .entities_container {
     top: 100%;
     max-width: 1200px;
-    margin: 100px auto 0;
+    margin: 75px auto 0;
     padding: 20px;
     z-index: 1;
 }
@@ -72,6 +72,10 @@
     background-color: #f8f9fa;
     font-weight: bold;
     color: #333;
+}
+
+.entities-table tr th{
+    color: #600808;
 }
 
 .entities-table tr:hover {

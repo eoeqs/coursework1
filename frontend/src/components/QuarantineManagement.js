@@ -12,6 +12,7 @@ const QuarantineManagement = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState(""); // Состояние для поискового запроса
 
     const [formData, setFormData] = useState({
         reason: "",
@@ -65,6 +66,13 @@ const QuarantineManagement = () => {
 
         fetchData();
     }, [axiosInstance]);
+
+    // Фильтрация по поисковому запросу
+    const filteredSectors = sectors.filter((sector) =>
+        sector.reasons.some((reason) =>
+            reason.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+    );
 
     const handleViewSectorQuarantines = (sectorId) => {
         navigate(`/quarantine/sector/${sectorId}`);
@@ -165,9 +173,27 @@ const QuarantineManagement = () => {
                 >
                     Add Quarantine
                 </button>
+
+                {/* Поисковая строка */}
+                <div style={{ marginBottom: "20px" }}>
+                    <input
+                        type="text"
+                        placeholder="Search by reason..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        style={{
+                            padding: "10px",
+                            width: "100%",
+                            borderRadius: "5px",
+                            border: "1px solid #ddd",
+                            fontSize: "16px",
+                        }}
+                    />
+                </div>
+
                 <h3>Current Quarantines by Sector</h3>
                 <div className="bg-table element-space">
-                    {sectors.length > 0 ? (
+                    {filteredSectors.length > 0 ? (
                         <table cellPadding="5" cellSpacing="0" className="uniq-table">
                             <thead>
                             <tr>
@@ -177,7 +203,7 @@ const QuarantineManagement = () => {
                             </tr>
                             </thead>
                             <tbody>
-                            {sectors.map((sector) => (
+                            {filteredSectors.map((sector) => (
                                 <tr key={sector.sectorId}>
                                     <td>{sector.sectorId}</td>
                                     <td>{sector.reasons.join(", ")}</td>
@@ -186,7 +212,7 @@ const QuarantineManagement = () => {
                                             className="button btn-no-border"
                                             onClick={() => handleViewSectorQuarantines(sector.sectorId)}
                                         >
-                                            View Quarantines
+                                            View All
                                         </button>
                                         <button
                                             className="button btn-no-border"

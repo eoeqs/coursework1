@@ -139,7 +139,9 @@ export default function Header() {
         if (userRole === "ROLE_OWNER") {
             return (
                 <div ref={sidebarRef} className={`sidebar ${sidebarOpen ? "open" : ""}`}>
-                    <button onClick={() => handleMenuItemClick("/")}>Main Page</button>
+                    <button onClick={() => handleMenuItemClick("/")}>VetCare Main</button>
+                    <div className="divider"></div>
+                    <button onClick={() => handleMenuItemClick("/owner-dashboard")}>Private Office</button>
                     <div className="divider"></div>
                     <button onClick={() => handleMenuItemClick("/my-pets")}>My Pets</button>
                     <div className="divider"></div>
@@ -148,7 +150,9 @@ export default function Header() {
         } else if (userRole === "ROLE_VET") {
             return (
                 <div ref={sidebarRef} className={`sidebar ${sidebarOpen ? "open" : ""}`}>
-                    <button onClick={() => handleMenuItemClick("/")}>Main Page</button>
+                    <button onClick={() => handleMenuItemClick("/")}>VetCare Main</button>
+                    <div className="divider"></div>
+                    <button onClick={() => handleMenuItemClick("/vet-dashboard")}>Private Office</button>
                     <div className="divider"></div>
                     <button onClick={() => handleMenuItemClick("/my-wards")}>My Wards</button>
                     <div className="divider"></div>
@@ -159,7 +163,9 @@ export default function Header() {
         } else if (userRole === "ROLE_ADMIN") {
             return (
                 <div ref={sidebarRef} className={`sidebar ${sidebarOpen ? "open" : ""}`}>
-                    <button onClick={() => handleMenuItemClick("/")}>Main Page</button>
+                    <button onClick={() => handleMenuItemClick("/")}>VetCare Main</button>
+                    <div className="divider"></div>
+                    <button onClick={() => handleMenuItemClick("/admin-dashboard")}>Private Office</button>
                     <div className="divider"></div>
                     <button onClick={() => handleMenuItemClick("/all-pets")}>All Pets</button>
                     <div className="divider"></div>

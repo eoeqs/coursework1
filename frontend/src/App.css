@@ -149,6 +149,10 @@ input[type="checkbox"] {
   text-align: right !important;
 }
 
+/*.table-right-end tr:last-child th {*/
+/*  text-align: right !important;*/
+/*}*/
+
 
 .cells {
   background-color: #E2C9C9;
@@ -434,7 +438,7 @@ header h1 {
 
 .form-button {
   padding: 12px 30px;
-  font-size: 17px;
+  /*font-size: 17px;*/
   border-radius: 4px;
   background-color: #a13f3f;
   color: #fff;
@@ -513,7 +517,6 @@ html, body, #root {
 
 button {
   padding: 3px 16px;
-  border: none;
   border-radius: 2px;
   font-size: 14px;
   cursor: pointer;

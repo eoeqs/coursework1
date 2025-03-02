@@ -128,9 +128,21 @@ const AllVets = () => {
                 <div className="bg-entities element-space" style={{ marginBottom: "20px" }}>
                     {filteredVets.length > 0 ? (
                         <table cellPadding="5" cellSpacing="0" className="entities-table table-right-end">
+                            <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Photo</th>
+                                <th>Username</th>
+                                <th>Full Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th></th>
+                            </tr>
+                            </thead>
                             <tbody>
                             {filteredVets.map((vet) => (
                                 <tr key={vet.id}>
+                                    <td>{vet.id}</td>
                                     <td>{vet.photoUrl ? (
                                         <img className="avatar"
                                              src={vet.photoUrl}

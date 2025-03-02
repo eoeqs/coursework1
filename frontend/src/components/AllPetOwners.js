@@ -13,7 +13,7 @@ const AllPetOwners = () => {
     const [selectedUser, setSelectedUser] = useState(null);
     const [isEditUserModalOpen, setIsEditUserModalOpen] = useState(false);
     const [isEditRolesModalOpen, setIsEditRolesModalOpen] = useState(false);
-    const [searchQuery, setSearchQuery] = useState(""); // Состояние для поискового запроса
+    const [searchQuery, setSearchQuery] = useState("");
 
     useEffect(() => {
         const fetchOwners = async () => {
@@ -34,7 +34,6 @@ const AllPetOwners = () => {
         fetchOwners();
     }, [axiosInstance]);
 
-    // Фильтрация по поисковому запросу
     const filteredOwners = owners.filter((owner) => {
         const query = searchQuery.toLowerCase();
         return (
@@ -124,9 +123,21 @@ const AllPetOwners = () => {
                 <div className="bg-entities element-space">
                     {filteredOwners.length > 0 ? (
                         <table cellPadding="5" cellSpacing="0" className="entities-table table-right-end">
+                            <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Photo</th>
+                                <th>Username</th>
+                                <th>Full Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th></th>
+                            </tr>
+                            </thead>
                             <tbody>
                             {filteredOwners.map((owner) => (
                                 <tr key={owner.id}>
+                                    <td>{owner.id}</td>
                                     <td>{owner.photoUrl ? (
                                         <img className="avatar"
                                              src={owner.photoUrl}
