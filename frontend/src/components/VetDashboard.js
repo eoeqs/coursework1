@@ -27,6 +27,9 @@ const VetDashboard = () => {
     const [cancelReason, setCancelReason] = useState("");
     const [showCancelModal, setShowCancelModal] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [showRescheduleModal, setShowRescheduleModal] = useState(false);
+    const [availableSlots, setAvailableSlots] = useState([]);
+    const [selectedSlotId, setSelectedSlotId] = useState(null);
 
     useEffect(() => {
         if (!token) return;
@@ -147,6 +150,8 @@ const VetDashboard = () => {
             closeModal();
             setCancelReason("");
             setShowCancelModal(false);
+            const updatedAppointments = appointments.filter((app) => app.id !== selectedAppointment.id);
+            setAppointments(updatedAppointments);
         } catch (error) {
             console.error("Error canceling appointment:", error);
             alert("Failed to cancel appointment.");
@@ -188,6 +193,50 @@ const VetDashboard = () => {
 
     const closeEditVetModal = () => {
         setIsEditModalOpen(false);
+    };
+
+    const openRescheduleModal = async () => {
+        try {
+            const response = await axiosInstance.get("/slots/available-priority-slots");
+            setAvailableSlots(response.data);
+            setShowRescheduleModal(true);
+        } catch (error) {
+            console.error("Error fetching available priority slots:", error);
+            alert("Failed to fetch available slots. Please try again.");
+        }
+    };
+
+    const closeRescheduleModal = () => {
+        setShowRescheduleModal(false);
+        setSelectedSlotId(null);
+        setAvailableSlots([]);
+    };
+
+    const handleReschedule = async () => {
+        if (!selectedSlotId) {
+            alert("Please select a new slot.");
+            return;
+        }
+
+        try {
+            await axiosInstance.put(`/appointments/update-appointment/${selectedAppointment.id}`, null, {
+                params: { slotId: selectedSlotId },
+            });
+            alert("Appointment rescheduled successfully!");
+            closeRescheduleModal();
+            closeModal();
+            const updatedAppointments = appointments.map((app) =>
+                app.id === selectedAppointment.id ? { ...app, slotId: selectedSlotId } : app
+            );
+            setAppointments(updatedAppointments);
+        } catch (error) {
+            console.error("Error rescheduling appointment:", error);
+            alert("Failed to reschedule appointment.");
+        }
+    };
+
+    const handleManageQuarantines = () => {
+        navigate("/quarantine-management");
     };
 
     if (loading) {
@@ -250,7 +299,6 @@ const VetDashboard = () => {
                         <div style={{ padding: "0px 20%" }}>
                             <h5>{vetInfo.qualification || "Not specified"}</h5>
                         </div>
-
                         <div style={{ padding: "0px 0px" }}>
                             <p style={{ marginBottom: "5px" }}>
                                 <strong>Email:</strong> {vetInfo.email || "Not specified"}
@@ -272,6 +320,15 @@ const VetDashboard = () => {
                             <button className="button btn-no-border rounded-3" onClick={openEditVetModal}>
                                 Edit Profile
                             </button>
+                            {userRole === "ROLE_VET" && (
+                                <button
+                                    className="button btn-no-border rounded-3"
+                                    onClick={handleManageQuarantines}
+                                    style={{ marginLeft: "10px" }}
+                                >
+                                    Manage Quarantines
+                                </button>
+                            )}
                         </div>
                     </div>
 
@@ -303,7 +360,7 @@ const VetDashboard = () => {
                     </div>
                 </div>
                 {userRole === "ROLE_VET" && (
-                    <div className="bg-table element-space wards " style={{ flex: 1 }}>
+                    <div className="bg-table element-space wards" style={{ flex: 1 }}>
                         <h2>My Wards</h2>
                         {doctorPets.length > 0 ? (
                             <table cellPadding="0" cellSpacing="0" className="uniq-table">
@@ -381,33 +438,15 @@ const VetDashboard = () => {
                     }}
                 >
                     <h3>Appointment Details</h3>
-                    <p>
-                        <strong>Patient:</strong> {selectedAppointment.pet.name}
-                    </p>
-                    <p>
-                        <strong>Type:</strong> {selectedAppointment.pet.type}
-                    </p>
-                    <p>
-                        <strong>Age:</strong> {selectedAppointment.pet.age}
-                    </p>
-                    <p>
-                        <strong>Sex:</strong> {selectedAppointment.pet.sex}
-                    </p>
-                    <p>
-                        <strong>Owner:</strong> {selectedAppointment.ownerName}
-                    </p>
-                    <p>
-                        <strong>Complaint:</strong> {selectedAppointment.description}
-                    </p>
-                    <p>
-                        <strong>Date:</strong> {selectedAppointment.slot.date}
-                    </p>
-                    <p>
-                        <strong>Time:</strong> {selectedAppointment.slot.startTime} - {selectedAppointment.slot.endTime}
-                    </p>
-                    <p>
-                        <strong>Priority:</strong> {selectedAppointment.priority ? "Yes" : "No"}
-                    </p>
+                    <p><strong>Patient:</strong> {selectedAppointment.pet.name}</p>
+                    <p><strong>Type:</strong> {selectedAppointment.pet.type}</p>
+                    <p><strong>Age:</strong> {selectedAppointment.pet.age}</p>
+                    <p><strong>Sex:</strong> {selectedAppointment.pet.sex}</p>
+                    <p><strong>Owner:</strong> {selectedAppointment.ownerName}</p>
+                    <p><strong>Complaint:</strong> {selectedAppointment.description}</p>
+                    <p><strong>Date:</strong> {selectedAppointment.slot.date}</p>
+                    <p><strong>Time:</strong> {selectedAppointment.slot.startTime} - {selectedAppointment.slot.endTime}</p>
+                    <p><strong>Priority:</strong> {selectedAppointment.priority ? "Yes" : "No"}</p>
 
                     <div style={{ margin: "20px 0" }}>
                         <h4>Body Marker</h4>
@@ -430,6 +469,7 @@ const VetDashboard = () => {
                     </label>
                     <button onClick={handleApprove}>Approve</button>
                     {selectedAppointment.priority && <button onClick={openCancelModal}>Cancel</button>}
+                    {selectedAppointment.priority && <button onClick={openRescheduleModal}>Reschedule</button>}
                     <button onClick={closeModal}>Close</button>
                 </div>
             )}
@@ -450,6 +490,38 @@ const VetDashboard = () => {
                             Confirm Cancel
                         </button>
                         <button onClick={closeCancelModal}>Close</button>
+                    </div>
+                </div>
+            )}
+
+            {showRescheduleModal && (
+                <div style={modalStyles}>
+                    <h3>Reschedule Appointment</h3>
+                    {availableSlots.length > 0 ? (
+                        <div style={{ maxHeight: "300px", overflowY: "auto" }}>
+                            {availableSlots.map((slot) => (
+                                <div key={slot.id} style={{ marginBottom: "10px" }}>
+                                    <label>
+                                        <input
+                                            type="radio"
+                                            name="slot"
+                                            value={slot.id}
+                                            checked={selectedSlotId === slot.id}
+                                            onChange={() => setSelectedSlotId(slot.id)}
+                                        />
+                                        {new Date(slot.date).toLocaleDateString()} {slot.startTime} - {slot.endTime}
+                                    </label>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <p>No available priority slots found.</p>
+                    )}
+                    <div style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
+                        <button onClick={handleReschedule} disabled={!selectedSlotId}>
+                            Confirm Reschedule
+                        </button>
+                        <button onClick={closeRescheduleModal}>Cancel</button>
                     </div>
                 </div>
             )}

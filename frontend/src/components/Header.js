@@ -4,26 +4,36 @@ import { FaUserCircle } from "react-icons/fa";
 import { useAuth } from "../AuthProvider";
 import useAxiosWithAuth from "../AxiosAuth";
 import myImage from "../pics/logo_min.png";
+import NotificationsModal from "./NotificationsModal";
+import NotificationDetailsModal from "./NotificationDetailsModal";
 
 export default function Header() {
     const navigate = useNavigate();
     const { token, logout } = useAuth();
-    const isAuthenticated = token !== null;
+    const isAuthenticated = !!token;
     const [menuOpen, setMenuOpen] = useState(false);
     const [userRole, setUserRole] = useState(null);
+    const [userId, setUserId] = useState(null);
+    const [isNotificationsModalOpen, setIsNotificationsModalOpen] = useState(false);
+    const [isNotificationDetailsModalOpen, setIsNotificationDetailsModalOpen] = useState(false);
+    const [selectedNotificationId, setSelectedNotificationId] = useState(null);
     const axiosInstance = useAxiosWithAuth();
 
     useEffect(() => {
         if (isAuthenticated) {
-            const fetchUserRole = async () => {
+            const fetchUserInfo = async () => {
                 try {
                     const response = await axiosInstance.get("/users/current-user-info");
                     setUserRole(response.data.role);
+                    setUserId(response.data.id);
                 } catch (error) {
-                    console.error("Error fetching user role:", error);
+                    console.error("Error fetching user info:", error);
                 }
             };
-            fetchUserRole();
+            fetchUserInfo();
+        } else {
+            setUserRole(null);
+            setUserId(null);
         }
     }, [isAuthenticated, axiosInstance]);
 
@@ -50,9 +60,30 @@ export default function Header() {
             navigate("/vet-dashboard");
         } else if (userRole === "ROLE_OWNER") {
             navigate("/owner-dashboard");
+        } else if (userRole === "ROLE_ADMIN") {
+            navigate("/admin-dashboard");
         } else {
             navigate("/");
         }
+    };
+
+    const openNotificationsModal = () => {
+        setMenuOpen(false);
+        setIsNotificationsModalOpen(true);
+    };
+
+    const closeNotificationsModal = () => {
+        setIsNotificationsModalOpen(false);
+    };
+
+    const openNotificationDetailsModal = (notificationId) => {
+        setSelectedNotificationId(notificationId);
+        setIsNotificationDetailsModalOpen(true);
+    };
+
+    const closeNotificationDetailsModal = () => {
+        setIsNotificationDetailsModalOpen(false);
+        setSelectedNotificationId(null);
     };
 
     return (
@@ -79,11 +110,26 @@ export default function Header() {
                 {menuOpen && isAuthenticated && (
                     <div className="menu-dropdown">
                         <button onClick={handleProfile}>Profile</button>
-                        <button onClick={() => handleMenuItemClick("/notifications")}>Notifications</button>
+                        <button onClick={openNotificationsModal}>Notifications</button>
                         <button onClick={handleLogout}>Logout</button>
                     </div>
                 )}
             </div>
+
+            {isNotificationsModalOpen && (
+                <NotificationsModal
+                    userId={userId}
+                    onClose={closeNotificationsModal}
+                    onOpenNotification={openNotificationDetailsModal}
+                />
+            )}
+
+            {isNotificationDetailsModalOpen && (
+                <NotificationDetailsModal
+                    notificationId={selectedNotificationId}
+                    onClose={closeNotificationDetailsModal}
+                />
+            )}
         </header>
     );
 }
