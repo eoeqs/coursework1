@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import NewPetForm from "./NewPetForm";
 import EditOwnerModal from "./EditOwnerModal";
 import Header from "./Header";
+import PawStub from "../pics/paw.png";
 
 const OwnerDashboard = () => {
     const { token } = useAuth();
@@ -111,7 +112,12 @@ const OwnerDashboard = () => {
                                 style={{width: '250px', height: '250px', borderRadius: '2%'}}
                             />
                         ) : (
-                            <div>Owner profile pic placeholder</div>
+                            <img
+                                className="avatar"
+                                src={PawStub}
+                                alt={`photo stub`}
+                                style={{width: "250px", height: "250px", borderRadius: "50%"}}
+                            />
                         )}
                     </div>
                     <div>
@@ -152,7 +158,12 @@ const OwnerDashboard = () => {
                                                  }}
                                             />
                                         ) : (
-                                            <p>(anonymous)</p>
+                                            <img
+                                                className="avatar"
+                                                src={PawStub}
+                                                alt={`photo stub`}
+                                                style={{width: "250px", height: "250px", borderRadius: "50%"}}
+                                            />
                                         )} {"\t"}
                                         <strong>{pet.name}</strong>{" "} {"\t"}
                                         ({pet.type}, {" "}

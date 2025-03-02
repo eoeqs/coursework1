@@ -42,7 +42,7 @@ public class SectorsService {
         Sector sector = sectorMapper.sectorDTOToSector(sectorDTO);
         sector.setOccupancy(0);
         sector.setIsAvailable(true);
-        return sectorsRepository.save(sectorMapper.sectorDTOToSector(sectorDTO));
+        return sectorsRepository.save(sector);
     }
 
     @Transactional

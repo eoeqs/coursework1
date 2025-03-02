@@ -1,4 +1,5 @@
 import React from "react";
+import PawStub from "../pics/paw.png";
 
 const PetInfo = ({ petInfo, onEdit }) => {
     return (
@@ -13,15 +14,20 @@ const PetInfo = ({ petInfo, onEdit }) => {
                             style={{width: '250px', height: '250px', borderRadius: '2%'}}
                         />
                     ) : (
-                        <div>Pet profile pic placeholder</div>
+                        <img
+                            className="avatar"
+                            src={PawStub}
+                            alt={`photo stub`}
+                            style={{width: "250px", height: "250px", borderRadius: "50%"}}
+                        />
                     )}
                 </div>
             </div>
 
             <div className="ps-2">
                 <h1> {petInfo.name || "not specified"}</h1>
-                <p style={{ marginBottom: '5px' }}><strong>Type:</strong> {petInfo.type || "not specified"}</p>
-                <p style={{ marginBottom: '5px' }}><strong>Breed:</strong> {petInfo.breed || "not specified"}</p>
+                <p style={{marginBottom: '5px'}}><strong>Type:</strong> {petInfo.type || "not specified"}</p>
+                <p style={{marginBottom: '5px' }}><strong>Breed:</strong> {petInfo.breed || "not specified"}</p>
                 <p style={{ marginBottom: '5px' }}><strong>Age:</strong> {petInfo.age || "not specified"}</p>
                 <p style={{ marginBottom: '5px' }}><strong>Sex:</strong> {petInfo.sex || "not specified"}</p>
                 <p style={{ marginBottom: '5px' }}><strong>Weight:</strong> {petInfo.weight ? `${petInfo.weight} kg` : "not specified"}</p>

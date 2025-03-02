@@ -130,6 +130,10 @@ input[type="checkbox"] {
   border-bottom: 10px solid #FDE6E6FF;
 }
 
+.table-right-end td:last-child {
+  text-align: right !important;
+}
+
 
 .cells {
   background-color: #E2C9C9;
@@ -235,7 +239,7 @@ header h1 {
   height: 100%;
 }
 
-* {
+*:not(.rating, .rating *) {
   font-family: 'Arial', sans-serif;
   color: #682020;
 }
