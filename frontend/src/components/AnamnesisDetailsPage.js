@@ -224,7 +224,6 @@ const AnamnesisDetailsPage = () => {
         setIsAddAttachmentModalOpen(false);
     };
 
-    // Report Functions
     const openGenerateReportModal = () => {
         setIsGenerateReportModalOpen(true);
     };

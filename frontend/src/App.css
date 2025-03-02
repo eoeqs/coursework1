@@ -93,6 +93,16 @@
   border-radius: 10px;
 }
 
+.bg-vet {
+  padding: 8px 12px;
+  width: 100%;
+  background-color: rgb(253, 230, 230);
+  box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.1);
+  /*overflow-y: auto;*/
+  max-height: 700px;
+  border-radius: 10px;
+}
+
 ::-webkit-scrollbar {
   width: 5px;
 }
@@ -464,4 +474,14 @@ html, body, #root {
   min-height: 100vh;
   /*background-color: #f8efef; */
   background-color: #f8f3f3;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  color: #950404;
+}
+
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+  color: #cc0000;
 }
