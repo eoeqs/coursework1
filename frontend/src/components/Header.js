@@ -55,18 +55,6 @@ export default function Header() {
         navigate("/login");
     };
 
-    const handleProfile = () => {
-        if (userRole === "ROLE_VET") {
-            navigate("/vet-dashboard");
-        } else if (userRole === "ROLE_OWNER") {
-            navigate("/owner-dashboard");
-        } else if (userRole === "ROLE_ADMIN") {
-            navigate("/admin-dashboard");
-        } else {
-            navigate("/");
-        }
-    };
-
     const openNotificationsModal = () => {
         setMenuOpen(false);
         setIsNotificationsModalOpen(true);
@@ -84,6 +72,37 @@ export default function Header() {
     const closeNotificationDetailsModal = () => {
         setIsNotificationDetailsModalOpen(false);
         setSelectedNotificationId(null);
+    };
+
+    const renderMenuItems = () => {
+        if (userRole === "ROLE_OWNER") {
+            return (
+                <div className="menu-dropdown">
+                    <button onClick={() => handleMenuItemClick("/")}>Main Page</button>
+                    <button onClick={() => handleMenuItemClick("/owner-dashboard")}>My Profile</button>
+                    <button onClick={() => handleMenuItemClick("/my-pets")}>My Pets</button>
+                    <button onClick={openNotificationsModal}>Notifications</button>
+                    <button onClick={handleLogout}>Logout</button>
+                </div>
+            );
+        } else if (userRole === "ROLE_VET") {
+            return (
+                <div className="menu-dropdown">
+                    <button onClick={() => handleMenuItemClick("/vet-dashboard")}>Profile</button>
+                    <button onClick={openNotificationsModal}>Notifications</button>
+                    <button onClick={handleLogout}>Logout</button>
+                </div>
+            );
+        } else if (userRole === "ROLE_ADMIN") {
+            return (
+                <div className="menu-dropdown">
+                    <button onClick={() => handleMenuItemClick("/admin-dashboard")}>Profile</button>
+                    <button onClick={openNotificationsModal}>Notifications</button>
+                    <button onClick={handleLogout}>Logout</button>
+                </div>
+            );
+        }
+        return null;
     };
 
     return (
@@ -107,13 +126,7 @@ export default function Header() {
                     <FaUserCircle size={40} />
                 </button>
 
-                {menuOpen && isAuthenticated && (
-                    <div className="menu-dropdown">
-                        <button onClick={handleProfile}>Profile</button>
-                        <button onClick={openNotificationsModal}>Notifications</button>
-                        <button onClick={handleLogout}>Logout</button>
-                    </div>
-                )}
+                {menuOpen && isAuthenticated && renderMenuItems()}
             </div>
 
             {isNotificationsModalOpen && (

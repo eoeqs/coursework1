@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
 import { useAuth } from "../AuthProvider";
 import Header from "./Header";
 import '../sidebar.css';

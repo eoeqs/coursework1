@@ -16,6 +16,7 @@ import OwnerDashboard from "./components/OwnerDashboard";
 import AdminDashboard from "./components/AdminDashboard";
 import QuarantineManagement from "./components/QuarantineManagement";
 import SectorQuarantineManagement from "./components/SectorQuarantineManagement";
+import MyPets from "./components/MyPets";
 
 
 const App = () => {
@@ -39,6 +40,7 @@ const App = () => {
                 <Route path="/admin-dashboard" element={<AdminDashboard />} />
                 <Route path="/quarantine-management" element={<QuarantineManagement />} />
                 <Route path="/quarantine/sector/:sectorId" element={<SectorQuarantineManagement />} />
+                <Route path="/my-pets" element={<MyPets />} />
             </Routes>
         </Router>
     );
