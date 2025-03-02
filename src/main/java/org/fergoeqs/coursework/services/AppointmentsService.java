@@ -64,8 +64,6 @@ public class AppointmentsService {
 
     @Transactional
     public Appointment create(AppointmentDTO appointmentDTO) {
-        Appointment appointment = new Appointment();
-        Slot slot = availableSlotsRepository.findById(appointmentDTO.slotId()).orElse(null); //TODO: проверку добавить на Null
         Pet pet = petsRepository.findById(appointmentDTO.petId()).orElse(null);
         healthUpdatesService.saveWithAppointment(pet, appointmentDTO.description());
         return appointmentsRepository.save(appointmentMapper.appointmentDTOToAppointment(appointmentDTO));
@@ -82,7 +80,7 @@ public class AppointmentsService {
     @Transactional
     public void delete(Long id, String reason) {
         Appointment appointment = appointmentsRepository.findById(id).orElseThrow();
-        sendNotification(appointment, "Your appointment has been cancelled by vet cause: " + reason);
+        sendNotification(appointment, "Your appointment has been cancelled by vet cause: " + reason, false);
         appointmentsRepository.deleteById(id);
     }
 
@@ -93,15 +91,17 @@ public class AppointmentsService {
         List<Appointment> upcomingAppointments = appointmentsRepository.findAppointmentsBySlotDate(tomorrow);
 
         for (Appointment appointment : upcomingAppointments) {
-            String message = "Your pet " + appointment.getPet().getName() +  " has an appointment scheduled for tomorrow at " + appointment.getSlot().getStartTime().format(DateTimeFormatter.ofPattern("HH:mm"));
-            sendNotification(appointment, message);
+            String message = "Pet " + appointment.getPet().getName() +  " has an appointment scheduled for tomorrow at " + appointment.getSlot().getStartTime().format(DateTimeFormatter.ofPattern("HH:mm"));
+            sendNotification(appointment, message, true);
         }
     }
 
-
-    private void sendNotification(Appointment appointment, String message) {
+    private void sendNotification(Appointment appointment, String message, Boolean dublicateVet) {
         AppUser owner = appointment.getPet().getOwner();
         notificationService.sendNotification(owner.getId(), message, owner.getEmail());
+        if (dublicateVet) {
+            notificationService.sendNotification(appointment.getSlot().getVet().getId(), message, appointment.getSlot().getVet().getEmail());
+        }
     }
 
 
