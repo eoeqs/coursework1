@@ -88,7 +88,10 @@ export default function Header() {
         } else if (userRole === "ROLE_VET") {
             return (
                 <div className="menu-dropdown">
-                    <button onClick={() => handleMenuItemClick("/vet-dashboard")}>Profile</button>
+                    <button onClick={() => handleMenuItemClick("/")}>Main Page</button>
+                    <button onClick={() => handleMenuItemClick("/vet-dashboard")}>My Profile</button>
+                    <button onClick={() => handleMenuItemClick("/my-wards")}>My Wards</button>
+                    <button onClick={() => handleMenuItemClick("/quarantine-management")}>Quarantine Manager</button>
                     <button onClick={openNotificationsModal}>Notifications</button>
                     <button onClick={handleLogout}>Logout</button>
                 </div>
@@ -96,7 +99,13 @@ export default function Header() {
         } else if (userRole === "ROLE_ADMIN") {
             return (
                 <div className="menu-dropdown">
-                    <button onClick={() => handleMenuItemClick("/admin-dashboard")}>Profile</button>
+                    <button onClick={() => handleMenuItemClick("/")}>Main Page</button>
+                    <button onClick={() => handleMenuItemClick("/admin-dashboard")}>My Profile</button>
+                    <button onClick={() => handleMenuItemClick("/all-pets")}>All Pets</button>
+                    <button onClick={() => handleMenuItemClick("/all-vets")}>All Vets</button>
+                    <button onClick={() => handleMenuItemClick("/all-pet-owners")}>All Pet Owners</button>
+                    <button onClick={() => handleMenuItemClick("/quarantine-management")}>Quarantine Manager</button>
+                    <button onClick={() => handleMenuItemClick("/sector-management")}>Sector Management</button>
                     <button onClick={openNotificationsModal}>Notifications</button>
                     <button onClick={handleLogout}>Logout</button>
                 </div>
