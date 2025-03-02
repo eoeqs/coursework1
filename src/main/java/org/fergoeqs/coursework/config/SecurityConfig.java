@@ -47,6 +47,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/api/ws/**").permitAll()
                         .requestMatchers("/api/users/register", "/api/users/login").permitAll()
+                        .requestMatchers("/api/rating-and-reviews/**").permitAll()
                         .requestMatchers("/api/sectors/**").hasAnyRole("ADMIN", "VET")
                         .anyRequest().authenticated()
                 )

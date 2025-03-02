@@ -1,12 +1,14 @@
 import {useNavigate} from "react-router-dom";
 import {useAuth} from "../AuthProvider";
 import Header from "./Header";
+import '../sidebar.css';
 import myImage from "../pics/logo_min.png";
 import React, {useState, useEffect} from "react";
 import AppointmentPage from "./AppointmentPage";
 import useAxiosWithAuth from "../AxiosAuth";
 import AddReviewModal from "./AddReviewModal";
 import SeeAllReviewsModal from "./SeeAllReviewsModal";
+import KegaSideBar from "../pics/kega.png";
 
 export default function HomePage() {
     const navigate = useNavigate();
@@ -120,6 +122,9 @@ export default function HomePage() {
     return (
         <div>
             <Header/>
+            <div id="dog-sidebar">
+                <img src={KegaSideBar} alt="Cute Dog"/>
+            </div>
             <div style={{flex: 1}}>
                 <div className="main-container mt-2" style={{display: "flex", gap: "20px"}}>
                     <div className="bg-table centered-content" style={{position: "relative", flex: 1}}>
@@ -273,5 +278,6 @@ export default function HomePage() {
                 />
             )}
         </div>
-    );
+    )
+        ;
 }

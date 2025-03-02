@@ -1,0 +1,30 @@
+#dog-sidebar {
+    position: fixed;
+    right: -100px;
+    bottom: -630px;
+    transform: translateY(-50%);
+    transition: right 0.5s ease;
+    margin-top: 500px;
+    z-index: 1000;
+}
+
+#dog-sidebar img {
+    width: 500px;
+    height: auto;
+}
+
+#dog-sidebar:hover {
+    bottom: -500px;
+}
+
+@keyframes wiggle {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(5deg); }
+    50% { transform: rotate(0deg); }
+    75% { transform: rotate(-5deg); }
+    100% { transform: rotate(0deg); }
+}
+
+#dog-sidebar:hover img {
+    animation: wiggle 1s infinite;
+}
