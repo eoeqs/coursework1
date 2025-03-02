@@ -130,6 +130,10 @@ input[type="checkbox"] {
   border-bottom: 10px solid #FDE6E6FF;
 }
 
+.table-right-end td:last-child {
+  text-align: right !important;
+}
+
 
 .cells {
   background-color: #E2C9C9;

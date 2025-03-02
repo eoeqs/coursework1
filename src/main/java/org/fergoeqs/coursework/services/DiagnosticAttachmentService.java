@@ -46,7 +46,11 @@ public class DiagnosticAttachmentService{
     public DiagnosticAttachment save(DiagnosticAttachmentDTO daDTO, MultipartFile attachment) throws IOException {
         DiagnosticAttachment diagnosticAttachment = diagnosticAttachmentMapper.fromDTO(daDTO);
         diagnosticAttachment.setAnamnesis(anamnesisService.findAnamnesisById(daDTO.anamnesis()));
-        diagnosticAttachment.setDiagnosis(diagnosisService.getDiagnosisById(daDTO.diagnosis()));
+        if (daDTO.diagnosis() != null) {
+            diagnosticAttachment.setDiagnosis(diagnosisService.getDiagnosisById(daDTO.diagnosis()));
+        } else {
+            diagnosticAttachment.setDiagnosis(null);
+        }
         diagnosticAttachment.setUploadDate(LocalDateTime.now());
         String objectName = "anamnesis" + daDTO.anamnesis() + "/" + attachment.getOriginalFilename();
         storageService.uploadFile("attachment", objectName, attachment.getInputStream(), attachment.getContentType());

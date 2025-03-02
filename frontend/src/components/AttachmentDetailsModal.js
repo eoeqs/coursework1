@@ -5,6 +5,11 @@ const AttachmentDetailsModal = ({ attachment, onClose }) => {
     const axiosInstance = useAxiosWithAuth();
     const [diagnosisName, setDiagnosisName] = useState("Loading...");
     const [error, setError] = useState(null);
+    const [imageError, setImageError] = useState(false);
+
+    const handleImageError = () => {
+        setImageError(true);
+    };
 
     useEffect(() => {
         const fetchDiagnosisName = async () => {
@@ -25,6 +30,7 @@ const AttachmentDetailsModal = ({ attachment, onClose }) => {
         fetchDiagnosisName();
     }, [attachment.diagnosis, axiosInstance]);
 
+
     return (
         <div style={modalOverlayStyles} onClick={onClose}>
             <div style={modalStyles} onClick={(e) => e.stopPropagation()}>
@@ -35,21 +41,23 @@ const AttachmentDetailsModal = ({ attachment, onClose }) => {
                 <p><strong>Upload Date:</strong> {new Date(attachment.uploadDate).toLocaleString()}</p>
                 <p><strong>Diagnosis:</strong> {diagnosisName}</p>
                 {attachment.fileUrl ? (
-                    <img
-                        src={attachment.fileUrl}
-                        alt={attachment.name}
-                        style={{ maxWidth: "100%", maxHeight: "400px", marginTop: "10px" }}
-                    />
+                    imageError ? (
+                        <div>
+                            <p>This file format is not supported for preview. You can <a href={attachment.fileUrl} download={attachment.name} style={{color: '#802222'}}>
+                                download </a> it.</p>
+                        </div>
+                    ) : (<a href={attachment.fileUrl} target="_blank" rel="noopener noreferrer">
+                        <img
+                            src={attachment.fileUrl}
+                            alt={attachment.name}
+                            style={{ maxWidth: "100%", maxHeight: "100%", marginTop: "10px" }}
+                            onError={handleImageError}
+                        />
+                        </a>
+                    )
                 ) : (
-                    <p>No image available</p>
+                    <p>No file available</p>
                 )}
-                <button
-                    className="button btn-no-border rounded-3"
-                    onClick={onClose}
-                    style={{ marginTop: "20px" }}
-                >
-                    Close
-                </button>
             </div>
         </div>
     );

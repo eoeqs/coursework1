@@ -337,7 +337,7 @@ const AnamnesisDetailsPage = () => {
                     <div className="bg-table element-space prem_diagnsosis" style={{flex: 1}}>
                         <div style={{marginTop: "20px"}}>
                             {clinicalDiagnoses.length > 0 ? (
-                                <table cellPadding="3" cellSpacing="0" className="uniq-table">
+                                <table cellPadding="3" cellSpacing="0" className="uniq-table" >
                                     <tbody>
                                     {clinicalDiagnoses.map((diagnosis) => (
                                         <tr key={diagnosis.id}>
@@ -415,9 +415,37 @@ const AnamnesisDetailsPage = () => {
                             )}
                         </div>
                     </div>
+                    <h3>Diagnostic Attachments</h3>
+                    <div className="bg-table element-space prem_diagnsosis" style={{padding: "20px"}}>
+                        {attachments.length > 0 ? (
+                            <table cellPadding="3" cellSpacing="0" className="uniq-table table-right-end">
+                                <tbody>
+                                {attachments.map((attachment) => (
+                                    <tr key={attachment.id}>
+                                        <td>{attachment.name}</td>
+                                        <td>
+                                            <button className="button btn-no-border"
+                                                    onClick={() => openAttachmentModal(attachment)}>
+                                                More
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                                </tbody>
+                            </table>
+                        ) : (
+                            <p>No diagnostic attachments found.</p>
+                        )}
+                        {(userRole === "ROLE_VET" || userRole === "ROLE_ADMIN") && (
+                            <button className="button rounded-3 btn-no-border" onClick={openAddAttachmentModal}>
+                                Add Attachment
+                            </button>
+                        )}
+                    </div>
                 </div>
 
-                <div className="mt-1 rounded-1 treatment-vet element-space" style={{ marginTop: "30px", padding: "20px" }}>
+                <div className="mt-1 rounded-1 treatment-vet element-space"
+                     style={{marginTop: "30px", padding: "20px"}}>
                     <h3>Treatment Recommendations</h3>
                     {treatments.filter(treatment => !treatment.isCompleted).length > 0 ? (
                         <table cellPadding="3" cellSpacing="0" className="uniq-table">
@@ -556,33 +584,6 @@ const AnamnesisDetailsPage = () => {
                         onClose={closeAddAttachmentModal}
                         onSave={handleSaveAttachment}
                     />
-                )}
-            </div>
-            <div className="mt-1 rounded-1 treatment-vet element-space" style={{padding: "20px"}}>
-                <h3>Diagnostic Attachments</h3>
-                {attachments.length > 0 ? (
-                    <table cellPadding="3" cellSpacing="0" className="uniq-table">
-                        <tbody>
-                        {attachments.map((attachment) => (
-                            <tr key={attachment.id}>
-                                <td>{attachment.name}</td>
-                                <td>
-                                    <button className="button btn-no-border"
-                                            onClick={() => openAttachmentModal(attachment)}>
-                                        More
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </table>
-                ) : (
-                    <p>No diagnostic attachments found.</p>
-                )}
-                {(userRole === "ROLE_VET" || userRole === "ROLE_ADMIN") && (
-                    <button className="button rounded-3 btn-no-border" onClick={openAddAttachmentModal}>
-                        Add Attachment
-                    </button>
                 )}
             </div>
         </div>

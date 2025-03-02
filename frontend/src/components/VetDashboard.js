@@ -7,6 +7,7 @@ import DogBodyMap from "./DogBodyMap";
 import CatBodyMap from "./CatBodyMap";
 import Header from "./Header";
 import VetImage from "../pics/vet.png";
+import PawStub from "../pics/paw.png";
 import EditOwnerModal from "./EditOwnerModal";
 
 const VetDashboard = () => {
@@ -233,10 +234,15 @@ const VetDashboard = () => {
                                     style={{ width: "250px", height: "250px", borderRadius: "50%" }}
                                 />
                             ) : (
-                                <div>pic placeholder</div>
+                                <img
+                                    className="avatar"
+                                    src={PawStub}
+                                    alt={`photo stub`}
+                                    style={{width: "250px", height: "250px", borderRadius: "50%"}}
+                                />
                             )}
                         </div>
-                        <div style={{ padding: "5px 0 0 7%" }}>
+                        <div style={{padding: "5px 0 0 7%"}}>
                             <h4>
                                 <strong>Dr. {vetInfo.name} {vetInfo.surname}</strong>
                             </h4>
