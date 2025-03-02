@@ -8,7 +8,7 @@ import myImage from "../pics/logo_min.png";
 export default function Header() {
     const navigate = useNavigate();
     const { token, logout } = useAuth();
-    const isAuthenticated = token !== null;
+    const isAuthenticated = !!token; // Check if token exists
     const [menuOpen, setMenuOpen] = useState(false);
     const [userRole, setUserRole] = useState(null);
     const axiosInstance = useAxiosWithAuth();
@@ -24,6 +24,8 @@ export default function Header() {
                 }
             };
             fetchUserRole();
+        } else {
+            setUserRole(null);
         }
     }, [isAuthenticated, axiosInstance]);
 
