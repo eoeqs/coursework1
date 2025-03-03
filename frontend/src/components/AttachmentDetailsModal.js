@@ -34,7 +34,8 @@ const AttachmentDetailsModal = ({ attachment, onClose }) => {
     return (
         <div style={modalOverlayStyles} onClick={onClose}>
             <div style={modalStyles} onClick={(e) => e.stopPropagation()}>
-                <h3>Attachment Details</h3>
+                <div className="modal-header"><h3>Attachment Details</h3> </div>
+                <div style={{backgroundColor: "#faf2f2", margin: "3px", padding: "10px", borderRadius: "10px"}}>
                 {error && <p style={{ color: "red" }}>{error}</p>}
                 <p><strong>Name:</strong> {attachment.name}</p>
                 <p><strong>Description:</strong> {attachment.description || "No description"}</p>
@@ -58,6 +59,7 @@ const AttachmentDetailsModal = ({ attachment, onClose }) => {
                 ) : (
                     <p>No file available</p>
                 )}
+            </div>
             </div>
         </div>
     );

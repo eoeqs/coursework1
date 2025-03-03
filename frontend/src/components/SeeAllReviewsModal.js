@@ -1,4 +1,5 @@
 import React from "react";
+import "../pinkmodal.css";
 
 const SeeAllReviewsModal = ({ vet, ratings, onClose }) => {
     const renderStars = (rating) => {
@@ -7,59 +8,48 @@ const SeeAllReviewsModal = ({ vet, ratings, onClose }) => {
     };
 
     return (
-        <div style={modalStyles}>
-            <h3>Reviews for Dr. {vet.name} {vet.surname}</h3>
-            <div style={{ display: "flex", alignItems: "center", marginBottom: "20px" }}>
-                {vet.photoUrl ? (
-                    <img
-                        src={vet.photoUrl}
-                        alt={`${vet.name} ${vet.surname}`}
-                        style={{ width: "100px", height: "100px", borderRadius: "50%", marginRight: "20px" }}
-                    />
+        <div className="pink-modal-overlay" onClick={onClose}>
+            <div className="pink-modal-container" onClick={(e) => e.stopPropagation()}>
+                <div className="pink-modal-header">
+                    <h3 className="pink-modal-header-title">Reviews for Dr. {vet.name} {vet.surname}</h3>
+                </div>
+                <div className="pink-modal-vet-info">
+                    {vet.photoUrl ? (
+                        <img
+                            src={vet.photoUrl}
+                            alt={`${vet.name} ${vet.surname}`}
+                            className="pink-modal-vet-photo"
+                        />
+                    ) : (
+                        <div className="pink-modal-vet-photo-placeholder">No photo</div>
+                    )}
+                    <div className="pink-modal-vet-details">
+                        <h4>{vet.name} {vet.surname}</h4>
+                        <p>Expert in {vet.qualification || "Veterinary Medicine"}</p>
+                    </div>
+                </div>
+                <h4 className="pink-modal-subheader">All Reviews</h4>
+                {ratings && ratings.length > 0 ? (
+                    <div className="pink-modal-reviews-list">
+                        {ratings.map((rating) => (
+                            <div key={rating.id} className="pink-modal-review-item">
+                                Anonymous:
+                                <p>{renderStars(rating.rating)} ({rating.rating})</p>
+                                <p>"{rating.review}"</p>
+                            </div>
+                        ))}
+                    </div>
                 ) : (
-                    <div style={{ width: "100px", height: "100px", marginRight: "20px" }}>No photo</div>
+                    <p className="pink-modal-no-reviews">No reviews available for this veterinarian.</p>
                 )}
-                <div>
-                    <h4>{vet.name} {vet.surname}</h4>
-                    <p>Expert in {vet.qualification || "Veterinary Medicine"}</p>
+                <div className="pink-modal-footer">
+                    <button onClick={onClose} className="pink-modal-cancel-button button btn-no-border rounded-3">
+                        Close
+                    </button>
                 </div>
             </div>
-            <h4>All Reviews</h4>
-            {ratings && ratings.length > 0 ? (
-                <div style={{ maxHeight: "300px", overflowY: "auto" }}>
-                    {ratings.map((rating) => (
-                        <div key={rating.id} style={{ marginBottom: "15px", borderBottom: "1px solid #ddd", paddingBottom: "10px" }}>
-                            <p>{renderStars(rating.rating)} ({rating.rating})</p>
-                            <p>"{rating.review}"</p>
-                        </div>
-                    ))}
-                </div>
-            ) : (
-                <p>No reviews available for this veterinarian.</p>
-            )}
-            <button
-                className="button btn-no-border rounded-3"
-                onClick={onClose}
-                style={{ marginTop: "20px" }}
-            >
-                Close
-            </button>
         </div>
     );
-};
-
-const modalStyles = {
-    position: "fixed",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    backgroundColor: "white",
-    padding: "20px",
-    borderRadius: "10px",
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-    zIndex: 1000,
-    maxWidth: "600px",
-    width: "90%",
 };
 
 export default SeeAllReviewsModal;
