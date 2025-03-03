@@ -46,10 +46,8 @@ const EditPetModal = ({ petInfo, onClose, onSave }) => {
                         "Content-Type": "multipart/form-data",
                     },
                 });
-                alert("Pet avatar updated successfully!");
             } catch (error) {
                 console.error("Error updating pet avatar:", error);
-                alert("Failed to update pet avatar.");
             }
         }
     };

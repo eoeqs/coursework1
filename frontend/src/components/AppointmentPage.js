@@ -118,7 +118,6 @@ const AppointmentPage = ({ onClose }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!token) {
-            alert("Authorization required!");
             return;
         }
 
@@ -138,11 +137,9 @@ const AppointmentPage = ({ onClose }) => {
                     appointment: appointmentResponse.data.id,
                 });
             }
-            alert("Appointment successfully booked!");
             onClose();
         } catch (error) {
             console.error("Error booking appointment:", error);
-            alert("Failed to book appointment.");
         }
     };
 

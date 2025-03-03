@@ -11,7 +11,7 @@ const EditVetByAdminModal = ({ vetInfo, clinics, onClose, onSave }) => {
         phoneNumber: vetInfo?.phoneNumber || "",
         schedule: vetInfo?.schedule || "",
         workingHours: vetInfo?.workingHours || "",
-        clinic: vetInfo?.clinic || "", // Clinic ID
+        clinic: vetInfo?.clinic || "",
     });
     const [error, setError] = useState(null);
 
@@ -32,7 +32,6 @@ const EditVetByAdminModal = ({ vetInfo, clinics, onClose, onSave }) => {
             const response = await axiosInstance.put(`/users/update-user-admin/${vetInfo.id}`, updatedVetData); // Use admin endpoint
             onSave(response.data);
             onClose();
-            alert("Profile updated successfully!");
         } catch (err) {
             console.error("Error updating vet profile:", err);
             setError("Failed to update profile. Please try again.");

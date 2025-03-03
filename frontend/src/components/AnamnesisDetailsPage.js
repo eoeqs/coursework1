@@ -112,7 +112,6 @@ const AnamnesisDetailsPage = () => {
             fetchData();
         } catch (error) {
             console.error("Error updating diagnosis:", error);
-            alert("Failed to update diagnosis. Please try again later.");
         }
     };
 
@@ -124,7 +123,6 @@ const AnamnesisDetailsPage = () => {
             fetchData();
         } catch (error) {
             console.error("Error updating examination plan:", error);
-            alert("Failed to update examination plan. Please try again later.");
         }
     };
 
@@ -139,7 +137,6 @@ const AnamnesisDetailsPage = () => {
             fetchData();
         } catch (error) {
             console.error("Error saving clinical diagnosis:", error);
-            alert("Failed to save clinical diagnosis. Please try again later.");
         }
     };
 
@@ -154,7 +151,6 @@ const AnamnesisDetailsPage = () => {
             fetchData();
         } catch (error) {
             console.error("Error saving treatment:", error);
-            alert("Failed to save treatment. Please try again later.");
         }
     };
 
@@ -165,7 +161,6 @@ const AnamnesisDetailsPage = () => {
             fetchData();
         } catch (error) {
             console.error("Error adding procedure:", error);
-            alert("Failed to add procedure. Please try again later.");
         }
     };
 
@@ -175,7 +170,6 @@ const AnamnesisDetailsPage = () => {
             fetchData();
         } catch (error) {
             console.error("Error completing treatment:", error);
-            alert("Failed to complete treatment. Please try again later.");
         }
     };
 
@@ -187,7 +181,6 @@ const AnamnesisDetailsPage = () => {
             fetchData();
         } catch (error) {
             console.error("Error saving recommended diagnosis:", error);
-            alert("Failed to save recommended diagnosis. Please try again later.");
         }
     };
 
@@ -198,7 +191,6 @@ const AnamnesisDetailsPage = () => {
             fetchData();
         } catch (error) {
             console.error("Error saving attachment:", error);
-            alert("Failed to save attachment. Please try again later.");
         }
     };
 
@@ -254,13 +246,10 @@ const AnamnesisDetailsPage = () => {
     const handleGenerateReport = async (formData) => {
         try {
             await axiosInstance.post(`/reports/generate-report/${id}`, formData);
-            alert("Report generated successfully!");
             closeGenerateReportModal();
-            // Refetch data after report generation
             fetchData();
         } catch (error) {
             console.error("Error generating report:", error);
-            alert("Failed to generate report. Please try again later.");
         }
     };
 
@@ -270,7 +259,6 @@ const AnamnesisDetailsPage = () => {
             window.open(response.data, "_blank");
         } catch (error) {
             console.error("Error fetching report:", error);
-            alert("Failed to fetch report. Please try again later.");
         }
     };
 

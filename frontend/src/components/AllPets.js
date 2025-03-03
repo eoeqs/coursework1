@@ -60,11 +60,9 @@ const AllPets = () => {
         try {
             const response = await axiosInstance.put(`/pets/update-pet/${selectedPet.id}`, updatedData);
             setPets(pets.map((p) => (p.id === selectedPet.id ? response.data : p)));
-            alert("Pet profile updated successfully!");
             closeEditPetModal();
         } catch (error) {
             console.error("Error updating pet:", error);
-            alert("Failed to update pet.");
         }
     };
 

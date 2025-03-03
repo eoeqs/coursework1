@@ -99,7 +99,6 @@ const EditClinicalDiagnosisModal = ({ diagnosisId, petId, appointmentId, anamnes
             onSaveRecommended(selectedDiagnosis.id);
             setSelectedDiagnosis(null);
         } else {
-            alert("Please select a recommended diagnosis first.");
         }
     };
 
@@ -120,7 +119,6 @@ const EditClinicalDiagnosisModal = ({ diagnosisId, petId, appointmentId, anamnes
                 setNewSymptom("");
             } catch (error) {
                 console.error("Error adding symptom:", error);
-                alert("Failed to add symptom.");
             }
         }
     };
@@ -137,10 +135,8 @@ const EditClinicalDiagnosisModal = ({ diagnosisId, petId, appointmentId, anamnes
                 setRecommendedDiagnoses(response.data);
             } catch (error) {
                 console.error("Error analyzing diagnosis:", error);
-                alert("Failed to analyze diagnosis.");
             }
         } else {
-            alert("Please select symptoms and mark a body part.");
         }
     };
 
@@ -185,7 +181,6 @@ const EditClinicalDiagnosisModal = ({ diagnosisId, petId, appointmentId, anamnes
             setShowSectorModal(true);
         } catch (error) {
             console.error(`Error fetching sectors from ${endpoint}:`, error);
-            alert("Failed to fetch available sectors.");
         }
     };
 
@@ -199,14 +194,11 @@ const EditClinicalDiagnosisModal = ({ diagnosisId, petId, appointmentId, anamnes
 
     const handleSectorSelect = async () => {
         if (!selectedSectorId) {
-            alert("Please select a sector.");
             return;
         }
 
-        // Validate quarantine data
         const { reason, description, startDate, endDate, status } = quarantineData;
         if (!reason || !description || !startDate || !endDate || !status) {
-            alert("Please fill out all quarantine fields.");
             return;
         }
 
@@ -223,16 +215,13 @@ const EditClinicalDiagnosisModal = ({ diagnosisId, petId, appointmentId, anamnes
             };
             await axiosInstance.post("/quarantine/save", quarantineDTO);
 
-            // Place pet in sector
             await axiosInstance.put(`/pets/sector-place/${petId}`, null, {
                 params: { sectorId: selectedSectorId },
             });
 
-            alert(`Pet ${petId} successfully placed in sector ${selectedSectorId} with quarantine`);
             setShowSectorModal(false);
         } catch (error) {
             console.error("Error saving quarantine or placing pet in sector:", error);
-            alert("Failed to save quarantine or place pet in sector.");
         }
     };
 

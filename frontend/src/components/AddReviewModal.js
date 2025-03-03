@@ -29,7 +29,6 @@ const AddReviewModal = ({ vetId, vetName, ownerId, onClose, onSave }) => {
             const response = await axiosInstance.post("/rating-and-reviews/save", reviewData);
             onSave(response.data);
             onClose();
-            alert("Review submitted successfully!");
         } catch (error) {
             console.error("Error submitting review:", error);
             setError("Failed to submit review. Please try again.");

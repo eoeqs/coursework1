@@ -117,7 +117,6 @@ const VetDashboard = () => {
 
         try {
             await axiosInstance.put(`/pets/bind/${selectedAppointment.pet.id}`);
-            alert("Pet successfully bound to the vet!");
 
             if (createAnamnesis) {
                 const anamnesisDTO = {
@@ -128,14 +127,12 @@ const VetDashboard = () => {
                     appointment: selectedAppointment.id,
                 };
                 await axiosInstance.post("/anamnesis/save", anamnesisDTO);
-                alert("Anamnesis successfully created!");
             }
 
             closeModal();
             fetchData();
         } catch (error) {
             console.error("Error binding pet or creating anamnesis:", error);
-            alert("Failed to bind pet or create anamnesis.");
         }
     };
 
@@ -146,14 +143,12 @@ const VetDashboard = () => {
             await axiosInstance.delete(`/appointments/cancel-appointment/${selectedAppointment.id}`, {
                 data: cancelReason,
             });
-            alert("Appointment successfully canceled!");
             closeModal();
             setCancelReason("");
             setShowCancelModal(false);
             fetchData();
         } catch (error) {
             console.error("Error canceling appointment:", error);
-            alert("Failed to cancel appointment.");
         }
     };
 
@@ -178,11 +173,9 @@ const VetDashboard = () => {
         try {
             await axiosInstance.put(`/users/update-user/`, updatedData);
             setIsEditModalOpen(false);
-            alert("Profile updated successfully!");
             fetchData();
         } catch (error) {
             console.error("Error updating vet profile:", error);
-            alert("Failed to update profile. Please try again.");
         }
     };
 
@@ -201,7 +194,6 @@ const VetDashboard = () => {
             setShowRescheduleModal(true);
         } catch (error) {
             console.error("Error fetching available priority slots:", error);
-            alert("Failed to fetch available slots. Please try again.");
         }
     };
 
@@ -213,7 +205,6 @@ const VetDashboard = () => {
 
     const handleReschedule = async () => {
         if (!selectedSlotId) {
-            alert("Please select a new slot.");
             return;
         }
 
@@ -221,13 +212,11 @@ const VetDashboard = () => {
             await axiosInstance.put(`/appointments/update-appointment/${selectedAppointment.id}`, null, {
                 params: { slotId: selectedSlotId },
             });
-            alert("Appointment rescheduled successfully!");
             closeRescheduleModal();
             closeModal();
             fetchData();
         } catch (error) {
             console.error("Error rescheduling appointment:", error);
-            alert("Failed to reschedule appointment.");
         }
     };
 
