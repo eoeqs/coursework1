@@ -17,4 +17,7 @@ public interface AppointmentsRepository extends JpaRepository<Appointment, Long>
     @Query("SELECT COUNT(a) > 0 FROM Appointment a " +
             "WHERE a.pet.owner.id = :ownerId AND a.slot.vet.id = :vetId")
     boolean existsByOwnerAndVet(@Param("ownerId") Long ownerId, @Param("vetId") Long vetId);
+
+    @Query("SELECT a FROM Appointment a LEFT JOIN Anamnesis an ON a.id = an.appointment.id WHERE an.id IS NULL")
+    List<Appointment> findAppointmentsWithoutAnamnesis();
 }

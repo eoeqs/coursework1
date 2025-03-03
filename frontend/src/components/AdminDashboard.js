@@ -236,37 +236,37 @@ const AdminDashboard = () => {
             <Header />
             <div className="container mt-3" style={{ padding: "20px", paddingTop: '90px'}}>
                 <div style={{margin: '0px 10px 0px 30px'}}>
-                <h2>Admin Dashboard</h2>
-                <button
-                    className="button rounded-3 btn-no-border"
-                    onClick={openCreateClinicModal}
-                    style={{ marginBottom: "10px" }}
-                >
-                    Create Clinic
-                </button>
-                <button
-                    className="button rounded-3 btn-no-border"
-                    onClick={openCreateSectorModal}
-                    style={{ marginBottom: "20px", marginLeft: "10px" }}
-                >
-                    Create Sector
-                </button>
-                <button
-                    className="button rounded-3 btn-no-border"
-                    onClick={openCreateSlotModal}
-                    style={{ marginBottom: "20px", marginLeft: "10px" }}
-                >
-                    Create Slot
-                </button>
-                {(userRole === "ROLE_ADMIN" || userRole === "ROLE_VET") && (
+                    <h2>Admin Dashboard</h2>
                     <button
                         className="button rounded-3 btn-no-border"
-                        onClick={handleManageQuarantines}
+                        onClick={openCreateClinicModal}
+                        style={{ marginBottom: "10px" }}
+                    >
+                        Create Clinic
+                    </button>
+                    <button
+                        className="button rounded-3 btn-no-border"
+                        onClick={openCreateSectorModal}
                         style={{ marginBottom: "20px", marginLeft: "10px" }}
                     >
-                        Manage Quarantines
+                        Create Sector
                     </button>
-                )}
+                    <button
+                        className="button rounded-3 btn-no-border"
+                        onClick={openCreateSlotModal}
+                        style={{ marginBottom: "20px", marginLeft: "10px" }}
+                    >
+                        Create Slot
+                    </button>
+                    {(userRole === "ROLE_ADMIN" || userRole === "ROLE_VET") && (
+                        <button
+                            className="button rounded-3 btn-no-border"
+                            onClick={handleManageQuarantines}
+                            style={{ marginBottom: "20px", marginLeft: "10px" }}
+                        >
+                            Manage Quarantines
+                        </button>
+                    )}
                 </div>
 
                 <h3  style={{margin: '10px 20px 10px 40px'}}>Sectors</h3>
@@ -439,7 +439,7 @@ const AdminDashboard = () => {
                     )}
                 </div>
 
-                    <h3 style={{margin: '10px 20px 10px 40px'}}>Owners</h3>
+                <h3 style={{margin: '10px 20px 10px 40px'}}>Owners</h3>
                 <div className="bg-admin element-space">
                     {owners.length > 0 ? (
                         <table cellPadding="5" cellSpacing="0" className="admin-table">

@@ -46,6 +46,16 @@ public class AppointmentsController {
         }
     }
 
+    @GetMapping("/without-anamnesis")
+    public ResponseEntity<?> getAppointmentsWithoutAnamnesis() {
+        try {
+            return ResponseEntity.ok(appointmentMapper.appointmentsToAppointmentDTOs(appointmentsService.findAppointmentsWithoutAnamnesis()));
+        } catch (Exception e) {
+            logger.error("Error getting appointments without anamnesis: {}", e.getMessage());
+            throw e;
+        }
+    }
+
     @GetMapping("/vet-appointments/{vetId}")
     public ResponseEntity<?> getVetAppointments(@PathVariable Long vetId) {
         try {

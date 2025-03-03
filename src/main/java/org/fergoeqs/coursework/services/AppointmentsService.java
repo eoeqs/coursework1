@@ -47,6 +47,10 @@ public class AppointmentsService {
         return appointmentsRepository.findById(id).orElse(null);
     }
 
+    public List<Appointment> findAppointmentsWithoutAnamnesis() {
+        return appointmentsRepository.findAppointmentsWithoutAnamnesis();
+    }
+
     public List<Appointment> findByVetId(Long vetId) {
         return appointmentsRepository.findBySlot_VetId(vetId);
     }
