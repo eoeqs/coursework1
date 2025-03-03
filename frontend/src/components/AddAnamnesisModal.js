@@ -57,8 +57,16 @@ const AddAnamnesisModal = ({ petId, onClose, onSave }) => {
             setErrorMessage("Name is required.");
             return;
         }
+        if (formData.name.length > 255) {
+            setErrorMessage("Name must not exceed 255 characters.");
+            return;
+        }
         if (!formData.description.trim()) {
             setErrorMessage("Description is required.");
+            return;
+        }
+        if (formData.description.length > 1000) {
+            setErrorMessage("Description must not exceed 1000 characters.");
             return;
         }
         if (!formData.appointment) {
@@ -70,8 +78,8 @@ const AddAnamnesisModal = ({ petId, onClose, onSave }) => {
 
         try {
             const anamnesisData = {
-                name: formData.name,
-                description: formData.description,
+                name: formData.name.trim(),
+                description: formData.description.trim(),
                 pet: petId,
                 appointment: parseInt(formData.appointment, 10),
             };
@@ -114,6 +122,9 @@ const AddAnamnesisModal = ({ petId, onClose, onSave }) => {
                         value={formData.name}
                         onChange={handleChange}
                         style={{ width: "100%", padding: "5px" }}
+                        maxLength={255}
+                        placeholder="e.g., Headache"
+                        required
                     />
                 </div>
 
@@ -125,7 +136,11 @@ const AddAnamnesisModal = ({ petId, onClose, onSave }) => {
                         onChange={handleChange}
                         rows={4}
                         cols={40}
+                        maxLength={1000}
+                        placeholder="Enter description (max 1000 characters)"
+                        required
                     />
+                    <small>{formData.description.length}/1000 characters</small>
                 </div>
 
                 <div style={{ marginBottom: "10px" }}>
@@ -138,6 +153,7 @@ const AddAnamnesisModal = ({ petId, onClose, onSave }) => {
                             value={formData.appointment}
                             onChange={handleChange}
                             style={{ width: "100%", padding: "5px" }}
+                            required
                         >
                             <option value="">Select an appointment</option>
                             {appointments.map((appointment) => (

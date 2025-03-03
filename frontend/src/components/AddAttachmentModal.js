@@ -11,6 +11,7 @@ const AddAttachmentModal = ({ diagnoses, anamnesisId, onClose, onSave }) => {
     });
     const [file, setFile] = useState(null);
     const [error, setError] = useState(null);
+    const [successMessage, setSuccessMessage] = useState("");
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -26,14 +27,36 @@ const AddAttachmentModal = ({ diagnoses, anamnesisId, onClose, onSave }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!formData.name || !file) {
-            setError("Please provide a name and select a file.");
+
+        if (!formData.name.trim()) {
+            setError("Name is required.");
+            return;
+        }
+        if (formData.name.length > 255) {
+            setError("Name must not exceed 255 characters.");
+            return;
+        }
+        if (formData.description.length > 1000) {
+            setError("Description must not exceed 1000 characters.");
+            return;
+        }
+        if (!file) {
+            setError("Please select a file to upload.");
             return;
         }
 
+        setError(null);
+
         try {
             const formDataToSend = new FormData();
-            formDataToSend.append("diagnosticAttachmentDTO", JSON.stringify(formData));
+            formDataToSend.append(
+                "diagnosticAttachmentDTO",
+                JSON.stringify({
+                    ...formData,
+                    name: formData.name.trim(),
+                    description: formData.description.trim(),
+                })
+            );
             formDataToSend.append("file", file);
 
             const response = await axiosInstance.post("/diagnostic-attachment/new", formDataToSend, {
@@ -42,11 +65,14 @@ const AddAttachmentModal = ({ diagnoses, anamnesisId, onClose, onSave }) => {
                 },
             });
 
+            setSuccessMessage("Attachment added successfully.");
             onSave(response.data);
-            onClose();
+            setTimeout(() => {
+                onClose();
+            }, 2000);
         } catch (error) {
             console.error("Error adding attachment:", error);
-            setError("Failed to add attachment: maximum upload size exceeded.");
+            setError("Failed to add attachment: maximum upload size exceeded or server error.");
         }
     };
 
@@ -55,6 +81,7 @@ const AddAttachmentModal = ({ diagnoses, anamnesisId, onClose, onSave }) => {
             <div style={modalStyles} onClick={(e) => e.stopPropagation()}>
                 <h3>Add Diagnostic Attachment</h3>
                 {error && <p style={{ color: "red" }}>{error}</p>}
+                {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
                 <form onSubmit={handleSubmit}>
                     <label>
                         Name:
@@ -65,6 +92,8 @@ const AddAttachmentModal = ({ diagnoses, anamnesisId, onClose, onSave }) => {
                             onChange={handleChange}
                             placeholder="Enter attachment name"
                             style={{ width: "100%", marginTop: "5px" }}
+                            maxLength={255}
+                            required
                         />
                     </label>
                     <label>
@@ -73,14 +102,16 @@ const AddAttachmentModal = ({ diagnoses, anamnesisId, onClose, onSave }) => {
                             name="description"
                             value={formData.description}
                             onChange={handleChange}
-                            placeholder="Enter attachment description"
+                            placeholder="Enter attachment description (optional, max 1000 characters)"
                             rows={3}
                             cols={40}
                             style={{ width: "100%", marginTop: "5px" }}
+                            maxLength={1000}
                         />
+                        <small>{formData.description.length}/1000 characters</small>
                     </label>
                     <label>
-                        Diagnosis:
+                        Diagnosis (optional):
                         <select
                             name="diagnosis"
                             value={formData.diagnosis}
@@ -101,6 +132,7 @@ const AddAttachmentModal = ({ diagnoses, anamnesisId, onClose, onSave }) => {
                             type="file"
                             onChange={handleFileChange}
                             style={{ width: "100%", marginTop: "5px" }}
+                            required
                         />
                     </label>
                     <div style={{ display: "flex", gap: "10px", marginTop: "20px" }}>

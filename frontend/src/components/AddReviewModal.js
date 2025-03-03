@@ -7,28 +7,35 @@ const AddReviewModal = ({ vetId, vetName, ownerId, onClose, onSave }) => {
     const [rating, setRating] = useState(0);
     const [review, setReview] = useState("");
     const [error, setError] = useState(null);
+    const [successMessage, setSuccessMessage] = useState("");
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
         if (!rating || rating < 1 || rating > 5) {
-            setError("Please select a rating between 1 and 5.");
+            setError("Please select a rating between 1 and 5 stars.");
             return;
         }
-        if (!review.trim()) {
-            setError("Please enter a review.");
+        if (review.length > 1000) {
+            setError("Review must not exceed 1000 characters.");
             return;
         }
+
+        setError(null);
 
         try {
             const reviewData = {
                 rating,
-                review,
+                review: review.trim(),
                 vet: vetId,
                 owner: ownerId,
             };
             const response = await axiosInstance.post("/rating-and-reviews/save", reviewData);
+            setSuccessMessage("Review submitted successfully.");
             onSave(response.data);
-            onClose();
+            setTimeout(() => {
+                onClose();
+            }, 2000);
         } catch (error) {
             console.error("Error submitting review:", error);
             setError("Failed to submit review. Please try again.");
@@ -39,8 +46,9 @@ const AddReviewModal = ({ vetId, vetName, ownerId, onClose, onSave }) => {
         <div style={modalStyles}>
             <h3>Leave a Review for Dr. {vetName}</h3>
             {error && <p style={{ color: "red" }}>{error}</p>}
+            {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
             <form onSubmit={handleSubmit}>
-                <div style={{marginBottom: "15px"}} className="stars">
+                <div style={{ marginBottom: "15px" }} className="stars">
                     <label>Rating (1-5):</label>
                     <Rating
                         onClick={(rate) => {
@@ -52,20 +60,24 @@ const AddReviewModal = ({ vetId, vetName, ownerId, onClose, onSave }) => {
                         fillColor="#ffd700"
                         emptyColor="#ccc"
                         className="rating"
+                        initialValue={0}
+                        allowHalf={false}
                     />
                 </div>
-                <div style={{marginBottom: "15px"}}>
-                    <label>Review:</label>
+                <div style={{ marginBottom: "15px" }}>
+                    <label>Review (optional):</label>
                     <textarea
                         value={review}
                         onChange={(e) => setReview(e.target.value)}
-                        placeholder="Write your review here..."
+                        placeholder="Write your review here (max 1000 characters)..."
                         rows={4}
                         cols={40}
-                        style={{width: "100%", marginTop: "5px"}}
+                        style={{ width: "100%", marginTop: "5px" }}
+                        maxLength={1000}
                     />
+                    <small>{review.length}/1000 characters</small>
                 </div>
-                <div style={{display: "flex", gap: "10px" }}>
+                <div style={{ display: "flex", gap: "10px" }}>
                     <button type="submit">Submit</button>
                     <button type="button" onClick={onClose}>
                         Cancel
