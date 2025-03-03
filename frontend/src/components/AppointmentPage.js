@@ -477,5 +477,6 @@ const AppointmentPage = ({ onClose }) => {
         </div>
     );
 };
+//тест
 
 export default AppointmentPage;
