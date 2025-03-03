@@ -78,6 +78,7 @@ const SectorQuarantineManagement = () => {
                 )
             );
             alert("Pet moved to new sector successfully!");
+
         } catch (error) {
             console.error("Error moving pet:", error);
             alert("Failed to move pet.");
