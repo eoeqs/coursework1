@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const CreateSlotModal = ({ onClose, onSave, vets }) => {
     const [slotData, setSlotData] = useState({
@@ -11,12 +11,49 @@ const CreateSlotModal = ({ onClose, onSave, vets }) => {
 
     const [error, setError] = useState("");
 
-    const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
+    const getTomorrowDate = () => {
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(today.getDate() + 1);
+        return tomorrow.toISOString().split("T")[0];
+    };
+
+    const calculateEndTime = (startTime) => {
+        if (!startTime) return "";
+        const [hours, minutes] = startTime.split(":").map(Number);
+        const date = new Date();
+        date.setHours(hours, minutes, 0, 0);
+        date.setMinutes(date.getMinutes() + 15);
+
+        const formattedHours = String(date.getHours()).padStart(2, "0");
+        const formattedMinutes = String(date.getMinutes()).padStart(2, "0");
+        return `${formattedHours}:${formattedMinutes}`;
+    };
+
+    useEffect(() => {
+        const tomorrowDate = getTomorrowDate();
         setSlotData((prev) => ({
             ...prev,
-            [name]: type === "checkbox" ? checked : value,
+            date: tomorrowDate,
         }));
+    }, []);
+
+    const handleChange = (e) => {
+        const { name, value, type, checked } = e.target;
+
+        if (name === "startTime") {
+            const endTime = calculateEndTime(value);
+            setSlotData((prev) => ({
+                ...prev,
+                startTime: value,
+                endTime: endTime,
+            }));
+        } else {
+            setSlotData((prev) => ({
+                ...prev,
+                [name]: type === "checkbox" ? checked : value,
+            }));
+        }
     };
 
     const handleSubmit = (e) => {
@@ -28,19 +65,22 @@ const CreateSlotModal = ({ onClose, onSave, vets }) => {
         }
 
         setError("");
-
         onSave(slotData);
     };
 
     return (
         <div style={modalOverlayStyles}>
             <div style={modalStyles} onClick={(e) => e.stopPropagation()}>
-                <div className="modal-header"> <h3>Create New Slot</h3> </div>
+                <div className="modal-header">
+                    <h3>Create New Slot</h3>
+                </div>
                 <form
                     onSubmit={handleSubmit}
-                    style={{display: "flex", flexDirection: "column", gap: "15px"}}>
+                    style={{ display: "flex", flexDirection: "column", gap: "15px" }}
+                >
                     <label
-                        style={{display: "flex", flexDirection: "column", gap: "5px", fontSize: "16px", color: "#555"}}>
+                        style={{ display: "flex", flexDirection: "column", gap: "5px", fontSize: "16px", color: "#555" }}
+                    >
                         Date:
                         <input
                             type="date"
@@ -60,7 +100,8 @@ const CreateSlotModal = ({ onClose, onSave, vets }) => {
                     </label>
 
                     <label
-                        style={{display: "flex", flexDirection: "column", gap: "5px", fontSize: "16px", color: "#555"}}>
+                        style={{ display: "flex", flexDirection: "column", gap: "5px", fontSize: "16px", color: "#555" }}
+                    >
                         Start Time:
                         <input
                             type="time"
@@ -80,7 +121,8 @@ const CreateSlotModal = ({ onClose, onSave, vets }) => {
                     </label>
 
                     <label
-                        style={{display: "flex", flexDirection: "column", gap: "5px", fontSize: "16px", color: "#555"}}>
+                        style={{ display: "flex", flexDirection: "column", gap: "5px", fontSize: "16px", color: "#555" }}
+                    >
                         End Time:
                         <input
                             type="time"
@@ -102,7 +144,8 @@ const CreateSlotModal = ({ onClose, onSave, vets }) => {
                     {error && <p style={{ color: "red", margin: "0" }}>{error}</p>}
 
                     <label
-                        style={{display: "flex", flexDirection: "column", gap: "5px", fontSize: "16px", color: "#555"}}>
+                        style={{ display: "flex", flexDirection: "column", gap: "5px", fontSize: "16px", color: "#555" }}
+                    >
                         Veterinarian:
                         <select
                             name="vetId"
@@ -128,7 +171,8 @@ const CreateSlotModal = ({ onClose, onSave, vets }) => {
                     </label>
 
                     <label
-                        style={{display: "flex", gap: "5px", fontSize: "16px", color: "#555"}}>
+                        style={{ display: "flex", gap: "5px", fontSize: "16px", color: "#555" }}
+                    >
                         Priority:
                         <input
                             type="checkbox"
@@ -142,17 +186,21 @@ const CreateSlotModal = ({ onClose, onSave, vets }) => {
                             }}
                         />
                     </label>
-                    <div style={{display: "flex", justifyContent: "space-evenly", marginTop: "5px"}}>
-                        <button className="form-button" type="submit" style={{padding: "3px 35px", color: "white"}}>
+                    <div style={{ display: "flex", justifyContent: "space-evenly", marginTop: "5px" }}>
+                        <button className="form-button" type="submit" style={{ padding: "3px 35px", color: "white" }}>
                             Save
                         </button>
-                        <button className="rounded-2" type="button" onClick={onClose}
-                                style={{
-                                    padding: "3px 26px",
-                                    backgroundColor: "#ffffff",
-                                    border: "1",
-                                    borderColor: "#c1c0c0"
-                                }}>
+                        <button
+                            className="rounded-2"
+                            type="button"
+                            onClick={onClose}
+                            style={{
+                                padding: "3px 26px",
+                                backgroundColor: "#ffffff",
+                                border: "1",
+                                borderColor: "#c1c0c0",
+                            }}
+                        >
                             Cancel
                         </button>
                     </div>

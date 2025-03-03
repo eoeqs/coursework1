@@ -317,7 +317,7 @@ const AnamnesisDetailsPage = () => {
                         from {new Date(anamnesis.date).toLocaleDateString()}: {diagnosis ? diagnosis.name : "No diagnosis"})
                     </h3>
                     <div>
-                        {userRole === "ROLE_VET" && (
+                        {(userRole === "ROLE_VET" || userRole === "ROLE_ADMIN") && (
                             <button className="button rounded-3 btn-no-border" onClick={openGenerateReportModal}>
                                 Generate Report
                             </button>
@@ -381,7 +381,7 @@ const AnamnesisDetailsPage = () => {
                             ) : (
                                 <p>No preliminary diagnosis provided.</p>
                             )}
-                            {!diagnosis && userRole === "ROLE_VET" && (
+                            {!diagnosis && (userRole === "ROLE_VET" || userRole === "ROLE_ADMIN") && (
                                 <button className="button rounded-3 btn-no-border"
                                         onClick={() => setIsEditDiagnosisModalOpen(true)}>
                                     Add Preliminary Diagnosis
@@ -400,7 +400,7 @@ const AnamnesisDetailsPage = () => {
                                     alignItems: "center"
                                 }}>
                                     <p>{diagnosis.examinationPlan}</p>
-                                    {userRole === "ROLE_VET" && (
+                                    {(userRole === "ROLE_VET" || userRole === "ROLE_ADMIN") && (
                                         <button className="button btn-no-border"
                                                 onClick={() => setIsEditExaminationPlanModalOpen(true)}>
                                             Edit
@@ -425,7 +425,7 @@ const AnamnesisDetailsPage = () => {
                                             <td>{new Date(diagnosis.date).toLocaleDateString()}</td>
                                             <td>{diagnosis.contagious ? "contagious" : "non-contagious"}</td>
                                             <td>
-                                                {userRole === "ROLE_VET" && (
+                                                {(userRole === "ROLE_VET" || userRole === "ROLE_ADMIN") && (
                                                     <button
                                                         className="button btn-no-border"
                                                         onClick={() => {
@@ -444,7 +444,7 @@ const AnamnesisDetailsPage = () => {
                             ) : (
                                 <p>No clinical diagnoses found.</p>
                             )}
-                            {userRole === "ROLE_VET" && (
+                            {(userRole === "ROLE_VET" || userRole === "ROLE_ADMIN") && (
                                 <button
                                     className="button rounded-3 btn-no-border"
                                     onClick={() => {
@@ -536,7 +536,7 @@ const AnamnesisDetailsPage = () => {
                                         <td>
                                             {treatment.treatment}
                                             <b>Name: {treatment.name}</b>{" "}
-                                            {userRole === "ROLE_VET" && (
+                                            {(userRole === "ROLE_VET" || userRole === "ROLE_ADMIN") && (
                                                 <input
                                                     type="checkbox"
                                                     checked={treatment.isCompleted}
@@ -547,7 +547,7 @@ const AnamnesisDetailsPage = () => {
                                             <b>Description</b>: {treatment.description} <br />
                                             <b>Prescribed Medication</b>: {treatment.prescribedMedication} <br />
                                             <b>Duration</b>: {treatment.duration} <br />
-                                            {userRole === "ROLE_VET" && (
+                                            {(userRole === "ROLE_VET" || userRole === "ROLE_ADMIN") && (
                                                 <button
                                                     className="button btn-no-border"
                                                     onClick={() => {
@@ -566,7 +566,7 @@ const AnamnesisDetailsPage = () => {
                     ) : (
                         <p>No active treatment recommendations found.</p>
                     )}
-                    {userRole === "ROLE_VET" && (
+                    {(userRole === "ROLE_VET" || userRole === "ROLE_ADMIN") && (
                         <button
                             className="button rounded-3 btn-no-border"
                             onClick={() => {

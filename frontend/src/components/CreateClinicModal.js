@@ -26,9 +26,9 @@ const CreateClinicModal = ({ onClose, onSave }) => {
     return (
         <div style={modalOverlayStyles}>
             <div style={modalStyles} onClick={(e) => e.stopPropagation()}>
-                <h3>Create Clinic</h3>
+                <div className="modal-header"><h3>Create Clinic</h3></div>
                 <form onSubmit={handleSubmit}>
-                    <label>
+                    <label className="modal-label">
                         Address:
                         <input
                             type="text"
@@ -37,9 +37,10 @@ const CreateClinicModal = ({ onClose, onSave }) => {
                             onChange={handleChange}
                             placeholder="Enter clinic address"
                             style={{ width: "100%", marginTop: "5px" }}
+                            className="modal-input-group"
                         />
                     </label>
-                    <label>
+                    <label className="modal-label">
                         Working Hours:
                         <input
                             type="text"
@@ -48,11 +49,20 @@ const CreateClinicModal = ({ onClose, onSave }) => {
                             onChange={handleChange}
                             placeholder="Enter working hours (e.g., 9:00-17:00)"
                             style={{ width: "100%", marginTop: "5px" }}
+                            className="modal-input-group"
                         />
                     </label>
-                    <div style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
-                        <button type="submit">Save</button>
-                        <button type="button" onClick={onClose}>
+                    <div style={{display: "flex", justifyContent: "space-evenly", marginTop: "5px"}}>
+                        <button className="form-button" type="submit" style={{padding: "3px 35px", color: "white"}}>
+                            Save
+                        </button>
+                        <button className="rounded-2" type="button" onClick={onClose}
+                                style={{
+                                    padding: "3px 26px",
+                                    backgroundColor: "#ffffff",
+                                    border: "1",
+                                    borderColor: "#c1c0c0"
+                                }}>
                             Cancel
                         </button>
                     </div>
