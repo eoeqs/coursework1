@@ -57,10 +57,8 @@ const SectorQuarantineManagement = () => {
             await axiosInstance.delete(`/quarantine/delete/${quarantineId}`);
             await axiosInstance.put(`/pets/unbind/${petId}`);
             setQuarantines(quarantines.filter((q) => q.id !== quarantineId));
-            alert("Pet released from quarantine successfully!");
         } catch (error) {
             console.error("Error releasing pet:", error);
-            alert("Failed to release pet.");
         }
     };
 
@@ -77,11 +75,9 @@ const SectorQuarantineManagement = () => {
                     q.id === quarantineId ? { ...updatedQuarantineResponse.data, petName: q.petName } : q
                 )
             );
-            alert("Pet moved to new sector successfully!");
 
         } catch (error) {
             console.error("Error moving pet:", error);
-            alert("Failed to move pet.");
         }
     };
 

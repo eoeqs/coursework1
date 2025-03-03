@@ -41,11 +41,9 @@ const SectorManagement = () => {
         try {
             const response = await axiosInstance.post("/sectors/new", sectorData);
             setSectors([...sectors, response.data]);
-            alert("Sector created successfully!");
             closeCreateSectorModal();
         } catch (error) {
             console.error("Error creating sector:", error);
-            alert("Failed to create sector.");
         }
     };
 
@@ -55,10 +53,8 @@ const SectorManagement = () => {
         try {
             await axiosInstance.delete(`/sectors/delete/${sectorId}`);
             setSectors(sectors.filter((sector) => sector.id !== sectorId));
-            alert("Sector deleted successfully!");
         } catch (error) {
             console.error("Error deleting sector:", error);
-            alert("Failed to delete sector.");
         }
     };
 

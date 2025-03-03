@@ -33,11 +33,9 @@ const NewPetForm = ({ onPetCreated, onCancel }) => {
                 }
             );
 
-            alert("Pet successfully created!");
             onPetCreated(response.data);
         } catch (error) {
             console.error("Error creating pet:", error.response?.data || error.message);
-            alert("Failed to create pet.");
         }
     };
 

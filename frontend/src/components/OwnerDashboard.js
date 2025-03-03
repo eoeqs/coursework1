@@ -73,10 +73,8 @@ const OwnerDashboard = () => {
             const response = await axiosInstance.put(`/users/update-user/`, updatedData);
             setOwnerInfo(response.data);
             setIsEditOwnerModalOpen(false);
-            alert("Profile updated successfully!");
         } catch (error) {
             console.error("Error updating owner profile:", error);
-            alert("Failed to update profile. Please try again later.");
         }
     };
 

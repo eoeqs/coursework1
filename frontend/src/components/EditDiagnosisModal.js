@@ -99,7 +99,6 @@ const EditDiagnosisModal = ({ diagnosisId, petId, appointmentId, anamnesisId, on
                 setNewSymptom("");
             } catch (error) {
                 console.error("Error adding symptom:", error);
-                alert("Failed to add symptom.");
             }
         }
     };
@@ -116,10 +115,8 @@ const EditDiagnosisModal = ({ diagnosisId, petId, appointmentId, anamnesisId, on
                 setRecommendedDiagnoses(response.data);
             } catch (error) {
                 console.error("Error analyzing diagnosis:", error);
-                alert("Failed to analyze diagnosis.");
             }
         } else {
-            alert("Please select symptoms and mark a body part.");
         }
     };
 
@@ -131,14 +128,11 @@ const EditDiagnosisModal = ({ diagnosisId, petId, appointmentId, anamnesisId, on
                         "Content-Type": "application/json",
                     },
                 });
-                alert("Recommended diagnosis saved successfully!");
                 setSelectedDiagnosis(null);
             } catch (error) {
                 console.error("Error saving recommended diagnosis:", error);
-                alert("Failed to save recommended diagnosis.");
             }
         } else {
-            alert("Please select a recommended diagnosis first.");
         }
     };
 

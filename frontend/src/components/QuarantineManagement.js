@@ -12,7 +12,7 @@ const QuarantineManagement = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-    const [searchQuery, setSearchQuery] = useState(""); // Состояние для поискового запроса
+    const [searchQuery, setSearchQuery] = useState("");
 
     const [formData, setFormData] = useState({
         reason: "",
@@ -67,7 +67,6 @@ const QuarantineManagement = () => {
         fetchData();
     }, [axiosInstance]);
 
-    // Фильтрация по поисковому запросу
     const filteredSectors = sectors.filter((sector) =>
         sector.reasons.some((reason) =>
             reason.toLowerCase().includes(searchQuery.toLowerCase())
@@ -86,10 +85,8 @@ const QuarantineManagement = () => {
                 quarantineIds.map((id) => axiosInstance.delete(`/quarantine/delete/${id}`))
             );
             setSectors(sectors.filter((sector) => sector.sectorId !== sectorId));
-            alert("All quarantines in sector deleted successfully!");
         } catch (error) {
             console.error("Error deleting quarantines:", error);
-            alert("Failed to delete quarantines.");
         }
     };
 
@@ -121,7 +118,6 @@ const QuarantineManagement = () => {
     const handleAddSubmit = async (e) => {
         e.preventDefault();
         if (!formData.reason || !formData.startDate || !formData.endDate || !formData.sector || !formData.pet) {
-            alert("Please fill all required fields.");
             return;
         }
 
@@ -145,11 +141,9 @@ const QuarantineManagement = () => {
             }
             setSectors(updatedSectors);
 
-            alert("Quarantine added successfully!");
             closeAddModal();
         } catch (error) {
             console.error("Error adding quarantine:", error);
-            alert("Failed to add quarantine.");
         }
     };
 
