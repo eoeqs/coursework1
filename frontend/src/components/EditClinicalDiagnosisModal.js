@@ -458,7 +458,7 @@ const modalOverlayStyles = {
 };
 
 const modalStyles = {
-    backgroundColor: "#fff",
+    backgroundColor: "#FFF3F3",
     padding: "20px",
     borderRadius: "8px",
     boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
@@ -601,13 +601,13 @@ const smallButtonStyles = {
 };
 
 const cancelButtonStyles = {
-    padding: "6px 12px",
-    backgroundColor: "#ccc",
-    color: "#333",
+    backgroundColor: "#E8D5D5",
+    color: "#682020",
     border: "none",
-    borderRadius: "4px",
+    borderRadius: "6px",
     cursor: "pointer",
-    fontSize: "12px",
+    fontSize: "14px",
+    transition: "background-color 0.3s",
 };
 
 const footerStyles = {

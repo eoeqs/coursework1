@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import useAxiosWithAuth from "../AxiosAuth";
 import { Rating } from "react-simple-star-rating";
+import "../pinkmodal.css";
 
 const AddReviewModal = ({ vetId, vetName, ownerId, onClose, onSave }) => {
     const axiosInstance = useAxiosWithAuth();
@@ -36,58 +37,44 @@ const AddReviewModal = ({ vetId, vetName, ownerId, onClose, onSave }) => {
     };
 
     return (
-        <div style={modalStyles}>
-            <h3>Leave a Review for Dr. {vetName}</h3>
-            {error && <p style={{ color: "red" }}>{error}</p>}
-            <form onSubmit={handleSubmit}>
-                <div style={{marginBottom: "15px"}} className="stars">
-                    <label>Rating (1-5):</label>
-                    <Rating
-                        onClick={(rate) => {
-                            console.log("Selected rating:", rate);
-                            setRating(rate);
-                        }}
-                        ratingValue={rating}
-                        size={24}
-                        fillColor="#ffd700"
-                        emptyColor="#ccc"
-                        className="rating"
-                    />
+        <div className="pink-modal-overlay" onClick={onClose}>
+            <div className="pink-modal-container" onClick={(e) => e.stopPropagation()}>
+                <div className="pink-modal-header">
+                    <h3 className="pink-modal-header-title">Leave a Review for Dr. {vetName}</h3>
                 </div>
-                <div style={{marginBottom: "15px"}}>
-                    <label>Review:</label>
-                    <textarea
-                        value={review}
-                        onChange={(e) => setReview(e.target.value)}
-                        placeholder="Write your review here..."
-                        rows={4}
-                        cols={40}
-                        style={{width: "100%", marginTop: "5px"}}
-                    />
-                </div>
-                <div style={{display: "flex", gap: "10px" }}>
-                    <button type="submit">Submit</button>
-                    <button type="button" onClick={onClose}>
-                        Cancel
-                    </button>
-                </div>
-            </form>
+                {error && <p className="pink-modal-error">{error}</p>}
+                <form onSubmit={handleSubmit} className="pink-modal-form">
+                    <div className="pink-modal-rating-section">
+                        <label className="pink-modal-label">Rating (1-5):</label>
+                        <Rating
+                            onClick={(rate) => {
+                                console.log("Selected rating:", rate);
+                                setRating(rate);
+                            }}
+                            ratingValue={rating}
+                            size={24}
+                            fillColor="#ffd700"
+                            emptyColor="#ccc"
+                            className="rating"
+                        />
+                    </div>
+                    <div className="pink-modal-input-section">
+                        <label className="pink-modal-label">Review:</label>
+                        <textarea
+                            value={review}
+                            onChange={(e) => setReview(e.target.value)}
+                            placeholder="Write your review here..."
+                            className="pink-modal-textarea"
+                        />
+                    </div>
+                    <div className="pink-modal-footer">
+                        <button type="submit" className="pink-modal-action-button">Submit</button>
+                        <button type="button" onClick={onClose} className="pink-modal-cancel-button">Cancel</button>
+                    </div>
+                </form>
+            </div>
         </div>
     );
-};
-
-const modalStyles = {
-    position: "fixed",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    backgroundColor: "white",
-    padding: "20px",
-    borderRadius: "10px",
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-    zIndex: 1000,
-    maxWidth: "500px",
-    width: "90%",
 };
 
 export default AddReviewModal;

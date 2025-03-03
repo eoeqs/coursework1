@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import useAxiosWithAuth from "../AxiosAuth";
+import "../pinkmodal.css";
 
 const HealthUpdateDetailsModal = ({ id, onClose }) => {
     const axiosInstance = useAxiosWithAuth();
@@ -36,29 +37,20 @@ const HealthUpdateDetailsModal = ({ id, onClose }) => {
     }
 
     return (
-        <div style={modalStyles}>
-            <h2>Health Update Details</h2>
-            <div>
-                <p><strong>Date:</strong> {new Date(healthUpdate.date).toLocaleDateString()}</p>
-                <p><strong>Dynamics:</strong> {healthUpdate.dynamics ? "Positive" : "Negative"}</p>
-                <p><strong>Symptoms:</strong> {healthUpdate.symptoms || "No symptoms provided."}</p>
-                <p><strong>Notes:</strong> {healthUpdate.notes || "No notes provided."}</p>
+        <div className="pink-modal-overlay" onClick={onClose}>
+            <div className="pink-modal-container" onClick={(e) => e.stopPropagation()}>
+                <div className="pink-modal-header">
+                    <h2 className="pink-modal-header-title">Health Update Details</h2>
+                </div>
+                <div className="pink-modal-details">
+                    <p><strong>Date:</strong> {new Date(healthUpdate.date).toLocaleDateString()}</p>
+                    <p><strong>Dynamics:</strong> {healthUpdate.dynamics ? "Positive" : "Negative"}</p>
+                    <p><strong>Symptoms:</strong> {healthUpdate.symptoms || "No symptoms provided."}</p>
+                    <p><strong>Notes:</strong> {healthUpdate.notes || "No notes provided."}</p>
+                </div>
             </div>
-            <button onClick={onClose}>Close</button>
         </div>
     );
-};
-
-const modalStyles = {
-    position: "fixed",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    backgroundColor: "white",
-    padding: "20px",
-    borderRadius: "8px",
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-    zIndex: 1000,
 };
 
 export default HealthUpdateDetailsModal;
