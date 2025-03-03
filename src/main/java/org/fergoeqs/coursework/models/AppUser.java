@@ -56,7 +56,6 @@ public class AppUser implements UserDetails {
         this.password = password;
     }
 
-    //?????? ?????
     @ManyToOne
     @JoinColumn(name = "clinic_id")
     private Clinic clinic;

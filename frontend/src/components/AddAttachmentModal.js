@@ -11,6 +11,7 @@ const AddAttachmentModal = ({ diagnoses, anamnesisId, onClose, onSave }) => {
     });
     const [file, setFile] = useState(null);
     const [error, setError] = useState(null);
+    const [successMessage, setSuccessMessage] = useState("");
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -26,14 +27,36 @@ const AddAttachmentModal = ({ diagnoses, anamnesisId, onClose, onSave }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!formData.name || !file) {
-            setError("Please provide a name and select a file.");
+
+        if (!formData.name.trim()) {
+            setError("Name is required.");
+            return;
+        }
+        if (formData.name.length > 255) {
+            setError("Name must not exceed 255 characters.");
+            return;
+        }
+        if (formData.description.length > 1000) {
+            setError("Description must not exceed 1000 characters.");
+            return;
+        }
+        if (!file) {
+            setError("Please select a file to upload.");
             return;
         }
 
+        setError(null);
+
         try {
             const formDataToSend = new FormData();
-            formDataToSend.append("diagnosticAttachmentDTO", JSON.stringify(formData));
+            formDataToSend.append(
+                "diagnosticAttachmentDTO",
+                JSON.stringify({
+                    ...formData,
+                    name: formData.name.trim(),
+                    description: formData.description.trim(),
+                })
+            );
             formDataToSend.append("file", file);
 
             const response = await axiosInstance.post("/diagnostic-attachment/new", formDataToSend, {
@@ -42,11 +65,14 @@ const AddAttachmentModal = ({ diagnoses, anamnesisId, onClose, onSave }) => {
                 },
             });
 
+            setSuccessMessage("Attachment added successfully.");
             onSave(response.data);
-            onClose();
+            setTimeout(() => {
+                onClose();
+            }, 2000);
         } catch (error) {
             console.error("Error adding attachment:", error);
-            setError("Failed to add attachment: maximum upload size exceeded.");
+            setError("Failed to add attachment: maximum upload size exceeded or server error.");
         }
     };
 

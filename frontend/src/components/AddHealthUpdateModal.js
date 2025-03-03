@@ -7,6 +7,8 @@ const AddHealthUpdateModal = ({ petId, onClose, onSave }) => {
         symptoms: "",
         notes: "",
     });
+    const [errorMessage, setErrorMessage] = useState("");
+    const [successMessage, setSuccessMessage] = useState("");
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -16,9 +18,40 @@ const AddHealthUpdateModal = ({ petId, onClose, onSave }) => {
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        onSave({ ...formData, pet: petId });
+
+        if (formData.dynamics === undefined || formData.dynamics === null) {
+            setErrorMessage("Dynamics is required. Please select Positive or Negative.");
+            return;
+        }
+        if (formData.symptoms.length > 1000) {
+            setErrorMessage("Symptoms must not exceed 1000 characters.");
+            return;
+        }
+        if (formData.notes.length > 1000) {
+            setErrorMessage("Notes must not exceed 1000 characters.");
+            return;
+        }
+
+        setErrorMessage("");
+
+        try {
+            const healthUpdateData = {
+                dynamics: formData.dynamics,
+                symptoms: formData.symptoms.trim(),
+                notes: formData.notes.trim(),
+                pet: petId,
+            };
+            await onSave(healthUpdateData);
+            setSuccessMessage("Health update added successfully.");
+            setTimeout(() => {
+                onClose();
+            }, 2000);
+        } catch (error) {
+            console.error("Error saving health update:", error);
+            setErrorMessage("Failed to add health update. Please try again.");
+        }
     };
 
     return (

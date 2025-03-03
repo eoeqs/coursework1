@@ -8,6 +8,8 @@ const AddProcedureModal = ({ onClose, onSave, petId, anamnesisId, vetId }) => {
         description: "",
         notes: "",
     });
+    const [errorMessage, setErrorMessage] = useState("");
+    const [successMessage, setSuccessMessage] = useState("");
 
     const procedureTypes = [
         { value: "DIAGNOSIS", label: "Diagnosis" },
@@ -24,13 +26,57 @@ const AddProcedureModal = ({ onClose, onSave, petId, anamnesisId, vetId }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const data = {
-            ...procedureData,
-            pet: petId,
-            vet: vetId,
-            anamnesis: anamnesisId,
-        };
-        onSave(data);
+
+        if (!procedureData.type) {
+            setErrorMessage("Procedure type is required.");
+            return;
+        }
+        if (!procedureTypes.some((type) => type.value === procedureData.type)) {
+            setErrorMessage("Invalid procedure type selected.");
+            return;
+        }
+        if (!procedureData.name.trim()) {
+            setErrorMessage("Name is required.");
+            return;
+        }
+        if (procedureData.name.length > 255) {
+            setErrorMessage("Name must not exceed 255 characters.");
+            return;
+        }
+        if (!procedureData.date) {
+            setErrorMessage("Date is required.");
+            return;
+        }
+        if (procedureData.description.length > 2000) {
+            setErrorMessage("Description must not exceed 2000 characters.");
+            return;
+        }
+        if (procedureData.notes.length > 2000) {
+            setErrorMessage("Notes must not exceed 2000 characters.");
+            return;
+        }
+
+        setErrorMessage("");
+
+        try {
+            const data = {
+                ...procedureData,
+                name: procedureData.name.trim(),
+                description: procedureData.description.trim(),
+                notes: procedureData.notes.trim(),
+                pet: petId,
+                vet: vetId,
+                anamnesis: anamnesisId,
+            };
+            await onSave(data);
+            setSuccessMessage("Procedure added successfully.");
+            setTimeout(() => {
+                onClose();
+            }, 2000);
+        } catch (error) {
+            console.error("Error saving procedure:", error);
+            setErrorMessage("Failed to add procedure. Please try again.");
+        }
     };
 
     return (
