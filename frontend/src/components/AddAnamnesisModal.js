@@ -17,7 +17,7 @@ const AddAnamnesisModal = ({ petId, onClose, onSave }) => {
         const fetchAppointments = async () => {
             setLoading(true);
             try {
-                const response = await axiosInstance.get(`/appointments/upcoming-pet/${petId}`);
+                const response = await axiosInstance.get(`/appointments/without-anamnesis`);
                 const appointmentsWithDetails = await Promise.all(
                     response.data.map(async (appointment) => {
                         const slotResponse = await axiosInstance.get(`/slots/${appointment.slotId}`);
@@ -27,7 +27,10 @@ const AddAnamnesisModal = ({ petId, onClose, onSave }) => {
                         };
                     })
                 );
-                setAppointments(appointmentsWithDetails);
+                const filteredAppointments = appointmentsWithDetails.filter(
+                    (appointment) => appointment.petId === parseInt(petId, 10)
+                );
+                setAppointments(filteredAppointments);
             } catch (error) {
                 console.error("Error fetching appointments:", error);
                 setErrorMessage("Failed to load appointments.");
@@ -144,7 +147,7 @@ const AddAnamnesisModal = ({ petId, onClose, onSave }) => {
                             ))}
                         </select>
                     ) : (
-                        <p>No upcoming appointments available.</p>
+                        <p>No appointments without anamnesis available.</p>
                     )}
                 </div>
 
