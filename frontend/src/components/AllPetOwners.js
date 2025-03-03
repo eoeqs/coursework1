@@ -3,6 +3,7 @@ import useAxiosWithAuth from "../AxiosAuth";
 import Header from "./Header";
 import EditOwnerModal from "./EditOwnerModal";
 import EditRolesModal from "./EditRolesModal";
+import PawStub from "../pics/paw.png";
 
 const AllPetOwners = () => {
     const axiosInstance = useAxiosWithAuth();
@@ -12,6 +13,7 @@ const AllPetOwners = () => {
     const [selectedUser, setSelectedUser] = useState(null);
     const [isEditUserModalOpen, setIsEditUserModalOpen] = useState(false);
     const [isEditRolesModalOpen, setIsEditRolesModalOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
 
     useEffect(() => {
         const fetchOwners = async () => {
@@ -31,6 +33,16 @@ const AllPetOwners = () => {
 
         fetchOwners();
     }, [axiosInstance]);
+
+    const filteredOwners = owners.filter((owner) => {
+        const query = searchQuery.toLowerCase();
+        return (
+            owner.username.toLowerCase().includes(query) ||
+            owner.email.toLowerCase().includes(query) ||
+            owner.name.toLowerCase().includes(query) ||
+            owner.surname.toLowerCase().includes(query)
+        );
+    });
 
     const openEditUserModal = (user) => {
         setSelectedUser(user);
@@ -89,14 +101,66 @@ const AllPetOwners = () => {
     return (
         <div>
             <Header />
-            <div className="container mt-3" style={{ padding: "20px" }}>
+            <div className="entities_container" style={{ padding: "20px" }}>
                 <h2>All Pet Owners</h2>
-                <div className="bg-table element-space">
-                    {owners.length > 0 ? (
-                        <table cellPadding="5" cellSpacing="0" className="uniq-table">
+
+                <div style={{ marginBottom: "20px" }}>
+                    <input
+                        type="text"
+                        placeholder="Search..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        style={{
+                            padding: "10px",
+                            width: "100%",
+                            borderRadius: "5px",
+                            border: "1px solid #ddd",
+                            fontSize: "16px",
+                        }}
+                    />
+                </div>
+
+                <div className="bg-entities element-space">
+                    {filteredOwners.length > 0 ? (
+                        <table cellPadding="5" cellSpacing="0" className="entities-table table-right-end">
+                            <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Photo</th>
+                                <th>Username</th>
+                                <th>Full Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th></th>
+                            </tr>
+                            </thead>
                             <tbody>
-                            {owners.map((owner) => (
+                            {filteredOwners.map((owner) => (
                                 <tr key={owner.id}>
+                                    <td>{owner.id}</td>
+                                    <td>{owner.photoUrl ? (
+                                        <img className="avatar"
+                                             src={owner.photoUrl}
+                                             alt={`${owner.name}'s avatar`}
+                                             style={{
+                                                 width: '50px',
+                                                 height: '50px',
+                                                 borderRadius: '50%',
+                                                 marginRight: '20px'
+                                             }}
+                                        />
+                                    ) : (
+                                        <img
+                                            className="avatar"
+                                            src={PawStub}
+                                            alt={`photo stub`}
+                                            style={{
+                                                width: '50px',
+                                                height: '50px',
+                                                borderRadius: '50%',
+                                                marginRight: '20px'
+                                            }}
+                                        />)}</td>
                                     <td>{owner.username}</td>
                                     <td>{owner.name} {owner.surname}</td>
                                     <td>{owner.email}</td>
@@ -111,7 +175,7 @@ const AllPetOwners = () => {
                                         <button
                                             className="button btn-no-border"
                                             onClick={() => openEditRolesModal(owner)}
-                                            style={{ marginLeft: "10px" }}
+                                            style={{marginLeft: "10px"}}
                                         >
                                             Edit Roles
                                         </button>

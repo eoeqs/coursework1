@@ -103,7 +103,6 @@
   width: 100%;
   background-color: rgb(253, 230, 230);
   box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.1);
-  /*overflow-y: auto;*/
   max-height: 700px;
   border-radius: 10px;
 }
@@ -148,6 +147,10 @@ input[type="checkbox"] {
 .table-right-end td:last-child {
   text-align: right !important;
 }
+
+/*.table-right-end tr:last-child th {*/
+/*  text-align: right !important;*/
+/*}*/
 
 
 .cells {
@@ -434,7 +437,7 @@ header h1 {
 
 .form-button {
   padding: 12px 30px;
-  font-size: 17px;
+  /*font-size: 17px;*/
   border-radius: 4px;
   background-color: #a13f3f;
   color: #fff;
@@ -510,3 +513,26 @@ html, body, #root {
 /*  font-family: 'Arial', sans-serif;*/
 /*  color: #333;*/
 /*}*/
+
+button {
+  padding: 3px 16px;
+  border-radius: 2px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button.btn-no-border {
+  background-color: #da9a9a;
+
+}
+
+button.btn-no-border:hover {
+  background-color: #8a3636;
+  color: white;
+  transform: translateY(-2px);
+}
+
+button.btn-no-border:active {
+  transform: translateY(0);
+}

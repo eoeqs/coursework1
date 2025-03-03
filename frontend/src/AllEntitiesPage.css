@@ -1,0 +1,138 @@
+.entities_container {
+    top: 100%;
+    max-width: 1200px;
+    margin: 75px auto 0;
+    padding: 20px;
+    z-index: 1;
+}
+
+.entities_container h2 {
+    font-size: 28px;
+    font-weight: bold;
+    color: #7e0808;
+    margin-bottom: 20px;
+    text-align: center;
+}
+.filters {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.filters select,
+.filters input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.filters select {
+    background-color: #fff;
+    cursor: pointer;
+}
+
+.filters input {
+    flex: 1;
+}
+
+.filters select:hover,
+.filters input:hover {
+    border-color: #007bff;
+}
+
+.filters select:focus,
+.filters input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.bg-entities {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.entities-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.entities-table th,
+.entities-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.entities-table th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+    color: #333;
+}
+
+.entities-table tr th{
+    color: #600808;
+}
+
+.entities-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.entities_container button {
+    padding: 5px 16px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+
+.admin-table {
+    padding: 50px;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.admin-table th,
+.admin-table td {
+    padding: 1px 5px 5px  100px;
+    text-align: left;
+    border-bottom: 10px solid #ffe9e9;
+}
+
+.admin-table th {
+    background-color: rgba(195, 106, 106, 0.38);
+    font-weight: bold;
+    color: #333;
+}
+
+.admin-table tr th{
+    color: #600808;
+}
+
+.admin-table tr:hover {
+    background-color: #f1c8c8;
+}
+
+.bg-admin {
+    margin: 0px 30px;
+    width: 95%;
+    background-color: rgb(250, 219, 219);
+    box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    max-height: 315px;
+    border-radius: 10px;
+}
+
+.admin-table thead th {
+    position: sticky;
+    top: 0;
+    background-color: rgb(229, 176, 176);
+    z-index: 1;
+}
+

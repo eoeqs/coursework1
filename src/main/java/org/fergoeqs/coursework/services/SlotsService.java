@@ -42,6 +42,7 @@ public class SlotsService {
         availableSlot.setEndTime(availableSlotDTO.endTime());
         availableSlot.setVet(vet);
         availableSlot.setIsAvailable(true);
+        availableSlot.setIsPriority(availableSlotDTO.isPriority());
         return slotsRepository.save(availableSlot);
     }
 

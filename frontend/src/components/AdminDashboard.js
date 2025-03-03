@@ -251,6 +251,7 @@ const AdminDashboard = () => {
         <div>
             <Header />
             <div className="container mt-3" style={{ padding: "20px", paddingTop: '90px'}}>
+                <div style={{margin: '0px 10px 0px 30px'}}>
                 <h2>Admin Dashboard</h2>
                 <button
                     className="button rounded-3 btn-no-border"
@@ -282,15 +283,26 @@ const AdminDashboard = () => {
                         Manage Quarantines
                     </button>
                 )}
+                </div>
 
-                <h3>Sectors</h3>
-                <div className="bg-table element-space" style={{ marginBottom: "20px" }}>
+                <h3  style={{margin: '10px 20px 10px 40px'}}>Sectors</h3>
+                <div className="bg-admin element-space" style={{ marginBottom: "20px" }}>
                     {sectors.length > 0 ? (
-                        <table cellPadding="5" cellSpacing="0" className="uniq-table">
-
+                        <table cellPadding="5" cellSpacing="0" className="admin-table">
+                            <thead>
+                            <tr>
+                                <th>Sector ID</th>
+                                <th>Category</th>
+                                <th>Capacity</th>
+                                <th>Occupancy</th>
+                                <th>Available</th>
+                                <th></th>
+                            </tr>
+                            </thead>
                             <tbody>
                             {sectors.map((sector) => (
                                 <tr key={sector.id}>
+                                    <td>{sector.id}</td>
                                     <td>{sector.category}</td>
                                     <td>{sector.capacity}</td>
                                     <td>{sector.occupancy}</td>
@@ -312,14 +324,25 @@ const AdminDashboard = () => {
                     )}
                 </div>
 
-                <h3>Pets</h3>
-                <div className="bg-table element-space" style={{ marginBottom: "20px" }}>
+                <h3 style={{margin: '10px 20px 10px 40px'}}>Pets</h3>
+                <div className="bg-admin" style={{marginBottom: "20px"}}>
                     {pets.length > 0 ? (
-                        <table cellPadding="5" cellSpacing="0" className="uniq-table">
-
+                        <table cellPadding="0" cellSpacing="0" className="admin-table">
+                            <thead>
+                            <tr>
+                                <th>Pet ID</th>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Breed</th>
+                                <th>Age</th>
+                                <th>Sex</th>
+                                <th></th>
+                            </tr>
+                            </thead>
                             <tbody>
                             {pets.map((pet) => (
                                 <tr key={pet.id}>
+                                    <td>{pet.id}</td>
                                     <td>{pet.name}</td>
                                     <td>{pet.type}</td>
                                     <td>{pet.breed}</td>
@@ -328,15 +351,13 @@ const AdminDashboard = () => {
                                     <td>
                                         <button
                                             className="button btn-no-border"
-                                            onClick={() => handleViewPetProfile(pet.id)}
-                                        >
-                                            View Profile
+                                            onClick={() => handleViewPetProfile(pet.id)}>
+                                            View
                                         </button>
                                         <button
                                             className="button btn-no-border"
                                             onClick={() => openEditPetModal(pet)}
-                                            style={{ marginLeft: "10px" }}
-                                        >
+                                            style={{marginLeft: "0px"}}>
                                             Edit
                                         </button>
                                     </td>
@@ -349,17 +370,26 @@ const AdminDashboard = () => {
                     )}
                 </div>
 
-                <h3>Slots</h3>
-                <div className="bg-table element-space" style={{ marginBottom: "20px" }}>
+                <h3 style={{margin: '10px 20px 10px 40px'}}>Slots</h3>
+                <div className="bg-admin element-space" style={{marginBottom: "20px"}}>
                     {slots.length > 0 ? (
-                        <table cellPadding="5" cellSpacing="0" className="uniq-table">
-
+                        <table cellPadding="5" cellSpacing="0" className="admin-table">
+                            <thead>
+                            <tr>
+                                <th>Slot ID</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Vet ID</th>
+                                <th>Priority</th>
+                                <th></th>
+                            </tr>
+                            </thead>
                             <tbody>
                             {slots.map((slot) => (
                                 <tr key={slot.id}>
+                                    <td>{slot.id}</td>
                                     <td>{slot.date}</td>
-                                    <td>{slot.startTime}</td>
-                                    <td>{slot.endTime}</td>
+                                    <td>{slot.startTime}-{slot.endTime}</td>
                                     <td>{slot.vetId}</td>
                                     <td>{slot.isPriority ? "Yes" : "No"}</td>
                                     <td>
@@ -379,14 +409,24 @@ const AdminDashboard = () => {
                     )}
                 </div>
 
-                <h3>Veterinarians</h3>
-                <div className="bg-table element-space" style={{ marginBottom: "20px" }}>
+                <h3 style={{margin: '10px 20px 10px 40px'}}>Veterinarians</h3>
+                <div className="bg-admin element-space" style={{marginBottom: "20px"}}>
                     {vets.length > 0 ? (
-                        <table cellPadding="5" cellSpacing="0" className="uniq-table">
-
+                        <table cellPadding="5" cellSpacing="0" className="admin-table">
+                            <thead>
+                            <tr>
+                                <th>Vet ID</th>
+                                <th>Username</th>
+                                <th>Full Name</th>
+                                <th>Email</th>
+                                <th>Roles</th>
+                                <th></th>
+                            </tr>
+                            </thead>
                             <tbody>
                             {vets.map((vet) => (
                                 <tr key={vet.id}>
+                                    <td>{vet.id}</td>
                                     <td>{vet.username}</td>
                                     <td>{vet.name} {vet.surname}</td>
                                     <td>{vet.email}</td>
@@ -401,7 +441,7 @@ const AdminDashboard = () => {
                                         <button
                                             className="button btn-no-border"
                                             onClick={() => openEditRolesModal(vet)}
-                                            style={{ marginLeft: "10px" }}
+                                            style={{marginLeft: "10px"}}
                                         >
                                             Edit Roles
                                         </button>
@@ -415,11 +455,20 @@ const AdminDashboard = () => {
                     )}
                 </div>
 
-                <h3>Owners</h3>
-                <div className="bg-table element-space">
+                    <h3 style={{margin: '10px 20px 10px 40px'}}>Owners</h3>
+                <div className="bg-admin element-space">
                     {owners.length > 0 ? (
-                        <table cellPadding="5" cellSpacing="0" className="uniq-table">
-
+                        <table cellPadding="5" cellSpacing="0" className="admin-table">
+                            <thead>
+                            <tr>
+                                <th>Owner ID</th>
+                                <th>Username</th>
+                                <th>Full Name</th>
+                                <th>Email</th>
+                                <th>Roles</th>
+                                <th></th>
+                            </tr>
+                            </thead>
                             <tbody>
                             {owners.map((owner) => (
                                 <tr key={owner.id}>
@@ -437,7 +486,7 @@ const AdminDashboard = () => {
                                         <button
                                             className="button btn-no-border"
                                             onClick={() => openEditRolesModal(owner)}
-                                            style={{ marginLeft: "10px" }}
+                                            style={{marginLeft: "10px"}}
                                         >
                                             Edit Roles
                                         </button>

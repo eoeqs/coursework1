@@ -161,9 +161,14 @@ const EditPetModal = ({ petInfo, onClose, onSave }) => {
                     />
                 </div>
 
-                <div style={{ display: "flex", justifyContent: "space-evenly", marginTop: "20px" }}>
-                    <button style={buttonStyles} type="submit">Save</button>
-                    <button className="rounded-1" style={{padding: "8px 20px", backgroundColor: "white", border: "1"}} type="button" onClick={onClose}>Cancel</button>
+                <div style={{display: "flex", justifyContent: "space-evenly", marginTop: "15px"}}>
+                    <button className="form-button" type="submit" style={{padding: "5px 35px", color: "white"}}>
+                        Save
+                    </button>
+                    <button className="rounded-2" type="button" onClick={onClose}
+                            style={{padding: "5px 26px", backgroundColor: "#ffffff", border: "1", borderColor: "#c1c0c0"}}>
+                        Cancel
+                    </button>
                 </div>
             </form>
         </div>
@@ -171,7 +176,7 @@ const EditPetModal = ({ petInfo, onClose, onSave }) => {
 };
 
 const inputStyles = {
-    padding: "10px",
+    padding: "7px",
     borderRadius: "4px",
     border: "1px solid #ddd",
     backgroundColor: "#fdf8f8",
@@ -179,21 +184,6 @@ const inputStyles = {
     boxSizing: "border-box",
     fontSize: "14px",
     color: "#555",
-};
-
-const buttonStyles = {
-    padding: "12px 30px",
-    fontSize: "17px",
-    borderRadius: "4px",
-    backgroundColor: "#a13f3f",
-    color: "#fff",
-    border: "none",
-    cursor: "pointer",
-    transition: "background-color 0.3s",
-};
-
-buttonStyles[':hover'] = {
-    backgroundColor: "rgba(67,13,13,0.5)",
 };
 
 

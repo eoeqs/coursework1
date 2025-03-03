@@ -82,12 +82,23 @@ const SectorManagement = () => {
                 >
                     Create Sector
                 </button>
-                <div className="bg-table element-space" style={{ marginBottom: "20px" }}>
+                <div className="bg-entities element-space" style={{ marginBottom: "20px" }}>
                     {sectors.length > 0 ? (
-                        <table cellPadding="5" cellSpacing="0" className="uniq-table">
+                        <table cellPadding="3" cellSpacing="1" className="entities-table">
+                            <thead>
+                            <tr>
+                                <th>Sector ID</th>
+                                <th>Category</th>
+                                <th>Capacity</th>
+                                <th>Occupancy</th>
+                                <th>Available</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
                             <tbody>
                             {sectors.map((sector) => (
                                 <tr key={sector.id}>
+                                    <td>{sector.id}</td>
                                     <td>{sector.category}</td>
                                     <td>{sector.capacity}</td>
                                     <td>{sector.occupancy}</td>
