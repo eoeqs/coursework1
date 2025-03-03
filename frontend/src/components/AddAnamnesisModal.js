@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import useAxiosWithAuth from "../AxiosAuth";
+import "../pinkmodal.css";
 
 const AddAnamnesisModal = ({ petId, onClose, onSave }) => {
     const axiosInstance = useAxiosWithAuth();
@@ -87,77 +88,68 @@ const AddAnamnesisModal = ({ petId, onClose, onSave }) => {
     };
 
     return (
-        <div
-            style={{
-                position: "fixed",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                backgroundColor: "white",
-                padding: "20px",
-                borderRadius: "10px",
-                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-                zIndex: 1000,
-            }}
-        >
-            <h3>Add New Anamnesis</h3>
-
-            {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
-            {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
-
-            <form onSubmit={handleSubmit}>
-                <div style={{ marginBottom: "10px" }}>
-                    <label>Name:</label>
-                    <input
-                        type="text"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        style={{ width: "100%", padding: "5px" }}
-                    />
+        <div className="pink-modal-overlay" onClick={onClose}>
+            <div className="pink-modal-container" onClick={(e) => e.stopPropagation()}>
+                <div className="pink-modal-header">
+                    <h3 className="pink-modal-header-title">Add New Anamnesis</h3>
                 </div>
 
-                <div style={{ marginBottom: "10px" }}>
-                    <label>Description:</label>
-                    <textarea
-                        name="description"
-                        value={formData.description}
-                        onChange={handleChange}
-                        rows={4}
-                        cols={40}
-                    />
-                </div>
+                {errorMessage && <p className="pink-modal-error">{errorMessage}</p>}
+                {successMessage && <p className="pink-modal-success">{successMessage}</p>}
 
-                <div style={{ marginBottom: "10px" }}>
-                    <label>Appointment:</label>
-                    {loading ? (
-                        <p>Loading appointments...</p>
-                    ) : appointments.length > 0 ? (
-                        <select
-                            name="appointment"
-                            value={formData.appointment}
+                <form onSubmit={handleSubmit} className="pink-modal-form">
+                    <div className="pink-modal-input-section">
+                        <label className="pink-modal-label">Name:</label>
+                        <input
+                            type="text"
+                            name="name"
+                            value={formData.name}
                             onChange={handleChange}
-                            style={{ width: "100%", padding: "5px" }}
-                        >
-                            <option value="">Select an appointment</option>
-                            {appointments.map((appointment) => (
-                                <option key={appointment.id} value={appointment.id}>
-                                    {new Date(appointment.slot.date).toLocaleDateString()} - {appointment.slot.startTime}
-                                </option>
-                            ))}
-                        </select>
-                    ) : (
-                        <p>No appointments without anamnesis available.</p>
-                    )}
-                </div>
+                            className="pink-modal-input"
+                            placeholder="Enter anamnesis name"
+                        />
+                    </div>
 
-                <button type="submit" style={{ marginRight: "10px" }}>
-                    Save
-                </button>
-                <button type="button" onClick={onClose}>
-                    Cancel
-                </button>
-            </form>
+                    <div className="pink-modal-input-section">
+                        <label className="pink-modal-label">Description:</label>
+                        <textarea
+                            name="description"
+                            value={formData.description}
+                            onChange={handleChange}
+                            className="pink-modal-textarea"
+                            placeholder="Enter description"
+                        />
+                    </div>
+
+                    <div className="pink-modal-input-section">
+                        <label className="pink-modal-label">Appointment:</label>
+                        {loading ? (
+                            <p>Loading appointments...</p>
+                        ) : appointments.length > 0 ? (
+                            <select
+                                name="appointment"
+                                value={formData.appointment}
+                                onChange={handleChange}
+                                className="pink-modal-select"
+                            >
+                                <option value="">Select an appointment</option>
+                                {appointments.map((appointment) => (
+                                    <option key={appointment.id} value={appointment.id}>
+                                        {new Date(appointment.slot.date).toLocaleDateString()} - {appointment.slot.startTime}
+                                    </option>
+                                ))}
+                            </select>
+                        ) : (
+                            <p>No appointments without anamnesis available.</p>
+                        )}
+                    </div>
+
+                    <div className="pink-modal-footer">
+                        <button type="submit" className="pink-modal-action-button">Save</button>
+                        <button type="button" onClick={onClose} className="pink-modal-cancel-button">Cancel</button>
+                    </div>
+                </form>
+            </div>
         </div>
     );
 };

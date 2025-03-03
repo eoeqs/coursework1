@@ -225,7 +225,7 @@ const PetProfilePage = () => {
                                         <td>{new Date(appointment.slot.date).toLocaleDateString()}</td>
                                         <td>{appointment.slot.startTime.slice(0, 5)} </td>
                                         <td> -</td>
-                                        <td>Dr. {appointment.slot.vetId}</td>
+                                        <td>Dr. {appointment.slot.vetName}</td>
                                     </tr>
                                 ))}
                                 </tbody>
