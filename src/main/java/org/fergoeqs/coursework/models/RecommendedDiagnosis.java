@@ -18,15 +18,18 @@ public class RecommendedDiagnosis {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
+    @NotNull(message = "Name is required")
     private String name;
+
     private String description;
+
     private Boolean contagious;
 
-    @NotNull
+    @NotNull(message = "Body part is required")
     @Enumerated(EnumType.STRING)
     private BodyPart bodyPart;
 
+    @NotNull(message = "Symptoms are required")
     @ManyToMany
     @JoinTable(
             name = "diagnosis_symptom", //rec_diagnosis_symptom

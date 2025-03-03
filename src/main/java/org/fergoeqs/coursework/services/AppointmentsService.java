@@ -90,7 +90,7 @@ public class AppointmentsService {
 
     @Transactional
 //    @Scheduled(cron = "0 0 9 * * *")
-    @Scheduled(cron = "0 0/3 * * * *")
+    @Scheduled(cron = "0 0 9 * * *")
     public void sendNotification() {
         LocalDate tomorrow = LocalDate.now().plusDays(1);
         List<Appointment> upcomingAppointments = appointmentsRepository.findAppointmentsBySlotDate(tomorrow);

@@ -34,7 +34,7 @@ public class SlotsService {
         return slotsRepository.findById(id).orElse(null);
     }
 
-    public Slot addAvailableSlot(SlotDTO availableSlotDTO) {
+    public void addAvailableSlot(SlotDTO availableSlotDTO) {
         AppUser vet = userService.findById(availableSlotDTO.vetId()).orElse(null);
         Slot availableSlot = new Slot();
         availableSlot.setDate(availableSlotDTO.date());
@@ -43,7 +43,10 @@ public class SlotsService {
         availableSlot.setVet(vet);
         availableSlot.setIsAvailable(true);
         availableSlot.setIsPriority(availableSlotDTO.isPriority());
-        return slotsRepository.save(availableSlot);
+        if (!availableSlot.getStartTime().isBefore(availableSlot.getEndTime())) {
+            throw new IllegalArgumentException("Start time must be before end time");
+        }
+        slotsRepository.save(availableSlot);
     }
 
     public void updateSlotStatus(Long id, Boolean isAvailable) {

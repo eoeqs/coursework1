@@ -1,6 +1,8 @@
 package org.fergoeqs.coursework.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.Getter;
 import lombok.Setter;
 import org.fergoeqs.coursework.models.enums.PetType;
@@ -24,11 +26,15 @@ public class Pet {
     @Enumerated(EnumType.STRING)
     private PetType type;
 
+    @Min(value = 0, message = "Weight can't be less than 0")
+    @Max(value = 120, message = "Weight can't be more than 120")
     private BigDecimal weight;
 
     @Enumerated(EnumType.STRING)
     private SexEnum sex;
 
+    @Min(value = 0, message = "Age can't be less than 0")
+    @Max(value = 40, message = "Age can't be more than 40")
     private Integer age;
 
     @ManyToOne
@@ -44,5 +50,5 @@ public class Pet {
     private Sector sector;
 
     @Column(length = 500)
-    private String photoUrl; //TODO: добавить фото-заглушку, если аватарка не загружена
+    private String photoUrl;
 }
