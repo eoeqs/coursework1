@@ -536,19 +536,3 @@ button.btn-no-border:hover {
 button.btn-no-border:active {
   transform: translateY(0);
 }
-
-.available-date {
-  background-color: #D3E4CD !important;
-  color: black !important;
-}
-.available-date:hover {
-  background-color: #A9CBA4 !important;
-}
-
-.react-calendar__tile--now {
-  background-color: #ffffff !important;
-  color: black !important;
-}
-.react-calendar__tile--now:hover {
-  background-color: #e5e6e4 !important;
-}
