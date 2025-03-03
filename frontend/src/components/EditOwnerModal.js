@@ -43,10 +43,8 @@ const EditOwnerModal = ({ ownerInfo, onClose, onSave }) => {
                         "Content-Type": "multipart/form-data",
                     },
                 });
-                alert("Avatar updated successfully!");
             } catch (error) {
                 console.error("Error updating avatar:", error);
-                alert("Failed to update avatar.");
             }
         }
     };

@@ -68,11 +68,9 @@ const AllPetOwners = () => {
         try {
             const response = await axiosInstance.put(`/users/update-user-admin/${selectedUser.id}`, updatedData);
             setOwners(owners.map((o) => (o.id === selectedUser.id ? response.data : o)));
-            alert("User updated successfully!");
             closeEditUserModal();
         } catch (error) {
             console.error("Error updating user:", error);
-            alert("Failed to update user.");
         }
     };
 
@@ -82,11 +80,9 @@ const AllPetOwners = () => {
                 headers: { "Content-Type": "application/json" },
             });
             setOwners(owners.map((o) => (o.id === selectedUser.id ? response.data : o)));
-            alert("Roles updated successfully!");
             closeEditRolesModal();
         } catch (error) {
             console.error("Error updating roles:", error);
-            alert("Failed to update roles.");
         }
     };
 

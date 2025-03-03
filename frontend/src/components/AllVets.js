@@ -73,11 +73,9 @@ const AllVets = () => {
         try {
             const response = await axiosInstance.put(`/users/update-user-admin/${selectedUser.id}`, updatedData);
             setVets(vets.map((v) => (v.id === selectedUser.id ? response.data : v)));
-            alert("User updated successfully!");
             closeEditUserModal();
         } catch (error) {
             console.error("Error updating user:", error);
-            alert("Failed to update user.");
         }
     };
 
@@ -87,11 +85,9 @@ const AllVets = () => {
                 headers: { "Content-Type": "application/json" },
             });
             setVets(vets.map((v) => (v.id === selectedUser.id ? response.data : v)));
-            alert("Roles updated successfully!");
             closeEditRolesModal();
         } catch (error) {
             console.error("Error updating roles:", error);
-            alert("Failed to update roles.");
         }
     };
 

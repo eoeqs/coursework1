@@ -17,7 +17,6 @@ const CreateClinicModal = ({ onClose, onSave }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!formData.address || !formData.workingHours) {
-            alert("Please provide both address and working hours.");
             return;
         }
         onSave(formData);

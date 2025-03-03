@@ -131,11 +131,9 @@ const AdminDashboard = () => {
             } else if (selectedUser.roles.includes("ROLE_OWNER")) {
                 setOwners(owners.map((o) => (o.id === selectedUser.id ? response.data : o)));
             }
-            alert("User updated successfully!");
             closeEditUserModal();
         } catch (error) {
             console.error("Error updating user:", error);
-            alert("Failed to update user.");
         }
     };
 
@@ -149,11 +147,9 @@ const AdminDashboard = () => {
             } else if (response.data.roles.includes("ROLE_OWNER")) {
                 setOwners(owners.map((o) => (o.id === selectedUser.id ? response.data : o)));
             }
-            alert("Roles updated successfully!");
             closeEditRolesModal();
         } catch (error) {
             console.error("Error updating roles:", error);
-            alert("Failed to update roles.");
         }
     };
 
@@ -161,11 +157,9 @@ const AdminDashboard = () => {
         try {
             const response = await axiosInstance.post("/clinics/save", clinicData);
             setClinics([...clinics, response.data]);
-            alert("Clinic created successfully!");
             closeCreateClinicModal();
         } catch (error) {
             console.error("Error creating clinic:", error);
-            alert("Failed to create clinic.");
         }
     };
 
@@ -173,11 +167,9 @@ const AdminDashboard = () => {
         try {
             const response = await axiosInstance.post("/sectors/new", sectorData);
             setSectors([...sectors, response.data]);
-            alert("Sector created successfully!");
             closeCreateSectorModal();
         } catch (error) {
             console.error("Error creating sector:", error);
-            alert("Failed to create sector.");
         }
     };
 
@@ -187,10 +179,8 @@ const AdminDashboard = () => {
         try {
             await axiosInstance.delete(`/sectors/delete/${sectorId}`);
             setSectors(sectors.filter((sector) => sector.id !== sectorId));
-            alert("Sector deleted successfully!");
         } catch (error) {
             console.error("Error deleting sector:", error);
-            alert("Failed to delete sector.");
         }
     };
 
@@ -202,11 +192,9 @@ const AdminDashboard = () => {
         try {
             const response = await axiosInstance.put(`/pets/update-pet/${selectedPet.id}`, updatedData);
             setPets(pets.map((p) => (p.id === selectedPet.id ? response.data : p)));
-            alert("Pet profile updated successfully!");
             closeEditPetModal();
         } catch (error) {
             console.error("Error updating pet:", error);
-            alert("Failed to update pet.");
         }
     };
 
@@ -218,11 +206,9 @@ const AdminDashboard = () => {
         try {
             const response = await axiosInstance.post("/slots/add-slot", slotData);
             setSlots([...slots, response.data]);
-            alert("Slot created successfully!");
             closeCreateSlotModal();
         } catch (error) {
             console.error("Error creating slot:", error);
-            alert("Failed to create slot.");
         }
     };
 
@@ -232,10 +218,8 @@ const AdminDashboard = () => {
         try {
             await axiosInstance.delete(`/slots/delete-slot/${slotId}`);
             setSlots(slots.filter((slot) => slot.id !== slotId));
-            alert("Slot deleted successfully!");
         } catch (error) {
             console.error("Error deleting slot:", error);
-            alert("Failed to delete slot.");
         }
     };
 

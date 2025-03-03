@@ -44,167 +44,154 @@ const AnamnesisDetailsPage = () => {
     const [isGenerateReportModalOpen, setIsGenerateReportModalOpen] = useState(false);
     const [reportValidationMessage, setReportValidationMessage] = useState("");
 
-    useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true);
-            setError(null);
+    const fetchData = async () => {
+        setLoading(true);
+        setError(null);
 
-            try {
-                const anamnesisResponse = await axiosInstance.get(`/anamnesis/${id}`);
-                setAnamnesis(anamnesisResponse.data);
+        try {
+            const anamnesisResponse = await axiosInstance.get(`/anamnesis/${id}`);
+            setAnamnesis(anamnesisResponse.data);
 
-                const petResponse = await axiosInstance.get(`/pets/pet/${anamnesisResponse.data.pet}`);
-                setPetInfo(petResponse.data);
+            const petResponse = await axiosInstance.get(`/pets/pet/${anamnesisResponse.data.pet}`);
+            setPetInfo(petResponse.data);
 
-                if (petResponse.data.actualVet) {
-                    const doctorResponse = await axiosInstance.get(`/users/user-info/${petResponse.data.actualVet}`);
-                    setDoctorName(doctorResponse.data.name);
-                }
-
-                const diagnosisResponse = await axiosInstance.get(`/diagnosis/preliminary-diagnosis/${id}`);
-                setDiagnosis(diagnosisResponse.data);
-
-                const clinicalDiagnosesResponse = await axiosInstance.get(`/diagnosis/all-diagnoses/${id}`);
-                setClinicalDiagnoses(clinicalDiagnosesResponse.data);
-
-                const appointmentResponse = await axiosInstance.get(`/appointments/appointment/${anamnesisResponse.data.appointment}`);
-                setAppointment(appointmentResponse.data);
-
-                if (appointmentResponse.data.slotId) {
-                    const slotResponse = await axiosInstance.get(`/slots/${appointmentResponse.data.slotId}`);
-                    setAppointment((prevAppointment) => ({
-                        ...prevAppointment,
-                        slot: slotResponse.data,
-                    }));
-                }
-
-                const treatmentsResponse = await axiosInstance.get(`/treatments/all-by-pet/${petResponse.data.id}`);
-                setTreatments(treatmentsResponse.data);
-
-                const proceduresResponse = await axiosInstance.get(`/procedures/by-anamnesis/${id}`);
-                setProcedures(proceduresResponse.data);
-
-                const attachmentsResponse = await axiosInstance.get(`/diagnostic-attachment/all-by-anamnesis/${id}`);
-                setAttachments(attachmentsResponse.data);
-
-                const userResponse = await axiosInstance.get("/users/current-user-info");
-                setUserRole(userResponse.data.role);
-            } catch (error) {
-                console.error("Error fetching data:", error);
-                setError("Failed to fetch data. Please try again later.");
-            } finally {
-                setLoading(false);
+            if (petResponse.data.actualVet) {
+                const doctorResponse = await axiosInstance.get(`/users/user-info/${petResponse.data.actualVet}`);
+                setDoctorName(doctorResponse.data.name);
             }
-        };
 
+            const diagnosisResponse = await axiosInstance.get(`/diagnosis/preliminary-diagnosis/${id}`);
+            setDiagnosis(diagnosisResponse.data);
+
+            const clinicalDiagnosesResponse = await axiosInstance.get(`/diagnosis/all-diagnoses/${id}`);
+            setClinicalDiagnoses(clinicalDiagnosesResponse.data);
+
+            const appointmentResponse = await axiosInstance.get(`/appointments/appointment/${anamnesisResponse.data.appointment}`);
+            setAppointment(appointmentResponse.data);
+
+            if (appointmentResponse.data.slotId) {
+                const slotResponse = await axiosInstance.get(`/slots/${appointmentResponse.data.slotId}`);
+                setAppointment((prevAppointment) => ({
+                    ...prevAppointment,
+                    slot: slotResponse.data,
+                }));
+            }
+
+            const treatmentsResponse = await axiosInstance.get(`/treatments/all-by-pet/${petResponse.data.id}`);
+            setTreatments(treatmentsResponse.data);
+
+            const proceduresResponse = await axiosInstance.get(`/procedures/by-anamnesis/${id}`);
+            setProcedures(proceduresResponse.data);
+
+            const attachmentsResponse = await axiosInstance.get(`/diagnostic-attachment/all-by-anamnesis/${id}`);
+            setAttachments(attachmentsResponse.data);
+
+            const userResponse = await axiosInstance.get("/users/current-user-info");
+            setUserRole(userResponse.data.role);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+            setError("Failed to fetch data. Please try again later.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
         fetchData();
     }, [id, axiosInstance]);
 
     const handleSaveDiagnosis = async (updatedData) => {
         try {
             if (diagnosis?.id) {
-                const response = await axiosInstance.put(`/diagnosis/update/${diagnosis.id}`, updatedData);
-                setDiagnosis(response.data);
+                await axiosInstance.put(`/diagnosis/update/${diagnosis.id}`, updatedData);
                 setIsEditDiagnosisModalOpen(false);
-                alert("Diagnosis updated successfully!");
             } else {
-                const response = await axiosInstance.post("/diagnosis/save", { ...updatedData, anamnesis: id });
-                setDiagnosis(response.data);
+                await axiosInstance.post("/diagnosis/save", { ...updatedData, anamnesis: id });
                 setIsEditDiagnosisModalOpen(false);
-                alert("Diagnosis added successfully! Page will reload.");
-                window.location.reload();
             }
+            fetchData();
         } catch (error) {
             console.error("Error updating diagnosis:", error);
-            alert("Failed to update diagnosis. Please try again later.");
         }
     };
 
     const handleSaveExaminationPlan = async (updatedPlan) => {
         try {
             const updatedDiagnosis = { ...diagnosis, examinationPlan: updatedPlan };
-            const response = await axiosInstance.put(`/diagnosis/update/${diagnosis.id}`, updatedDiagnosis);
-            setDiagnosis(response.data);
+            await axiosInstance.put(`/diagnosis/update/${diagnosis.id}`, updatedDiagnosis);
             setIsEditExaminationPlanModalOpen(false);
-            alert("Examination plan updated successfully!");
+            fetchData();
         } catch (error) {
             console.error("Error updating examination plan:", error);
-            alert("Failed to update examination plan. Please try again later.");
         }
     };
 
     const handleSaveClinicalDiagnosis = async (clinicalDiagnosisData) => {
         try {
             if (selectedClinicalDiagnosisId) {
-                const response = await axiosInstance.put(`/diagnosis/update/${selectedClinicalDiagnosisId}`, clinicalDiagnosisData);
-                setClinicalDiagnoses(clinicalDiagnoses.map((d) => (d.id === response.data.id ? response.data : d)));
+                await axiosInstance.put(`/diagnosis/update/${selectedClinicalDiagnosisId}`, clinicalDiagnosisData);
             } else {
-                const response = await axiosInstance.post("/diagnosis/save", { ...clinicalDiagnosisData, anamnesis: id });
-                setClinicalDiagnoses([...clinicalDiagnoses, response.data]);
+                await axiosInstance.post("/diagnosis/save", { ...clinicalDiagnosisData, anamnesis: id });
             }
             setIsEditClinicalDiagnosisModalOpen(false);
-            alert("Clinical diagnosis saved successfully!");
+            fetchData();
         } catch (error) {
             console.error("Error saving clinical diagnosis:", error);
-            alert("Failed to save clinical diagnosis. Please try again later.");
         }
     };
 
     const handleSaveTreatment = async (treatmentData) => {
         try {
             if (selectedTreatment) {
-                const response = await axiosInstance.put(`/treatments/update/${selectedTreatment.id}`, treatmentData);
-                setTreatments(treatments.map((t) => (t.id === response.data.id ? response.data : t)));
+                await axiosInstance.put(`/treatments/update/${selectedTreatment.id}`, treatmentData);
             } else {
-                const response = await axiosInstance.post("/treatments/add", treatmentData);
-                setTreatments([...treatments, response.data]);
+                await axiosInstance.post("/treatments/add", treatmentData);
             }
             setIsEditTreatmentModalOpen(false);
-            alert("Treatment saved successfully!");
+            fetchData();
         } catch (error) {
             console.error("Error saving treatment:", error);
-            alert("Failed to save treatment. Please try again later.");
         }
     };
 
     const handleSaveProcedure = async (procedureData) => {
         try {
-            const response = await axiosInstance.post("/procedures/add", procedureData);
-            setProcedures([...procedures, response.data]);
+            await axiosInstance.post("/procedures/add", procedureData);
             setIsAddProcedureModalOpen(false);
-            alert("Procedure added successfully!");
+            fetchData();
         } catch (error) {
             console.error("Error adding procedure:", error);
-            alert("Failed to add procedure. Please try again later.");
         }
     };
 
     const handleCompleteTreatment = async (treatmentId) => {
         try {
-            const response = await axiosInstance.put(`/treatments/complete/${treatmentId}`);
-            setTreatments(treatments.map((t) => (t.id === response.data.id ? response.data : t)));
-            alert("Treatment marked as complete!");
+            await axiosInstance.put(`/treatments/complete/${treatmentId}`);
+            fetchData();
         } catch (error) {
             console.error("Error completing treatment:", error);
-            alert("Failed to complete treatment. Please try again later.");
         }
     };
 
     const handleSaveRecommendedDiagnosis = async (diagnosisId) => {
         try {
-            const response = await axiosInstance.post(`/diagnosis/save-recomended/${id}`, diagnosisId, {
+            await axiosInstance.post(`/diagnosis/save-recomended/${id}`, diagnosisId, {
                 headers: { "Content-Type": "application/json" },
             });
-            setClinicalDiagnoses([...clinicalDiagnoses, response.data]);
-            alert("Recommended diagnosis saved successfully!");
+            fetchData();
         } catch (error) {
             console.error("Error saving recommended diagnosis:", error);
-            alert("Failed to save recommended diagnosis. Please try again later.");
         }
     };
 
-    const handleSaveAttachment = (newAttachment) => {
-        setAttachments((prev) => [...prev, newAttachment]);
+    const handleSaveAttachment = async (newAttachment) => {
+        try {
+            setAttachments((prev) => [...prev, newAttachment]);
+            setIsAddAttachmentModalOpen(false);
+            fetchData();
+        } catch (error) {
+            console.error("Error saving attachment:", error);
+        }
     };
 
     const openAttachmentModal = (attachment) => {
@@ -258,13 +245,11 @@ const AnamnesisDetailsPage = () => {
 
     const handleGenerateReport = async (formData) => {
         try {
-            const response = await axiosInstance.post(`/reports/generate-report/${id}`, formData);
-            alert("Report generated successfully!");
+            await axiosInstance.post(`/reports/generate-report/${id}`, formData);
             closeGenerateReportModal();
-            console.log("Generated report URL:", response.data);
+            fetchData();
         } catch (error) {
             console.error("Error generating report:", error);
-            alert("Failed to generate report. Please try again later.");
         }
     };
 
@@ -274,7 +259,6 @@ const AnamnesisDetailsPage = () => {
             window.open(response.data, "_blank");
         } catch (error) {
             console.error("Error fetching report:", error);
-            alert("Failed to fetch report. Please try again later.");
         }
     };
 
@@ -293,16 +277,15 @@ const AnamnesisDetailsPage = () => {
     return (
         <div>
             <Header />
-            <div className="container mt-3" style={{display: "flex", gap: "50px", paddingTop: '80px'}}>
+            <div className="container mt-3" style={{ display: "flex", gap: "50px", paddingTop: "80px" }}>
                 <div>
-                    <PetInfo petInfo={petInfo} onEdit={() => {
-                    }}/>
-                    <div style={{marginTop: "20px"}}>
-                        <h4 style={{marginBottom: "5px"}}>Diagnosis</h4>
+                    <PetInfo petInfo={petInfo} onEdit={() => {}} />
+                    <div style={{ marginTop: "20px" }}>
+                        <h4 style={{ marginBottom: "5px" }}>Diagnosis</h4>
                         <p>{diagnosis ? diagnosis.name : "No diagnosis provided."}</p>
                     </div>
-                    <div style={{marginTop: "10px"}}>
-                        <h4 style={{marginBottom: "5px"}}>Doctor</h4>
+                    <div style={{ marginTop: "10px" }}>
+                        <h4 style={{ marginBottom: "5px" }}>Doctor</h4>
                         <p>{doctorName || "No doctor assigned."}</p>
                     </div>
                     <button className="button rounded-3 btn-no-border" onClick={() => window.history.back()}>
@@ -310,8 +293,8 @@ const AnamnesisDetailsPage = () => {
                     </button>
                 </div>
 
-                <div style={{flex: 1}}>
-                    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+                <div style={{ flex: 1 }}>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                         <h3>
                             <strong>Anamnesis details </strong> (appeal
                             from {new Date(anamnesis.date).toLocaleDateString()}: {diagnosis ? diagnosis.name : "No diagnosis"})
@@ -325,55 +308,58 @@ const AnamnesisDetailsPage = () => {
                             <button
                                 className="button rounded-3 btn-no-border"
                                 onClick={handleViewReport}
-                                style={{marginLeft: "5px"}}
+                                style={{ marginLeft: "5px" }}
                             >
                                 View Report
                             </button>
                             {reportValidationMessage && (
-                                <p style={{color: "red", marginTop: "10px"}}>{reportValidationMessage}</p>
+                                <p style={{ color: "red", marginTop: "10px" }}>{reportValidationMessage}</p>
                             )}
                         </div>
                     </div>
                     <h3 className="py-1">Complaints</h3>
-                    <div className="bg-table element-space" style={{flex: 1}}>
+                    <div className="bg-table element-space" style={{ flex: 1 }}>
                         <div>
-                            <div style={{
-                                marginTop: "14px",
-                                display: "flex",
-                                justifyContent: "space-between",
-                                alignItems: "center"
-                            }}>
+                            <div
+                                style={{
+                                    marginTop: "14px",
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                }}
+                            >
                                 <p>{anamnesis.description || "No complaints provided."}</p>
-                                <button className="button rounded-3 btn-no-border"
-                                        onClick={() => setIsAppointmentModalOpen(true)}>
+                                <button
+                                    className="button rounded-3 btn-no-border"
+                                    onClick={() => setIsAppointmentModalOpen(true)}
+                                >
                                     Show an appointment
                                 </button>
                             </div>
                         </div>
                     </div>
                     <h3>Preliminary Diagnosis</h3>
-                    <div className="bg-table element-space prem_diagnsosis" style={{flex: 1}}>
-                        <div style={{marginTop: "15px"}}>
+                    <div className="bg-table element-space prem_diagnsosis" style={{ flex: 1 }}>
+                        <div style={{ marginTop: "15px" }}>
                             {diagnosis ? (
-                                <div style={{
-                                    marginTop: "15px",
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    height: "100%"
-                                }}>
-                                    <p style={{marginBottom: "5px"}}><strong>Name:</strong> {diagnosis.name}</p>
-                                    <p style={{marginBottom: "5px"}}>
+                                <div style={{ marginTop: "15px", display: "flex", flexDirection: "column", height: "100%" }}>
+                                    <p style={{ marginBottom: "5px" }}>
+                                        <strong>Name:</strong> {diagnosis.name}
+                                    </p>
+                                    <p style={{ marginBottom: "5px" }}>
                                         <strong>Date:</strong> {new Date(diagnosis.date).toLocaleDateString()}
                                     </p>
-                                    <p style={{marginBottom: "5px"}}>
+                                    <p style={{ marginBottom: "5px" }}>
                                         <strong>Contagious:</strong> {diagnosis.contagious ? "Yes" : "No"}
                                     </p>
-                                    <p style={{marginBottom: "0px"}}>
+                                    <p style={{ marginBottom: "0px" }}>
                                         <strong>Description:</strong> {diagnosis.description}
                                     </p>
-                                    <div style={{marginTop: "auto", textAlign: "right"}}>
-                                        <button className="button btn-no-border"
-                                                onClick={() => setIsEditDiagnosisModalOpen(true)}>
+                                    <div style={{ marginTop: "auto", textAlign: "right" }}>
+                                        <button
+                                            className="button btn-no-border"
+                                            onClick={() => setIsEditDiagnosisModalOpen(true)}
+                                        >
                                             Edit
                                         </button>
                                     </div>
@@ -382,27 +368,33 @@ const AnamnesisDetailsPage = () => {
                                 <p>No preliminary diagnosis provided.</p>
                             )}
                             {!diagnosis && (userRole === "ROLE_VET" || userRole === "ROLE_ADMIN") && (
-                                <button className="button rounded-3 btn-no-border"
-                                        onClick={() => setIsEditDiagnosisModalOpen(true)}>
+                                <button
+                                    className="button rounded-3 btn-no-border"
+                                    onClick={() => setIsEditDiagnosisModalOpen(true)}
+                                >
                                     Add Preliminary Diagnosis
                                 </button>
                             )}
                         </div>
                     </div>
                     <h3>Examination Plan</h3>
-                    <div className="bg-table element-space" style={{flex: 1}}>
-                        <div style={{marginTop: "20px"}}>
+                    <div className="bg-table element-space" style={{ flex: 1 }}>
+                        <div style={{ marginTop: "20px" }}>
                             {diagnosis && diagnosis.examinationPlan ? (
-                                <div style={{
-                                    marginTop: "20px",
-                                    display: "flex",
-                                    justifyContent: "space-between",
-                                    alignItems: "center"
-                                }}>
+                                <div
+                                    style={{
+                                        marginTop: "20px",
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                    }}
+                                >
                                     <p>{diagnosis.examinationPlan}</p>
                                     {(userRole === "ROLE_VET" || userRole === "ROLE_ADMIN") && (
-                                        <button className="button btn-no-border"
-                                                onClick={() => setIsEditExaminationPlanModalOpen(true)}>
+                                        <button
+                                            className="button btn-no-border"
+                                            onClick={() => setIsEditExaminationPlanModalOpen(true)}
+                                        >
                                             Edit
                                         </button>
                                     )}
@@ -413,14 +405,16 @@ const AnamnesisDetailsPage = () => {
                         </div>
                     </div>
                     <h3>Clinical Diagnosis</h3>
-                    <div className="bg-table element-space prem_diagnsosis" style={{flex: 1}}>
-                        <div style={{marginTop: "20px"}}>
+                    <div className="bg-table element-space prem_diagnsosis" style={{ flex: 1 }}>
+                        <div style={{ marginTop: "20px" }}>
                             {clinicalDiagnoses.length > 0 ? (
                                 <table cellPadding="3" cellSpacing="0" className="uniq-table">
                                     <tbody>
                                     {clinicalDiagnoses.map((diagnosis) => (
                                         <tr key={diagnosis.id}>
-                                            <td><strong>{diagnosis.name}</strong></td>
+                                            <td>
+                                                <strong>{diagnosis.name}</strong>
+                                            </td>
                                             <td>{diagnosis.description}</td>
                                             <td>{new Date(diagnosis.date).toLocaleDateString()}</td>
                                             <td>{diagnosis.contagious ? "contagious" : "non-contagious"}</td>
@@ -459,7 +453,7 @@ const AnamnesisDetailsPage = () => {
                     </div>
                     <h3>Procedures Performed</h3>
                     <div>
-                        <div className="bg-table element-space prem_diagnsosis" style={{flex: 1}}>
+                        <div className="bg-table element-space prem_diagnsosis" style={{ flex: 1 }}>
                             {procedures.length > 0 ? (
                                 <table cellPadding="3" cellSpacing="0" className="uniq-table">
                                     <tbody>
@@ -487,15 +481,17 @@ const AnamnesisDetailsPage = () => {
                                 <p>No procedures found.</p>
                             )}
                             {(userRole === "ROLE_ADMIN" || userRole === "ROLE_VET") && (
-                                <button className="button rounded-3 btn-no-border"
-                                        onClick={() => setIsAddProcedureModalOpen(true)}>
+                                <button
+                                    className="button rounded-3 btn-no-border"
+                                    onClick={() => setIsAddProcedureModalOpen(true)}
+                                >
                                     Add New Procedure
                                 </button>
                             )}
                         </div>
                     </div>
                     <h3>Diagnostic Attachments</h3>
-                    <div className="bg-table element-space prem_diagnsosis" style={{padding: "20px"}}>
+                    <div className="bg-table element-space prem_diagnsosis" style={{ padding: "20px" }}>
                         {attachments.length > 0 ? (
                             <table cellPadding="3" cellSpacing="0" className="uniq-table table-right-end">
                                 <tbody>
@@ -503,8 +499,10 @@ const AnamnesisDetailsPage = () => {
                                     <tr key={attachment.id}>
                                         <td>{attachment.name}</td>
                                         <td>
-                                            <button className="button btn-no-border"
-                                                    onClick={() => openAttachmentModal(attachment)}>
+                                            <button
+                                                className="button btn-no-border"
+                                                onClick={() => openAttachmentModal(attachment)}
+                                            >
                                                 More
                                             </button>
                                         </td>
@@ -523,8 +521,7 @@ const AnamnesisDetailsPage = () => {
                     </div>
                 </div>
 
-                <div className="mt-1 rounded-1 treatment-vet element-space"
-                     style={{marginTop: "30px", padding: "20px"}}>
+                <div className="mt-1 rounded-1 treatment-vet element-space" style={{ marginTop: "30px", padding: "20px" }}>
                     <h3>Treatment Recommendations</h3>
                     {treatments.length > 0 ? (
                         <table cellPadding="3" cellSpacing="0" className="uniq-table">
@@ -541,10 +538,10 @@ const AnamnesisDetailsPage = () => {
                                                 onChange={() => handleCompleteTreatment(treatment.id)}
                                             />
                                         )}{" "}
-                                        <br/>
-                                        <b>Description</b>: {treatment.description} <br/>
-                                        <b>Prescribed Medication</b>: {treatment.prescribedMedication} <br/>
-                                        <b>Duration</b>: {treatment.duration} <br/>
+                                        <br />
+                                        <b>Description</b>: {treatment.description} <br />
+                                        <b>Prescribed Medication</b>: {treatment.prescribedMedication} <br />
+                                        <b>Duration</b>: {treatment.duration} <br />
                                         {(userRole === "ROLE_VET" || userRole === "ROLE_ADMIN") && (
                                             <button
                                                 className="button btn-no-border"
@@ -578,7 +575,7 @@ const AnamnesisDetailsPage = () => {
                 </div>
 
                 {isAppointmentModalOpen && (
-                    <AppointmentModal appointment={appointment} onClose={() => setIsAppointmentModalOpen(false)}/>
+                    <AppointmentModal appointment={appointment} onClose={() => setIsAppointmentModalOpen(false)} />
                 )}
 
                 {isEditDiagnosisModalOpen && (
@@ -638,20 +635,29 @@ const AnamnesisDetailsPage = () => {
                             <div className="modal-header">
                                 <h3>Procedure Details</h3>
                             </div>
-                            <div className="rounded-3"
-                                 style={{backgroundColor: "rgba(179, 35, 35, 0.06)", padding: "10px"}}>
-                                <p><strong>Type:</strong> {selectedProcedure.type}</p>
-                                <p><strong>Name:</strong> {selectedProcedure.name}</p>
-                                <p><strong>Description:</strong> {selectedProcedure.description}</p>
-                                <p><strong>Notes:</strong> {selectedProcedure.notes}</p>
-                                <p><strong>Date:</strong> {new Date(selectedProcedure.date).toLocaleDateString()}</p>
+                            <div className="rounded-3" style={{ backgroundColor: "rgba(179, 35, 35, 0.06)", padding: "10px" }}>
+                                <p>
+                                    <strong>Type:</strong> {selectedProcedure.type}
+                                </p>
+                                <p>
+                                    <strong>Name:</strong> {selectedProcedure.name}
+                                </p>
+                                <p>
+                                    <strong>Description:</strong> {selectedProcedure.description}
+                                </p>
+                                <p>
+                                    <strong>Notes:</strong> {selectedProcedure.notes}
+                                </p>
+                                <p>
+                                    <strong>Date:</strong> {new Date(selectedProcedure.date).toLocaleDateString()}
+                                </p>
                             </div>
                         </div>
                     </div>
                 )}
 
                 {isAttachmentModalOpen && (
-                    <AttachmentDetailsModal attachment={selectedAttachment} onClose={closeAttachmentModal}/>
+                    <AttachmentDetailsModal attachment={selectedAttachment} onClose={closeAttachmentModal} />
                 )}
 
                 {isAddAttachmentModalOpen && (

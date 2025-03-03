@@ -44,7 +44,6 @@ const AddAttachmentModal = ({ diagnoses, anamnesisId, onClose, onSave }) => {
 
             onSave(response.data);
             onClose();
-            alert("Attachment added successfully!");
         } catch (error) {
             console.error("Error adding attachment:", error);
             setError("Failed to add attachment: maximum upload size exceeded.");

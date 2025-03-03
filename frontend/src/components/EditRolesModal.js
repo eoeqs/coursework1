@@ -8,7 +8,6 @@ const EditRolesModal = ({ user, onClose, onSave }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!selectedRole) {
-            alert("Please select a role.");
             return;
         }
         onSave(selectedRole);

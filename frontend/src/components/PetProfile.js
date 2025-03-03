@@ -90,10 +90,8 @@ const PetProfilePage = () => {
             const response = await axiosInstance.put(`/pets/update-pet/${petId}`, updatedData);
             setPetInfo(response.data);
             setIsEditModalOpen(false);
-            alert("Pet profile updated successfully!");
         } catch (error) {
             console.error("Error updating pet info:", error);
-            alert("Failed to update pet profile. Please try again later.");
         }
     };
 
@@ -106,10 +104,8 @@ const PetProfilePage = () => {
             });
             setAnamneses([...anamneses, response.data]);
             setIsAddAnamnesisModalOpen(false);
-            alert("Anamnesis saved successfully!");
         } catch (error) {
             console.error("Error saving anamnesis:", error);
-            alert("Failed to save anamnesis. Please try again later.");
         }
     };
 
@@ -118,10 +114,8 @@ const PetProfilePage = () => {
             const response = await axiosInstance.post("/health/save", healthUpdateData);
             setHealthUpdates([...healthUpdates, response.data]);
             setIsAddHealthUpdateModalOpen(false);
-            alert("Health update saved successfully!");
         } catch (error) {
             console.error("Error saving health update:", error);
-            alert("Failed to save health update. Please try again later.");
         }
     };
 
@@ -149,13 +143,11 @@ const PetProfilePage = () => {
             setAvailableSlots(response.data);
         } catch (error) {
             console.error("Error fetching available slots:", error);
-            alert("Failed to fetch available slots.");
         }
     };
 
     const handleChangeSlot = async () => {
         if (!newSlotId) {
-            alert("Please select a new slot.");
             return;
         }
 
@@ -171,11 +163,9 @@ const PetProfilePage = () => {
             );
             setUpcomingAppointments(updatedAppointments);
 
-            alert("Appointment slot changed successfully!");
             closeChangeSlotModal();
         } catch (error) {
             console.error("Error changing slot:", error);
-            alert("Failed to change slot.");
         }
     };
 
@@ -185,7 +175,6 @@ const PetProfilePage = () => {
             window.open(response.data, "_blank");
         } catch (error) {
             console.error("Error downloading report:", error);
-            alert("Failed to download report. Please try again later.");
         }
     };
 

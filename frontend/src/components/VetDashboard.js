@@ -31,50 +31,49 @@ const VetDashboard = () => {
     const [availableSlots, setAvailableSlots] = useState([]);
     const [selectedSlotId, setSelectedSlotId] = useState(null);
 
+    const fetchData = async () => {
+        setLoading(true);
+        setError(null);
+
+        try {
+            const currentUserResponse = await axiosInstance.get("/users/current-user-info");
+            const fetchedVetId = currentUserResponse.data.id;
+            const fetchedUserRole = currentUserResponse.data.role;
+            setUserRole(fetchedUserRole);
+
+            const vetInfoResponse = await axiosInstance.get(`/users/user-info/${fetchedVetId}`);
+            setVetInfo(vetInfoResponse.data);
+
+            if (fetchedUserRole === "ROLE_VET") {
+                const doctorPetsResponse = await axiosInstance.get(`/pets/doctor-pets/${vetInfoResponse.data.id}`);
+                setDoctorPets(doctorPetsResponse.data);
+            }
+
+            const appointmentsResponse = await axiosInstance.get(`/appointments/upcoming-vet/${vetInfoResponse.data.id}`);
+            const appointmentPromises = appointmentsResponse.data.map(async (appointment) => {
+                const [slotResponse, petResponse] = await Promise.all([
+                    axiosInstance.get(`/slots/${appointment.slotId}`),
+                    axiosInstance.get(`/pets/pet/${appointment.petId}`),
+                ]);
+                return {
+                    ...appointment,
+                    slot: slotResponse.data,
+                    pet: petResponse.data,
+                };
+            });
+
+            const appointmentsWithDetails = await Promise.all(appointmentPromises);
+            setAppointments(appointmentsWithDetails);
+        } catch (error) {
+            console.error("Error fetching vet data or appointments:", error);
+            setError("Failed to fetch data. Please try again later.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
         if (!token) return;
-
-        const fetchData = async () => {
-            setLoading(true);
-            setError(null);
-
-            try {
-                const currentUserResponse = await axiosInstance.get("/users/current-user-info");
-                const fetchedVetId = currentUserResponse.data.id;
-                const fetchedUserRole = currentUserResponse.data.role;
-                setUserRole(fetchedUserRole);
-
-                const vetInfoResponse = await axiosInstance.get(`/users/user-info/${fetchedVetId}`);
-                setVetInfo(vetInfoResponse.data);
-
-                if (fetchedUserRole === "ROLE_VET") {
-                    const doctorPetsResponse = await axiosInstance.get(`/pets/doctor-pets/${vetInfoResponse.data.id}`);
-                    setDoctorPets(doctorPetsResponse.data);
-                }
-
-                const appointmentsResponse = await axiosInstance.get(`/appointments/upcoming-vet/${vetInfoResponse.data.id}`);
-                const appointmentPromises = appointmentsResponse.data.map(async (appointment) => {
-                    const [slotResponse, petResponse] = await Promise.all([
-                        axiosInstance.get(`/slots/${appointment.slotId}`),
-                        axiosInstance.get(`/pets/pet/${appointment.petId}`),
-                    ]);
-                    return {
-                        ...appointment,
-                        slot: slotResponse.data,
-                        pet: petResponse.data,
-                    };
-                });
-
-                const appointmentsWithDetails = await Promise.all(appointmentPromises);
-                setAppointments(appointmentsWithDetails);
-            } catch (error) {
-                console.error("Error fetching vet data or appointments:", error);
-                setError("Failed to fetch data. Please try again later.");
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchData();
     }, [token, axiosInstance]);
 
@@ -118,7 +117,6 @@ const VetDashboard = () => {
 
         try {
             await axiosInstance.put(`/pets/bind/${selectedAppointment.pet.id}`);
-            alert("Pet successfully bound to the vet!");
 
             if (createAnamnesis) {
                 const anamnesisDTO = {
@@ -129,13 +127,12 @@ const VetDashboard = () => {
                     appointment: selectedAppointment.id,
                 };
                 await axiosInstance.post("/anamnesis/save", anamnesisDTO);
-                alert("Anamnesis successfully created!");
             }
 
             closeModal();
+            fetchData();
         } catch (error) {
             console.error("Error binding pet or creating anamnesis:", error);
-            alert("Failed to bind pet or create anamnesis.");
         }
     };
 
@@ -146,15 +143,12 @@ const VetDashboard = () => {
             await axiosInstance.delete(`/appointments/cancel-appointment/${selectedAppointment.id}`, {
                 data: cancelReason,
             });
-            alert("Appointment successfully canceled!");
             closeModal();
             setCancelReason("");
             setShowCancelModal(false);
-            const updatedAppointments = appointments.filter((app) => app.id !== selectedAppointment.id);
-            setAppointments(updatedAppointments);
+            fetchData();
         } catch (error) {
             console.error("Error canceling appointment:", error);
-            alert("Failed to cancel appointment.");
         }
     };
 
@@ -177,13 +171,11 @@ const VetDashboard = () => {
 
     const handleSaveVetProfile = async (updatedData) => {
         try {
-            const response = await axiosInstance.put(`/users/update-user/`, updatedData);
-            setVetInfo(response.data);
+            await axiosInstance.put(`/users/update-user/`, updatedData);
             setIsEditModalOpen(false);
-            alert("Profile updated successfully!");
+            fetchData();
         } catch (error) {
             console.error("Error updating vet profile:", error);
-            alert("Failed to update profile. Please try again.");
         }
     };
 
@@ -202,7 +194,6 @@ const VetDashboard = () => {
             setShowRescheduleModal(true);
         } catch (error) {
             console.error("Error fetching available priority slots:", error);
-            alert("Failed to fetch available slots. Please try again.");
         }
     };
 
@@ -214,7 +205,6 @@ const VetDashboard = () => {
 
     const handleReschedule = async () => {
         if (!selectedSlotId) {
-            alert("Please select a new slot.");
             return;
         }
 
@@ -222,16 +212,11 @@ const VetDashboard = () => {
             await axiosInstance.put(`/appointments/update-appointment/${selectedAppointment.id}`, null, {
                 params: { slotId: selectedSlotId },
             });
-            alert("Appointment rescheduled successfully!");
             closeRescheduleModal();
             closeModal();
-            const updatedAppointments = appointments.map((app) =>
-                app.id === selectedAppointment.id ? { ...app, slotId: selectedSlotId } : app
-            );
-            setAppointments(updatedAppointments);
+            fetchData();
         } catch (error) {
             console.error("Error rescheduling appointment:", error);
-            alert("Failed to reschedule appointment.");
         }
     };
 
@@ -254,7 +239,7 @@ const VetDashboard = () => {
     return (
         <div>
             <Header />
-            <div className="container mt-1" style={{ display: "flex", gap: "200px", paddingTop: '110px' }}>
+            <div className="container mt-1" style={{ display: "flex", gap: "200px", paddingTop: "110px" }}>
                 <div style={{ flex: 0 }}>
                     <div
                         className="container rounded-3 vet-card"
@@ -287,11 +272,11 @@ const VetDashboard = () => {
                                     className="avatar"
                                     src={PawStub}
                                     alt={`photo stub`}
-                                    style={{width: "250px", height: "250px", borderRadius: "50%"}}
+                                    style={{ width: "250px", height: "250px", borderRadius: "50%" }}
                                 />
                             )}
                         </div>
-                        <div style={{padding: "5px 0 0 7%"}}>
+                        <div style={{ padding: "5px 0 0 7%" }}>
                             <h4>
                                 <strong>Dr. {vetInfo.name} {vetInfo.surname}</strong>
                             </h4>
@@ -346,7 +331,10 @@ const VetDashboard = () => {
                                         <td>{appointment.slot.startTime.slice(0, 5)}</td>
                                         <td>{appointment.pet.name}</td>
                                         <td>
-                                            <button className="button btn-no-border" onClick={() => handleView(appointment.id)}>
+                                            <button
+                                                className="button btn-no-border"
+                                                onClick={() => handleView(appointment.id)}
+                                            >
                                                 View
                                             </button>
                                         </td>
