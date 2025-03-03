@@ -295,14 +295,13 @@ const AnamnesisDetailsPage = () => {
             <Header />
             <div className="container mt-3" style={{ display: "flex", gap: "50px", paddingTop: '80px' }}>
                 <div>
-                    <PetInfo petInfo={petInfo} onEdit={() => {
-                    }}/>
-                    <div style={{marginTop: "20px"}}>
-                        <h4 style={{marginBottom: "5px"}}>Diagnosis</h4>
+                    <PetInfo petInfo={petInfo} onEdit={() => {}} />
+                    <div style={{ marginTop: "20px" }}>
+                        <h4 style={{ marginBottom: "5px" }}>Diagnosis</h4>
                         <p>{diagnosis ? diagnosis.name : "No diagnosis provided."}</p>
                     </div>
-                    <div style={{marginTop: "10px"}}>
-                        <h4 style={{marginBottom: "5px"}}>Doctor</h4>
+                    <div style={{ marginTop: "10px" }}>
+                        <h4 style={{ marginBottom: "5px" }}>Doctor</h4>
                         <p>{doctorName || "No doctor assigned."}</p>
                     </div>
                     <button className="button rounded-3 btn-no-border" onClick={() => window.history.back()}>
@@ -310,7 +309,7 @@ const AnamnesisDetailsPage = () => {
                     </button>
                 </div>
 
-                <div style={{flex: 1}}>
+                <div style={{ flex: 1 }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <h3>
                         <strong>Anamnesis details </strong> (appeal
@@ -335,7 +334,7 @@ const AnamnesisDetailsPage = () => {
                     </div>
                     </div>
                     <h3 className="py-1">Complaints</h3>
-                    <div className="bg-table element-space" style={{flex: 1}}>
+                    <div className="bg-table element-space" style={{ flex: 1 }}>
                         <div>
                             <div style={{
                                 marginTop: "14px",
@@ -344,36 +343,29 @@ const AnamnesisDetailsPage = () => {
                                 alignItems: "center"
                             }}>
                                 <p>{anamnesis.description || "No complaints provided."}</p>
-                                <button className="button rounded-3 btn-no-border"
-                                        onClick={() => setIsAppointmentModalOpen(true)}>
+                                <button className="button rounded-3 btn-no-border" onClick={() => setIsAppointmentModalOpen(true)}>
                                     Show an appointment
                                 </button>
                             </div>
                         </div>
                     </div>
                     <h3>Preliminary Diagnosis</h3>
-                    <div className="bg-table element-space prem_diagnsosis" style={{flex: 1}}>
-                        <div style={{marginTop: "15px"}}>
+                    <div className="bg-table element-space prem_diagnsosis" style={{ flex: 1 }}>
+                        <div style={{ marginTop: "15px" }}>
                             {diagnosis ? (
-                                <div style={{
-                                    marginTop: "15px",
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    height: "100%"
-                                }}>
-                                    <p style={{marginBottom: "5px"}}><strong>Name:</strong> {diagnosis.name}</p>
-                                    <p style={{marginBottom: "5px"}}>
+                                <div style={{ marginTop: "15px", display: "flex", flexDirection: "column", height: "100%" }}>
+                                    <p style={{ marginBottom: "5px" }}><strong>Name:</strong> {diagnosis.name}</p>
+                                    <p style={{ marginBottom: "5px" }}>
                                         <strong>Date:</strong> {new Date(diagnosis.date).toLocaleDateString()}
                                     </p>
-                                    <p style={{marginBottom: "5px"}}>
+                                    <p style={{ marginBottom: "5px" }}>
                                         <strong>Contagious:</strong> {diagnosis.contagious ? "Yes" : "No"}
                                     </p>
-                                    <p style={{marginBottom: "0px"}}>
+                                    <p style={{ marginBottom: "0px" }}>
                                         <strong>Description:</strong> {diagnosis.description}
                                     </p>
-                                    <div style={{marginTop: "auto", textAlign: "right"}}>
-                                        <button className="button btn-no-border"
-                                                onClick={() => setIsEditDiagnosisModalOpen(true)}>
+                                    <div style={{ marginTop: "auto", textAlign: "right" }}>
+                                        <button className="button btn-no-border" onClick={() => setIsEditDiagnosisModalOpen(true)}>
                                             Edit
                                         </button>
                                     </div>
@@ -390,15 +382,10 @@ const AnamnesisDetailsPage = () => {
                         </div>
                     </div>
                     <h3>Examination Plan</h3>
-                    <div className="bg-table element-space" style={{flex: 1}}>
-                        <div style={{marginTop: "20px"}}>
+                    <div className="bg-table element-space" style={{ flex: 1 }}>
+                        <div style={{ marginTop: "20px" }}>
                             {diagnosis && diagnosis.examinationPlan ? (
-                                <div style={{
-                                    marginTop: "20px",
-                                    display: "flex",
-                                    justifyContent: "space-between",
-                                    alignItems: "center"
-                                }}>
+                                <div style={{ marginTop: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                                     <p>{diagnosis.examinationPlan}</p>
                                     {(userRole === "ROLE_VET" || userRole === "ROLE_ADMIN") && (
                                         <button className="button btn-no-border"
@@ -413,8 +400,8 @@ const AnamnesisDetailsPage = () => {
                         </div>
                     </div>
                     <h3>Clinical Diagnosis</h3>
-                    <div className="bg-table element-space prem_diagnsosis" style={{flex: 1}}>
-                        <div style={{marginTop: "20px"}}>
+                    <div className="bg-table element-space prem_diagnsosis" style={{ flex: 1 }}>
+                        <div style={{ marginTop: "20px" }}>
                             {clinicalDiagnoses.length > 0 ? (
                                 <table cellPadding="3" cellSpacing="0" className="uniq-table">
                                     <tbody>
@@ -459,7 +446,7 @@ const AnamnesisDetailsPage = () => {
                     </div>
                     <h3>Procedures Performed</h3>
                     <div>
-                        <div className="bg-table element-space prem_diagnsosis" style={{flex: 1}}>
+                        <div className="bg-table element-space prem_diagnsosis" style={{ flex: 1 }}>
                             {procedures.length > 0 ? (
                                 <table cellPadding="3" cellSpacing="0" className="uniq-table">
                                     <tbody>
@@ -487,15 +474,14 @@ const AnamnesisDetailsPage = () => {
                                 <p>No procedures found.</p>
                             )}
                             {(userRole === "ROLE_ADMIN" || userRole === "ROLE_VET") && (
-                                <button className="button rounded-3 btn-no-border"
-                                        onClick={() => setIsAddProcedureModalOpen(true)}>
+                                <button className="button rounded-3 btn-no-border" onClick={() => setIsAddProcedureModalOpen(true)}>
                                     Add New Procedure
                                 </button>
                             )}
                         </div>
                     </div>
                     <h3>Diagnostic Attachments</h3>
-                    <div className="bg-table element-space prem_diagnsosis" style={{padding: "20px"}}>
+                    <div className="bg-table element-space prem_diagnsosis" style={{ padding: "20px" }}>
                         {attachments.length > 0 ? (
                             <table cellPadding="3" cellSpacing="0" className="uniq-table table-right-end">
                                 <tbody>
@@ -503,8 +489,7 @@ const AnamnesisDetailsPage = () => {
                                     <tr key={attachment.id}>
                                         <td>{attachment.name}</td>
                                         <td>
-                                            <button className="button btn-no-border"
-                                                    onClick={() => openAttachmentModal(attachment)}>
+                                            <button className="button btn-no-border" onClick={() => openAttachmentModal(attachment)}>
                                                 More
                                             </button>
                                         </td>
@@ -523,10 +508,9 @@ const AnamnesisDetailsPage = () => {
                     </div>
                 </div>
 
-                <div className="mt-1 rounded-1 treatment-vet element-space"
-                     style={{marginTop: "30px", padding: "20px"}}>
+                <div className="mt-1 rounded-1 treatment-vet element-space" style={{ marginTop: "30px", padding: "20px" }}>
                     <h3>Treatment Recommendations</h3>
-                    {treatments.filter((treatment) => !treatment.isCompleted).length > 0 ? (
+                    {treatments.length > 0 ? (
                         <table cellPadding="3" cellSpacing="0" className="uniq-table">
                             <tbody>
                             {treatments
@@ -564,7 +548,7 @@ const AnamnesisDetailsPage = () => {
                             </tbody>
                         </table>
                     ) : (
-                        <p>No active treatment recommendations found.</p>
+                        <p>No treatment recommendations found.</p>
                     )}
                     {(userRole === "ROLE_VET" || userRole === "ROLE_ADMIN") && (
                         <button
