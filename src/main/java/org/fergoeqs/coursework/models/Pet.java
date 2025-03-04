@@ -3,6 +3,7 @@ package org.fergoeqs.coursework.models;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.fergoeqs.coursework.models.enums.PetType;
@@ -23,6 +24,7 @@ public class Pet {
     private String name;
     private String breed;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     private PetType type;
 

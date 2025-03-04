@@ -102,7 +102,6 @@ CREATE TRIGGER trigger_update_slot_availability
 EXECUTE FUNCTION update_slot_availability();
 
 
--- проверка вместительности (не оч нужна или заменить потом на isAvailable проверку)
 CREATE OR REPLACE FUNCTION check_sector_capacity()
     RETURNS TRIGGER AS
 $$
@@ -121,6 +120,127 @@ CREATE TRIGGER trigger_check_sector_capacity
     ON Pet
     FOR EACH ROW
 EXECUTE FUNCTION check_sector_capacity();
+
+
+
+CREATE OR REPLACE FUNCTION add_to_queue()
+    RETURNS TRIGGER AS $$
+DECLARE
+    max_priority_position INT;
+    max_non_priority_position INT;
+    new_position INT;
+BEGIN
+    IF NEW.Priority THEN
+        SELECT COALESCE(MAX(Position), 0) INTO max_priority_position
+        FROM Queue
+        WHERE Appointment_ID IN (SELECT ID FROM Appointment WHERE Priority = TRUE);
+
+        new_position := max_priority_position + 1;
+    ELSE
+        SELECT COALESCE(MAX(Position), 0) INTO max_non_priority_position
+        FROM Queue;
+
+        new_position := max_non_priority_position + 1;
+    END IF;
+
+    INSERT INTO Queue (Position, Appointment_ID)
+    VALUES (new_position, NEW.ID);
+
+    UPDATE Queue
+    SET Position = Position + 1
+    WHERE Position >= new_position;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_add_to_queue
+    AFTER INSERT ON Appointment
+    FOR EACH ROW
+EXECUTE FUNCTION add_to_queue();
+
+
+CREATE OR REPLACE FUNCTION remove_queue_on_appointment_delete()
+    RETURNS TRIGGER AS $$
+BEGIN
+    DELETE FROM Queue WHERE Appointment_ID = OLD.ID;
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_remove_queue_on_appointment_delete
+    AFTER DELETE ON Appointment
+    FOR EACH ROW
+EXECUTE FUNCTION remove_queue_on_appointment_delete();
+
+-- что мне делать с этой информацией
+CREATE OR REPLACE FUNCTION get_available_slots(
+    p_vet_id INT,
+    p_date DATE
+)
+    RETURNS TABLE(slot_id INT, start_time TIME, end_time TIME) AS $$
+BEGIN
+    RETURN QUERY
+        SELECT s.ID, s.Start_Time, s.End_Time
+        FROM Available_Slots s
+        WHERE s.Vet_ID = p_vet_id
+          AND s.Date = p_date
+          AND s.Is_Available = TRUE;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION get_all_available_slots()
+    RETURNS TABLE(slot_id INT, vet_id INT, date DATE, start_time TIME, end_time TIME) AS $$
+BEGIN
+    RETURN QUERY
+        SELECT s.ID, s.Vet_ID, s.Date, s.Start_Time, s.End_Time
+        FROM Available_Slots s
+        WHERE s.Is_Available = TRUE;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION get_today_queue()
+    RETURNS TABLE (
+                      queue_id BIGINT,
+                      "position" INTEGER,
+                      appointment_id BIGINT,
+                      priority BOOLEAN,
+                      description VARCHAR(1000),
+                      pet_id BIGINT,
+                      slot_id BIGINT,
+                      slot_date DATE,
+                      start_time TIME,
+                      end_time TIME,
+                      vet_id BIGINT
+                  ) AS $$
+BEGIN
+    RETURN QUERY
+        SELECT
+            q.id AS queue_id,
+            q."position",
+            a.id AS appointment_id,
+            a.priority,
+            a.description,
+            a.pet_id,
+            s.id AS slot_id,
+            s.date AS slot_date,
+            s.start_time,
+            s.end_time,
+            s.vet_id
+        FROM queue q
+                 JOIN appointment a ON q.appointment_id = a.id
+                 JOIN available_slots s ON a.slot_id = s.id
+        WHERE s.date = CURRENT_DATE
+        ORDER BY q."position" ASC;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE INDEX idx_anamnesis_pet_id ON Anamnesis (Pet_ID);
+CREATE INDEX idx_diagnosis_anamnesis_id ON Diagnosis (Anamnesis_ID);
+CREATE INDEX idx_pet_sector_id ON Pet (Sector_ID);
+
+
 
 
 

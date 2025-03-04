@@ -1,6 +1,7 @@
 package org.fergoeqs.coursework.services;
 
 import org.fergoeqs.coursework.dto.AppointmentDTO;
+import org.fergoeqs.coursework.dto.AppointmentQueueDTO;
 import org.fergoeqs.coursework.models.AppUser;
 import org.fergoeqs.coursework.models.Appointment;
 import org.fergoeqs.coursework.models.Slot;
@@ -49,6 +50,10 @@ public class AppointmentsService {
 
     public List<Appointment> findAppointmentsWithoutAnamnesis() {
         return appointmentsRepository.findAppointmentsWithoutAnamnesis();
+    }
+
+    public List<AppointmentQueueDTO> findTodayQueue(){
+        return appointmentsRepository.findTodayQueue();
     }
 
     public List<Appointment> findByVetId(Long vetId) {

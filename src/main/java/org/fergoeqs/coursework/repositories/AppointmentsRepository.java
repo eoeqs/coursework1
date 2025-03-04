@@ -1,5 +1,6 @@
 package org.fergoeqs.coursework.repositories;
 
+import org.fergoeqs.coursework.dto.AppointmentQueueDTO;
 import org.fergoeqs.coursework.models.Appointment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -20,4 +21,7 @@ public interface AppointmentsRepository extends JpaRepository<Appointment, Long>
 
     @Query("SELECT a FROM Appointment a LEFT JOIN Anamnesis an ON a.id = an.appointment.id WHERE an.id IS NULL")
     List<Appointment> findAppointmentsWithoutAnamnesis();
+
+    @Query(value = "SELECT * FROM get_today_queue()", nativeQuery = true)
+    List<AppointmentQueueDTO> findTodayQueue();
 }
