@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useAxiosWithAuth from "../AxiosAuth";
 import Header from "./Header";
+import "../pinkmodal.css";
 
 const QuarantineManagement = () => {
     const axiosInstance = useAxiosWithAuth();
@@ -13,6 +14,7 @@ const QuarantineManagement = () => {
     const [error, setError] = useState(null);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
+    const [formError, setFormError] = useState("");
 
     const [formData, setFormData] = useState({
         reason: "",
@@ -96,6 +98,7 @@ const QuarantineManagement = () => {
 
     const closeAddModal = () => {
         setIsAddModalOpen(false);
+        setFormError("");
         setFormData({
             reason: "",
             description: "",
@@ -117,7 +120,17 @@ const QuarantineManagement = () => {
 
     const handleAddSubmit = async (e) => {
         e.preventDefault();
+        setFormError("");
+
         if (!formData.reason || !formData.startDate || !formData.endDate || !formData.sector || !formData.pet) {
+            setFormError("All fields except description are required.");
+            return;
+        }
+
+        const startDate = new Date(formData.startDate);
+        const endDate = new Date(formData.endDate);
+        if (endDate < startDate) {
+            setFormError("End date cannot be earlier than start date.");
             return;
         }
 
@@ -144,6 +157,7 @@ const QuarantineManagement = () => {
             closeAddModal();
         } catch (error) {
             console.error("Error adding quarantine:", error);
+            setFormError("Failed to add quarantine. Please try again.");
         }
     };
 
@@ -168,7 +182,6 @@ const QuarantineManagement = () => {
                     Add Quarantine
                 </button>
 
-                {/* Поисковая строка */}
                 <div style={{ marginBottom: "20px" }}>
                     <input
                         type="text"
@@ -226,73 +239,77 @@ const QuarantineManagement = () => {
                 </div>
 
                 {isAddModalOpen && (
-                    <div style={modalOverlayStyles}>
-                        <div style={modalStyles} onClick={(e) => e.stopPropagation()}>
-                            <h3>Add Quarantine</h3>
-                            <form onSubmit={handleAddSubmit}>
-                                <label>
-                                    Reason:
+                    <div className="pink-modal-overlay" onClick={closeAddModal}>
+                        <div className="pink-modal-container" onClick={(e) => e.stopPropagation()}>
+                            <div className="pink-modal-header">
+                                <h3 className="pink-modal-header-title">Add Quarantine</h3>
+                            </div>
+                            {formError && <p className="pink-modal-error">{formError}</p>}
+                            <form onSubmit={handleAddSubmit} className="pink-modal-form">
+                                <div className="pink-modal-input-section">
+                                    <label className="pink-modal-label">Reason:</label>
                                     <input
                                         type="text"
                                         name="reason"
                                         value={formData.reason}
                                         onChange={handleAddChange}
                                         placeholder="Enter reason"
-                                        style={{ width: "100%", marginTop: "5px" }}
+                                        className="pink-modal-input"
                                         required
                                     />
-                                </label>
-                                <label>
-                                    Description:
+                                </div>
+                                <div className="pink-modal-input-section">
+                                    <label className="pink-modal-label">Description:</label>
                                     <textarea
                                         name="description"
                                         value={formData.description}
                                         onChange={handleAddChange}
                                         placeholder="Enter description"
-                                        style={{ width: "100%", marginTop: "5px" }}
+                                        className="pink-modal-textarea"
                                     />
-                                </label>
-                                <label>
-                                    Start Date:
+                                </div>
+                                <div className="pink-modal-input-section">
+                                    <label className="pink-modal-label">Start Date:</label>
                                     <input
                                         type="datetime-local"
                                         name="startDate"
                                         value={formData.startDate}
                                         onChange={handleAddChange}
-                                        style={{ width: "100%", marginTop: "5px" }}
+                                        className="pink-modal-input"
                                         required
                                     />
-                                </label>
-                                <label>
-                                    End Date:
+                                </div>
+                                <div className="pink-modal-input-section">
+                                    <label className="pink-modal-label">End Date:</label>
                                     <input
                                         type="datetime-local"
                                         name="endDate"
                                         value={formData.endDate}
                                         onChange={handleAddChange}
-                                        style={{ width: "100%", marginTop: "5px" }}
+                                        min={formData.startDate}
+                                        className="pink-modal-input"
                                         required
                                     />
-                                </label>
-                                <label>
-                                    Status:
+                                </div>
+                                <div className="pink-modal-input-section">
+                                    <label className="pink-modal-label">Status:</label>
                                     <select
                                         name="status"
                                         value={formData.status}
                                         onChange={handleAddChange}
-                                        style={{ width: "100%", marginTop: "5px" }}
+                                        className="pink-modal-select"
                                     >
                                         <option value="CURRENT">Current</option>
                                         <option value="DONE">Done</option>
                                     </select>
-                                </label>
-                                <label>
-                                    Sector:
+                                </div>
+                                <div className="pink-modal-input-section">
+                                    <label className="pink-modal-label">Sector:</label>
                                     <select
                                         name="sector"
                                         value={formData.sector}
                                         onChange={handleAddChange}
-                                        style={{ width: "100%", marginTop: "5px" }}
+                                        className="pink-modal-select"
                                         required
                                     >
                                         <option value="">Select a sector</option>
@@ -302,14 +319,14 @@ const QuarantineManagement = () => {
                                             </option>
                                         ))}
                                     </select>
-                                </label>
-                                <label>
-                                    Pet:
+                                </div>
+                                <div className="pink-modal-input-section">
+                                    <label className="pink-modal-label">Pet:</label>
                                     <select
                                         name="pet"
                                         value={formData.pet}
                                         onChange={handleAddChange}
-                                        style={{ width: "100%", marginTop: "5px" }}
+                                        className="pink-modal-select"
                                         required
                                     >
                                         <option value="">Select a pet</option>
@@ -319,12 +336,10 @@ const QuarantineManagement = () => {
                                             </option>
                                         ))}
                                     </select>
-                                </label>
-                                <div style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
-                                    <button type="submit">Save</button>
-                                    <button type="button" onClick={closeAddModal}>
-                                        Cancel
-                                    </button>
+                                </div>
+                                <div className="pink-modal-footer">
+                                    <button type="submit" className="pink-modal-action-button">Save</button>
+                                    <button type="button" onClick={closeAddModal} className="pink-modal-cancel-button">Cancel</button>
                                 </div>
                             </form>
                         </div>
@@ -333,30 +348,6 @@ const QuarantineManagement = () => {
             </div>
         </div>
     );
-};
-
-const modalOverlayStyles = {
-    position: "fixed",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 1000,
-};
-
-const modalStyles = {
-    backgroundColor: "white",
-    padding: "20px",
-    borderRadius: "10px",
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-    maxWidth: "500px",
-    width: "90%",
-    maxHeight: "80vh",
-    overflowY: "auto",
 };
 
 export default QuarantineManagement;

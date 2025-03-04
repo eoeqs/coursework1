@@ -1,6 +1,7 @@
 package org.fergoeqs.coursework.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,8 +17,10 @@ public class DiagnosticAttachment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     private String name;
     private String description;
+    @NotNull
     private String fileUrl;
     private LocalDateTime uploadDate;
 

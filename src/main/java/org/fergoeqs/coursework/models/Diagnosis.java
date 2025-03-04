@@ -29,15 +29,16 @@ public class Diagnosis {
     @Column(length = 1000)
     private String examinationPlan;
 
-    @NotNull
+    @NotNull(message = "The diagnosis must be associated with an anamnesis")
     @ManyToOne
     @JoinColumn(name = "anamnesis_id")
     private Anamnesis anamnesis;
 
-    @NotNull
+    @NotNull(message = "The body part is required")
     @Enumerated(EnumType.STRING)
     private BodyPart bodyPart;
 
+    @NotNull(message = "Symptoms are required")
     @OneToMany
     @JoinColumn(name = "symptom_id")
     private List<Symptom> symptoms;

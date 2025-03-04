@@ -1,6 +1,7 @@
 package org.fergoeqs.coursework.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.fergoeqs.coursework.models.enums.QuarantineStatus;
@@ -18,9 +19,15 @@ public class Quarantine {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull(message = "Reason is required")
     private String reason;
+
     private String description;
+
+    @NotNull(message = "Start date is required")
     private LocalDateTime startDate;
+
+    @NotNull(message = "End date is required")
     private LocalDateTime endDate;
 
     @Enumerated(EnumType.STRING)

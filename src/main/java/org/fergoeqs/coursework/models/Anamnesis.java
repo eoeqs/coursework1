@@ -18,8 +18,8 @@ public class Anamnesis {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
-    private String name; //например, Headache
+    @NotNull(message = "Name is required")
+    private String name;
 
     @Column(length = 1000)
     private String description;

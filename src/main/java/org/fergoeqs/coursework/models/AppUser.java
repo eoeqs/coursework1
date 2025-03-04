@@ -1,6 +1,7 @@
 package org.fergoeqs.coursework.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,6 +30,7 @@ public class AppUser implements UserDetails {
     private String username;
 
     @Column(unique = true, nullable = false)
+    @Email(message = "Email should be in format like email@example.com")
     private String email;
 
     @Column(nullable = false)
@@ -49,7 +51,6 @@ public class AppUser implements UserDetails {
     @Column(name = "role")
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private Set<RoleType> roles = new HashSet<>();
-
 
     public AppUser(String username, String password) {
         this.username = username;
