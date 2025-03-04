@@ -29,7 +29,6 @@ public class RecommendedDiagnosis {
     @Enumerated(EnumType.STRING)
     private BodyPart bodyPart;
 
-    @NotNull(message = "Symptoms are required")
     @ManyToMany
     @JoinTable(
             name = "diagnosis_symptom", //rec_diagnosis_symptom

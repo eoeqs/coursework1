@@ -36,6 +36,16 @@ public class AppointmentsController {
         }
     }
 
+    @GetMapping("/today-queue")
+    public ResponseEntity<?> getTodayAppointments() {
+        try {
+            return ResponseEntity.ok(appointmentsService.findTodayQueue());
+        } catch (Exception e) {
+            logger.error("Error getting today appointments: {}", e.getMessage());
+            throw e;
+        }
+    }
+
     @GetMapping("/all")
     public ResponseEntity<?> getAllAppointments() {
         try {

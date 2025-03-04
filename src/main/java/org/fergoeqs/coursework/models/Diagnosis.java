@@ -38,7 +38,6 @@ public class Diagnosis {
     @Enumerated(EnumType.STRING)
     private BodyPart bodyPart;
 
-    @NotNull(message = "Symptoms are required")
     @OneToMany
     @JoinColumn(name = "symptom_id")
     private List<Symptom> symptoms;
