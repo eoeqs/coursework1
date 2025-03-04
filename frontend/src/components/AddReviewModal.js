@@ -8,6 +8,7 @@ const AddReviewModal = ({ vetId, vetName, ownerId, onClose, onSave }) => {
     const [rating, setRating] = useState(0);
     const [review, setReview] = useState("");
     const [error, setError] = useState(null);
+    const [successMessage, setSuccessMessage] = useState("");
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -20,6 +21,8 @@ const AddReviewModal = ({ vetId, vetName, ownerId, onClose, onSave }) => {
             return;
         }
 
+        setError(null);
+
         try {
             const reviewData = {
                 rating,
@@ -28,6 +31,7 @@ const AddReviewModal = ({ vetId, vetName, ownerId, onClose, onSave }) => {
                 owner: ownerId,
             };
             const response = await axiosInstance.post("/rating-and-reviews/save", reviewData);
+            setSuccessMessage("Review submitted successfully.");
             onSave(response.data);
             onClose();
         } catch (error) {
