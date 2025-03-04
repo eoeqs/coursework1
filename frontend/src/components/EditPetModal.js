@@ -17,10 +17,35 @@ const EditPetModal = ({ petInfo, onClose, onSave }) => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+
+        if (name === "age") {
+            if (value === "") {
+                setFormData({ ...formData, [name]: "" });
+                return;
+            }
+            const numValue = Number(value);
+            if (numValue < 0 || numValue > 40) return;
+        }
+
+        if (name === "weight") {
+            if (value === "") {
+                setFormData({ ...formData, [name]: "" });
+                return;
+            }
+            const numValue = Number(value);
+            if (numValue < 0 || numValue > 120) return;
+        }
+
         setFormData({
             ...formData,
             [name]: value,
         });
+    };
+
+    const handleKeyDown = (e) => {
+        if (e.key === "-") {
+            e.preventDefault();
+        }
     };
 
     const handleAvatarChange = (e) => {
@@ -69,15 +94,15 @@ const EditPetModal = ({ petInfo, onClose, onSave }) => {
             color: "#333"
         }}>
             <div className="modal-header">
-            <h3 style={{textAlign: "center"}}>Edit Pet
-                Profile</h3></div>
+                <h3 style={{ textAlign: "center" }}>Edit Pet Profile</h3>
+            </div>
             <form style={{ display: "flex", flexDirection: "column" }} onSubmit={handleSubmit}>
-                <div style={{marginBottom: "20px"}}>
+                <div style={{ marginBottom: "20px" }}>
                     {avatarPreview && (
                         <img
                             src={avatarPreview}
                             alt="Avatar Preview"
-                            style={{ width: "100px", height: "100px", borderRadius: "50%", marginBottom: "10px", marginLeft: "100px"}}
+                            style={{ width: "100px", height: "100px", borderRadius: "50%", marginBottom: "10px", marginLeft: "100px" }}
                         />
                     )}
                     <input
@@ -123,6 +148,9 @@ const EditPetModal = ({ petInfo, onClose, onSave }) => {
                         name="age"
                         value={formData.age}
                         onChange={handleChange}
+                        onKeyDown={handleKeyDown}
+                        min="0"
+                        max="40"
                         style={inputStyles}
                     />
                 </div>
@@ -145,6 +173,9 @@ const EditPetModal = ({ petInfo, onClose, onSave }) => {
                         name="weight"
                         value={formData.weight}
                         onChange={handleChange}
+                        onKeyDown={handleKeyDown}
+                        min="0"
+                        max="120"
                         style={inputStyles}
                     />
                 </div>
@@ -159,12 +190,12 @@ const EditPetModal = ({ petInfo, onClose, onSave }) => {
                     />
                 </div>
 
-                <div style={{display: "flex", justifyContent: "space-evenly", marginTop: "15px"}}>
-                    <button className="form-button" type="submit" style={{padding: "5px 35px", color: "white"}}>
+                <div style={{ display: "flex", justifyContent: "space-evenly", marginTop: "15px" }}>
+                    <button className="form-button" type="submit" style={{ padding: "5px 35px", color: "white" }}>
                         Save
                     </button>
                     <button className="rounded-2" type="button" onClick={onClose}
-                            style={{padding: "5px 26px", backgroundColor: "#ffffff", border: "1", borderColor: "#c1c0c0"}}>
+                            style={{ padding: "5px 26px", backgroundColor: "#ffffff", border: "1px solid #c1c0c0" }}>
                         Cancel
                     </button>
                 </div>
@@ -183,6 +214,5 @@ const inputStyles = {
     fontSize: "14px",
     color: "#555",
 };
-
 
 export default EditPetModal;

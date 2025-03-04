@@ -434,10 +434,10 @@ const PetProfilePage = () => {
                             <tbody>
                             {treatments.map((treatment) => (
                                 <tr key={treatment.id}>
-                                    <td><b>Treatment</b>: {treatment.name} <br/>
-                                        <b>Description</b>: {treatment.description} <br/>
-                                        <b>Prescribed Medication</b>: {treatment.prescribedMedication} <br/>
-                                        <b>Duration</b>: {treatment.duration} <br/>
+                                    <td><b>Treatment</b>: {treatment.name || "not specified"} <br/>
+                                        <b>Description</b>: {treatment.description || "not specified"} <br/>
+                                        <b>Prescribed Medication</b>: {treatment.prescribedMedication || "not specified"} <br/>
+                                        <b>Duration</b>: {treatment.duration || "not specified"} <br/>
                                     </td>
                                 </tr>
                             ))}

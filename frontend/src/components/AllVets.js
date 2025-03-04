@@ -14,7 +14,7 @@ const AllVets = () => {
     const [selectedUser, setSelectedUser] = useState(null);
     const [isEditUserModalOpen, setIsEditUserModalOpen] = useState(false);
     const [isEditRolesModalOpen, setIsEditRolesModalOpen] = useState(false);
-    const [searchQuery, setSearchQuery] = useState(""); // Состояние для поискового запроса
+    const [searchQuery, setSearchQuery] = useState("");
 
     useEffect(() => {
         const fetchData = async () => {
@@ -38,7 +38,6 @@ const AllVets = () => {
         fetchData();
     }, [axiosInstance]);
 
-    // Фильтрация по поисковому запросу
     const filteredVets = vets.filter((vet) => {
         const query = searchQuery.toLowerCase();
         return (

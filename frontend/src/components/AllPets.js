@@ -14,8 +14,8 @@ const AllPets = () => {
     const [error, setError] = useState(null);
     const [selectedPet, setSelectedPet] = useState(null);
     const [isEditPetModalOpen, setIsEditPetModalOpen] = useState(false);
-    const [filterType, setFilterType] = useState("all"); // Фильтр по виду
-    const [searchQuery, setSearchQuery] = useState(""); // Поиск по кличке
+    const [filterType, setFilterType] = useState("all");
+    const [searchQuery, setSearchQuery] = useState("");
 
     useEffect(() => {
         const fetchPets = async () => {
